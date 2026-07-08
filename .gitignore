@@ -1,0 +1,55 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment files
+.env
+.env.*
+
+# Jupyter / IDE
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# Model weights and checkpoints
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.onnx
+*.bin
+*.safetensors
+
+# Datasets and media
+data/*
+data/**
+*.zip
+*.tar
+*.gz
+*.csv
+*.jsonl
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.jpg
+*.jpeg
+*.png
+*.npy
+*.npz
+
+# Generated outputs
+outputs/*
+outputs/**
+results/
+logs/
+checkpoints/
+wandb/
+mlruns/
