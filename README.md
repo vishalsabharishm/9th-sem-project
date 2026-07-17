@@ -46,3 +46,15 @@ Completed in Phase 1:
 - Implemented a working video loader using OpenCV
 - Added clean, documented Python source files
 - Verified the application runs successfully
+
+## Phase 2 - Object Detection (YOLOv8)
+
+Phase 2 implements object detection only (no tracking, abnormal detection, or explainability).
+
+To run the Phase 2 demo (loads YOLOv8s, runs detection on a sample image and the sample video):
+
+```bash
+python src/run_phase2.py
+```
+
+Annotated outputs are written to the `outputs/` directory (annotated image and `annotated_video.mp4`).
