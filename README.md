@@ -58,3 +58,24 @@ python src/run_phase2.py
 ```
 
 Annotated outputs are written to the `outputs/` directory (annotated image and `annotated_video.mp4`).
+
+## Phase 3 - Object Tracking
+
+Phase 3 adds a lightweight detection-based tracker that assigns persistent IDs to
+detections across frames and saves a tracked, annotated output video (trail
+lines and IDs are drawn). This module is intentionally minimal and compatible
+with the YOLOv8 detection pipeline implemented in Phase 2.
+
+To run the Phase 3 tracking demo:
+
+```bash
+python src/run_phase3.py
+```
+
+The tracked output is written to the `outputs/` directory as `tracked_video.mp4`.
+
+Notes:
+- Phase 3 uses a simple IoU-based tracker implemented in `src/tracker.py`.
+- This is not a state-of-the-art tracker like ByteTrack; it is lightweight and
+   easy to inspect and extend. If you want ByteTrack or DeepSORT integration,
+   that can be added as a follow-up (requires external packages).
