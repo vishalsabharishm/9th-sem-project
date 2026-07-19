@@ -37,6 +37,19 @@ class Track:
     history: List[Tuple[int, int]] = field(default_factory=list)
 
 
+@dataclass
+class TrackingSnapshot:
+    """Simple container for the tracking state at a single frame."""
+
+    frame_idx: int
+    tracks: List[Track]
+
+
+def build_tracking_snapshot(frame_idx: int, tracks: List[Track]) -> TrackingSnapshot:
+    """Create a serializable snapshot for downstream analysis modules."""
+    return TrackingSnapshot(frame_idx=frame_idx, tracks=list(tracks))
+
+
 class SimpleTracker:
     def __init__(self, iou_threshold: float = 0.3, max_age: int = 30, min_hits: int = 1, trail_length: int = 30):
         self.iou_threshold = iou_threshold
@@ -141,7 +154,11 @@ def draw_tracks(frame: np.ndarray, tracks: List[Track], names: Dict[int, str]) -
 
 def track_video(model, video_path, output_path=None, conf: float = 0.25, iou_threshold: float = 0.3, max_age: int = 30):
     from pathlib import Path
-    from src.config import ensure_directories, OUTPUTS_DIR, DEFAULT_VIDEO_PATH
+
+    try:
+        from config import ensure_directories, OUTPUTS_DIR, DEFAULT_VIDEO_PATH
+    except Exception:  # pragma: no cover - supports package or script execution
+        from src.config import ensure_directories, OUTPUTS_DIR, DEFAULT_VIDEO_PATH
 
     ensure_directories()
     video_path = Path(video_path) if video_path else DEFAULT_VIDEO_PATH
@@ -159,6 +176,8 @@ def track_video(model, video_path, output_path=None, conf: float = 0.25, iou_thr
     output_path = Path(output_path) if output_path else (OUTPUTS_DIR / f"tracked_{video_path.name}")
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
     writer = cv2.VideoWriter(str(output_path), fourcc, fps, (width, height))
+    if not writer.isOpened():
+        raise RuntimeError(f"Unable to create output video writer: {output_path}")
 
     tracker = SimpleTracker(iou_threshold=iou_threshold, max_age=max_age)
 
@@ -182,6 +201,8 @@ def track_video(model, video_path, output_path=None, conf: float = 0.25, iou_thr
             class_ids = np.array([])
 
         tracks = tracker.update(boxes, class_ids, confidences)
+        snapshot = build_tracking_snapshot(frame_idx, tracks)
+        # TODO: feed snapshot into the future abnormal event detector pipeline.
         annotated = draw_tracks(frame, tracks, model.names)
         writer.write(annotated)
 

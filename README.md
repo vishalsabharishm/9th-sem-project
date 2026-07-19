@@ -1,22 +1,30 @@
 # Explainable AI-Based Abnormal Event Detection and Risk Assessment in Surveillance Videos
 
 ## Project Overview
-This project focuses on building an explainable AI-based system for detecting abnormal events in surveillance videos and assessing their potential risk level. The initial Phase 1 establishes the project foundation, including a clean folder structure, dependency setup, and a working video-loading pipeline.
+This project builds an explainable AI-based surveillance pipeline for abnormal event detection and risk assessment. The work so far focuses on a clear, modular foundation that can later support event reasoning, explainability, and risk scoring without overcomplicating the early architecture.
 
 ## Current Project Structure
 ```text
 .
-├── data/                # Input media files
-├── docs/                # Documentation and reports
-├── models/              # Trained models and checkpoints
-├── outputs/             # Generated outputs and previews
-├── src/                 # Source code
-│   ├── config.py        # Project configuration and paths
-│   ├── main.py          # Entry point for the application
-│   └── video_loader.py  # Video loading and preview logic
-├── tests/               # Test files
-├── requirements.txt     # Python dependencies for Phase 1
-└── README.md            # Project documentation
+├── data/                           # Input media and sample assets
+├── docs/                           # Project notes and documentation
+├── models/                         # Model weights and checkpoints
+├── outputs/                        # Generated images and videos
+├── src/                            # Source code
+│   ├── abnormal_event_detector.py  # Phase 4 scaffolding for event detection
+│   ├── behavior_analyzer.py       # Phase 4 scaffolding for behavior analysis
+│   ├── config.py                   # Project configuration and paths
+│   ├── detector.py                 # YOLOv8 detection routines
+│   ├── event_rules.py              # Phase 4 scaffolding for event rules
+│   ├── main.py                     # Phase 1 entry point
+│   ├── run_phase2.py               # Phase 2 demo runner
+│   ├── run_phase3.py               # Phase 3 demo runner
+│   ├── tracker.py                  # Lightweight IoU-based tracking implementation
+│   ├── video_loader.py             # OpenCV video loading and preview logic
+│   └── yolo_utils.py               # YOLO loading and annotation helpers
+├── tests/                          # Test files
+├── requirements.txt                # Python dependencies
+└── README.md                       # Project documentation
 ```
 
 ## Installation
@@ -30,52 +38,69 @@ This project focuses on building an explainable AI-based system for detecting ab
    pip install -r requirements.txt
    ```
 
-## How to Run the Project
-From the project root, run:
+## How to Run the Demos
+From the project root:
+
+### Phase 1
 ```bash
 python src/main.py
 ```
+This loads the sample video and previews it until the user presses q.
 
-This will load the default video, print the frame dimensions, and display the video preview until the user presses q.
-
-## Phase 1 Completion Summary
-Completed in Phase 1:
-- Created a professional project structure
-- Set up a Python virtual environment
-- Added the required Phase 1 dependencies
-- Implemented a working video loader using OpenCV
-- Added clean, documented Python source files
-- Verified the application runs successfully
-
-## Phase 2 - Object Detection (YOLOv8)
-
-Phase 2 implements object detection only (no tracking, abnormal detection, or explainability).
-
-To run the Phase 2 demo (loads YOLOv8s, runs detection on a sample image and the sample video):
-
+### Phase 2
 ```bash
 python src/run_phase2.py
 ```
+This runs YOLOv8-based object detection on a sample image and the sample video and writes outputs to the outputs folder.
 
-Annotated outputs are written to the `outputs/` directory (annotated image and `annotated_video.mp4`).
-
-## Phase 3 - Object Tracking
-
-Phase 3 adds a lightweight detection-based tracker that assigns persistent IDs to
-detections across frames and saves a tracked, annotated output video (trail
-lines and IDs are drawn). This module is intentionally minimal and compatible
-with the YOLOv8 detection pipeline implemented in Phase 2.
-
-To run the Phase 3 tracking demo:
-
+### Phase 3
 ```bash
 python src/run_phase3.py
 ```
+This runs YOLOv8 detections, assigns persistent object IDs through the lightweight tracker, and writes a tracked output video to outputs/tracked_video.mp4.
 
-The tracked output is written to the `outputs/` directory as `tracked_video.mp4`.
+## Completed Phases
+### Phase 1 - Project Setup and Video Loader
+Completed:
+- Created a clean project structure
+- Added dependency management and environment support
+- Implemented OpenCV-based video loading and previewing
 
-Notes:
-- Phase 3 uses a simple IoU-based tracker implemented in `src/tracker.py`.
-- This is not a state-of-the-art tracker like ByteTrack; it is lightweight and
-   easy to inspect and extend. If you want ByteTrack or DeepSORT integration,
-   that can be added as a follow-up (requires external packages).
+### Phase 2 - YOLOv8 Object Detection
+Completed:
+- Integrated YOLOv8-based object detection
+- Added image and video annotation utilities
+- Verified demo outputs are written successfully
+
+### Phase 3 - Lightweight Tracking
+Completed:
+- Implemented a simple IoU-based tracker
+- Assigned persistent IDs across frames
+- Drew bounding boxes and motion trails
+- Produced a tracked video output for downstream analysis
+
+### Phase 4 Preparation
+Added scaffolding for the next stage:
+- abnormal_event_detector.py for future abnormal event detection
+- event_rules.py for rule definitions and evaluation hooks
+- behavior_analyzer.py for motion and interaction analysis structure
+
+## Project Architecture
+The current pipeline is intentionally simple and modular:
+1. Video input is loaded using OpenCV.
+2. YOLOv8 detects objects in each frame.
+3. The tracker maintains object identity over time using IoU matching.
+4. Tracking snapshots can now flow into future abnormal-event analysis modules.
+
+This design keeps detection, tracking, and future event reasoning separated so the system remains easy to extend.
+
+## Remaining Roadmap
+Planned next steps:
+- Implement rule-based abnormal event detection using tracking snapshots
+- Add behavior analysis features such as trajectory, proximity, and persistence metrics
+- Introduce explainability layers that describe why an event was flagged
+- Extend the system toward risk scoring and reporting
+
+## Notes
+- The current tracker is intentionally lightweight and easy to inspect.
+- No abnormal detection, risk assessment, dashboard, database, or web interface has been implemented yet.
