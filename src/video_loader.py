@@ -1,90 +1,208 @@
-"""Utilities for opening and previewing surveillance videos."""
+"""Video loading, metadata inspection, and frame-preview utilities.
 
+This module deliberately has no detection or analysis dependencies.  Future
+pipeline stages can use :func:`open_video` and :func:`iter_frames` directly,
+while the current Phase 1 workflow can use :func:`load_video` for a preview.
+"""
+
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Iterator, Optional, Tuple, Union
 
 import cv2
 import numpy as np
 
 try:
-    from config import DEFAULT_VIDEO_PATH, OUTPUTS_DIR, WINDOW_NAME, ensure_directories
+    from config import DEFAULT_VIDEO_PATH, WINDOW_NAME
 except ImportError:  # pragma: no cover - supports package execution
-    from src.config import DEFAULT_VIDEO_PATH, OUTPUTS_DIR, WINDOW_NAME, ensure_directories
+    from src.config import DEFAULT_VIDEO_PATH, WINDOW_NAME
 
 
-def create_sample_video(video_path: Path) -> None:
-    """Create a simple sample video if no real video file exists."""
-    video_path.parent.mkdir(parents=True, exist_ok=True)
+PathLike = Union[str, Path]
+SUPPORTED_VIDEO_EXTENSIONS = {".avi", ".mkv", ".mov", ".mp4", ".mpeg", ".mpg", ".wmv"}
 
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    writer = cv2.VideoWriter(str(video_path), fourcc, 20.0, (320, 240))
 
-    if not writer.isOpened():
-        raise RuntimeError(f"Unable to create sample video at {video_path}")
+class VideoLoadError(ValueError):
+    """Raised when a local video cannot be validated or opened."""
 
-    for index in range(60):
-        frame = np.zeros((240, 320, 3), dtype=np.uint8)
-        cv2.rectangle(frame, (40, 40), (280, 200), (0, 255, 0), 2)
-        cv2.putText(
-            frame,
-            f"Frame {index + 1}",
-            (70, 110),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.8,
-            (255, 255, 255),
-            2,
+
+@dataclass(frozen=True)
+class VideoMetadata:
+    """Immutable metadata required by later video-processing modules."""
+
+    fps: float
+    frame_count: int
+    width: int
+    height: int
+    duration_seconds: float
+
+
+def validate_video_file(video_path: PathLike) -> Path:
+    """Validate a local video path and return its resolved ``Path``.
+
+    File existence and type are checked before OpenCV is asked to decode the
+    content. OpenCV-specific decoding errors are handled by :func:`open_video`.
+    """
+    if not video_path:
+        raise VideoLoadError("A local video file path is required.")
+
+    path = Path(video_path).expanduser()
+    if not path.exists():
+        raise VideoLoadError(f"Video file does not exist: {path}")
+    if not path.is_file():
+        raise VideoLoadError(f"Video path is not a file: {path}")
+    if path.suffix.lower() not in SUPPORTED_VIDEO_EXTENSIONS:
+        supported = ", ".join(sorted(SUPPORTED_VIDEO_EXTENSIONS))
+        raise VideoLoadError(
+            f"Unsupported video format '{path.suffix}'. Supported formats: {supported}"
         )
-        writer.write(frame)
 
-    writer.release()
-    print(f"Created sample video: {video_path}")
+    return path.resolve()
 
 
-def load_video(video_path: Optional[str] = None) -> None:
-    """Open a video, print its dimensions, and display frames until quit."""
-    ensure_directories()
-
-    video_file = Path(video_path) if video_path else DEFAULT_VIDEO_PATH
-
-    if not video_file.exists():
-        create_sample_video(video_file)
-
-    capture = cv2.VideoCapture(str(video_file))
+def read_video_metadata(capture: cv2.VideoCapture) -> VideoMetadata:
+    """Read metadata from an already-open OpenCV video capture."""
     if not capture.isOpened():
-        raise RuntimeError(f"Could not open video file: {video_file}")
+        raise VideoLoadError("Cannot read metadata from a closed video capture.")
 
+    fps = float(capture.get(cv2.CAP_PROP_FPS))
+    frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
     width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps = capture.get(cv2.CAP_PROP_FPS) or 20.0
+    duration_seconds = frame_count / fps if fps > 0 else 0.0
 
-    print(f"Video loaded from: {video_file}")
-    print(f"Frame dimensions: {width}x{height}")
-    print(f"Estimated FPS: {fps}")
+    return VideoMetadata(
+        fps=fps,
+        frame_count=frame_count,
+        width=width,
+        height=height,
+        duration_seconds=duration_seconds,
+    )
 
-    frame_count = 0
+
+def open_video(video_path: PathLike) -> Tuple[cv2.VideoCapture, VideoMetadata]:
+    """Open a validated video and return its capture object and metadata.
+
+    The caller owns the returned capture and must call ``release()`` when it is
+    no longer needed. This makes the function suitable for future inference
+    pipelines as well as the preview interface below.
+    """
+    path = validate_video_file(video_path)
+    capture = cv2.VideoCapture(str(path))
+
+    if not capture.isOpened():
+        capture.release()
+        raise VideoLoadError(f"OpenCV could not decode video file: {path}")
+
+    metadata = read_video_metadata(capture)
+    if metadata.width <= 0 or metadata.height <= 0:
+        capture.release()
+        raise VideoLoadError(f"Video has invalid frame dimensions: {path}")
+
+    return capture, metadata
+
+
+def resize_frame(
+    frame: np.ndarray,
+    max_width: Optional[int] = None,
+    max_height: Optional[int] = None,
+) -> np.ndarray:
+    """Resize ``frame`` to fit within bounds without changing its aspect ratio.
+
+    A frame is never enlarged: this keeps previewing efficient and prevents
+    interpolated pixels from being passed to later computer-vision modules.
+    """
+    if frame is None or frame.size == 0:
+        raise ValueError("Cannot resize an empty frame.")
+    if max_width is not None and max_width <= 0:
+        raise ValueError("max_width must be a positive integer.")
+    if max_height is not None and max_height <= 0:
+        raise ValueError("max_height must be a positive integer.")
+
+    if max_width is None and max_height is None:
+        return frame
+
+    height, width = frame.shape[:2]
+    width_scale = max_width / width if max_width is not None else 1.0
+    height_scale = max_height / height if max_height is not None else 1.0
+    scale = min(width_scale, height_scale, 1.0)
+
+    if scale == 1.0:
+        return frame
+
+    dimensions = (round(width * scale), round(height * scale))
+    return cv2.resize(frame, dimensions, interpolation=cv2.INTER_AREA)
+
+
+def iter_frames(
+    capture: cv2.VideoCapture,
+    max_width: Optional[int] = None,
+    max_height: Optional[int] = None,
+) -> Iterator[Tuple[int, np.ndarray]]:
+    """Yield sequential, optionally resized frames as ``(index, frame)`` pairs."""
+    frame_index = 0
     while True:
         success, frame = capture.read()
         if not success:
-            break
+            return
 
-        frame_count += 1
-        print(f"Displaying frame {frame_count}")
+        yield frame_index, resize_frame(frame, max_width, max_height)
+        frame_index += 1
 
-        try:
-            cv2.imshow(WINDOW_NAME, frame)
-            key = cv2.waitKey(1) & 0xFF
-            if key == ord("q"):
-                print("Quit key pressed. Closing preview.")
+
+def print_video_metadata(video_path: Path, metadata: VideoMetadata) -> None:
+    """Print metadata in a concise format suitable for command-line demos."""
+    print(f"Video loaded: {video_path}")
+    print(f"FPS: {metadata.fps:.2f}")
+    print(f"Frame count: {metadata.frame_count}")
+    print(f"Dimensions: {metadata.width}x{metadata.height}")
+    print(f"Duration: {metadata.duration_seconds:.2f} seconds")
+
+
+def preview_video(
+    video_path: PathLike,
+    max_width: Optional[int] = 960,
+    max_height: Optional[int] = 540,
+    window_name: str = WINDOW_NAME,
+) -> bool:
+    """Display a processed video preview and return ``False`` on load errors.
+
+    Press ``q`` while the preview window is active to exit early. A display
+    backend may be unavailable on headless systems; that condition is reported
+    cleanly instead of producing an unhandled OpenCV exception.
+    """
+    capture: Optional[cv2.VideoCapture] = None
+    try:
+        validated_path = validate_video_file(video_path)
+        capture, metadata = open_video(validated_path)
+        print_video_metadata(validated_path, metadata)
+
+        delay_ms = max(1, round(1000 / metadata.fps)) if metadata.fps > 0 else 1
+        for _, frame in iter_frames(capture, max_width, max_height):
+            cv2.imshow(window_name, frame)
+            if cv2.waitKey(delay_ms) & 0xFF == ord("q"):
+                print("Preview closed by user.")
                 break
-        except cv2.error:
-            output_path = OUTPUTS_DIR / f"frame_{frame_count:04d}.png"
-            cv2.imwrite(str(output_path), frame)
-            print(f"Display window unavailable. Saved frame preview to {output_path}")
-            break
 
-    capture.release()
-    cv2.destroyAllWindows()
-    print("Video preview finished.")
+        return True
+    except VideoLoadError as error:
+        print(f"Unable to load video: {error}")
+        return False
+    except cv2.error as error:
+        print(f"Unable to display video preview: {error}")
+        return False
+    finally:
+        if capture is not None:
+            capture.release()
+        try:
+            cv2.destroyAllWindows()
+        except cv2.error:
+            pass
+
+
+def load_video(video_path: Optional[PathLike] = None) -> bool:
+    """Run the Phase 1 preview workflow using the configured default if needed."""
+    return preview_video(video_path or DEFAULT_VIDEO_PATH)
 
 
 if __name__ == "__main__":

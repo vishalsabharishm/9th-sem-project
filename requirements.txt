@@ -3,3 +3,4 @@ numpy
 ultralytics
 torch
 torchvision
+lap>=0.5.12
