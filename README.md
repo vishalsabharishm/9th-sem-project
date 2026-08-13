@@ -1,106 +1,115 @@
 # Explainable AI-Based Abnormal Event Detection and Risk Assessment in Surveillance Videos
 
-## Project Overview
-This project builds an explainable AI-based surveillance pipeline for abnormal event detection and risk assessment. The work so far focuses on a clear, modular foundation that can later support event reasoning, explainability, and risk scoring without overcomplicating the early architecture.
+## Current implementation
 
-## Current Project Structure
+The project currently implements a Phase 1--4 foundation:
+
+1. OpenCV video validation, loading, metadata inspection, and previewing.
+2. YOLOv8s frame-by-frame object detection and annotation.
+3. Two retained tracking paths: an inspectable greedy IoU tracker and an Ultralytics ByteTrack path with a BoT-SORT fallback.
+4. Basic rule-based abnormal-event detection: stationary person and restricted-area entry.
+5. Transparent, configurable rule-based risk assessment for those event records.
+
+XAI, dashboard/UI, stabbing detection, violence detection, and crowd detection are not implemented.
+
+## Project structure
+
 ```text
-.
-├── data/                           # Input media and sample assets
-├── docs/                           # Project notes and documentation
-├── models/                         # Model weights and checkpoints
-├── outputs/                        # Generated images and videos
-├── src/                            # Source code
-│   ├── abnormal_event_detector.py  # Phase 4 scaffolding for event detection
-│   ├── behavior_analyzer.py       # Phase 4 scaffolding for behavior analysis
-│   ├── config.py                   # Project configuration and paths
-│   ├── detector.py                 # YOLOv8 detection routines
-│   ├── event_rules.py              # Phase 4 scaffolding for event rules
-│   ├── main.py                     # Phase 1 entry point
-│   ├── run_phase2.py               # Phase 2 demo runner
-│   ├── run_phase3.py               # Phase 3 demo runner
-│   ├── tracker.py                  # Lightweight IoU-based tracking implementation
-│   ├── video_loader.py             # OpenCV video loading and preview logic
-│   └── yolo_utils.py               # YOLO loading and annotation helpers
-├── tests/                          # Test files
-├── requirements.txt                # Python dependencies
-└── README.md                       # Project documentation
+data/       Input media. `person_fixture.mp4` is supplied by the user.
+docs/       Project documentation.
+models/     Local weights, including `yolov8s.pt`.
+outputs/    Generated videos, frames, and tracking JSON.
+src/        Video loader, detection, tracking, event rules, and runners.
+tests/      Unit and optional end-to-end integration tests.
 ```
 
 ## Installation
-1. Create and activate a virtual environment:
-   ```bash
-   python -m venv .venv
-   .venv\Scripts\activate
-   ```
-2. Install the dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
 
-## How to Run the Demos
-From the project root:
-
-### Phase 1
 ```bash
-python src/main.py
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
 ```
-This loads the sample video and previews it until the user presses q.
 
-### Phase 2
+## Runners
+
+### Phase 1 video preview
+
+`video_loader.py` provides the Phase 1 preview functions. `main.py` no longer runs this preview; it runs the ByteTrack path below.
+
+### Phase 2 detection demo
+
 ```bash
 python src/run_phase2.py
 ```
-This runs YOLOv8-based object detection on a sample image and the sample video and writes outputs to the outputs folder.
 
-### Phase 3
+Runs YOLOv8s annotation on the sample image and sample video.
+
+### ByteTrack export path
+
+```bash
+python src/main.py
+```
+
+Runs Ultralytics ByteTrack (with a BoT-SORT fallback) and writes a tracked video plus `outputs/tracking_results.json`. This path currently exports tracking records but does not invoke event rules.
+
+### Phase 4 IoU-tracking and event-rule demo
+
 ```bash
 python src/run_phase3.py
 ```
-This runs YOLOv8 detections, assigns persistent object IDs through the lightweight tracker, and writes a tracked output video to outputs/tracked_video.mp4.
 
-## Completed Phases
-### Phase 1 - Project Setup and Video Loader
-Completed:
-- Created a clean project structure
-- Added dependency management and environment support
-- Implemented OpenCV-based video loading and previewing
+Despite its legacy filename, this uses the greedy IoU `SimpleTracker`, invokes the stationary-person and restricted-area-entry rules, and writes `outputs/phase4_abnormal_events.mp4`.
 
-### Phase 2 - YOLOv8 Object Detection
-Completed:
-- Integrated YOLOv8-based object detection
-- Added image and video annotation utilities
-- Verified demo outputs are written successfully
+## Real-person fixture verification
 
-### Phase 3 - Lightweight Tracking
-Completed:
-- Implemented a simple IoU-based tracker
-- Assigned persistent IDs across frames
-- Drew bounding boxes and motion trails
-- Produced a tracked video output for downstream analysis
+The bundled `data/sample_video.mp4` is a 60-frame, 320x240 sample that yields zero YOLO detections. It is not a valid end-to-end people-detection fixture.
 
-### Phase 4 Preparation
-Added scaffolding for the next stage:
-- abnormal_event_detector.py for future abnormal event detection
-- event_rules.py for rule definitions and evaluation hooks
-- behavior_analyzer.py for motion and interaction analysis structure
+To perform the Phase 2--4 integration verification, provide a short, lawfully usable surveillance-style MP4 with at least one clearly visible person at:
 
-## Project Architecture
-The current pipeline is intentionally simple and modular:
-1. Video input is loaded using OpenCV.
-2. YOLOv8 detects objects in each frame.
-3. The tracker maintains object identity over time using IoU matching.
-4. Tracking snapshots can now flow into future abnormal-event analysis modules.
+```text
+data/person_fixture.mp4
+```
 
-This design keeps detection, tracking, and future event reasoning separated so the system remains easy to extend.
+Use a stable camera, normal lighting, sufficient resolution for YOLOv8s, and keep at least one person visible for two or more consecutive frames. Then run:
 
-## Remaining Roadmap
-Planned next steps:
-- Implement rule-based abnormal event detection using tracking snapshots
-- Add behavior analysis features such as trajectory, proximity, and persistence metrics
-- Introduce explainability layers that describe why an event was flagged
-- Extend the system toward risk scoring and reporting
+```bash
+python -m unittest tests.test_end_to_end_fixture -v
+```
 
-## Notes
-- The current tracker is intentionally lightweight and easy to inspect.
-- No abnormal detection, risk assessment, dashboard, database, or web interface has been implemented yet.
+The optional test runs:
+
+```text
+video loader -> YOLOv8s detection -> SimpleTracker -> abnormal-event rules
+```
+
+It requires at least one detection, a detected `person`, and a persistent tracking ID. It writes `outputs/tracking_results.json` and `outputs/risk_assessment.json`, and prints any stationary-person or restricted-area events. The test is intentionally skipped until `data/person_fixture.mp4` exists.
+
+## Phase 5 risk assessment
+
+`src/risk_assessment.py` maps the existing event records without any machine-learning prediction:
+
+- `Stationary Person` -> `Low`
+- `Restricted Area Entry` -> `Medium`
+- Unmapped event types -> `Unknown` (no fabricated risk level or confidence)
+
+The mapping is configurable by constructing `RiskAssessor` with a different event-to-level dictionary. Each JSON record contains the event type, risk level, mapping reason, existing confidence when available, frame/timestamp fields when supplied, object ID, and event evidence. The fixture runner supplies the frame number and writes results to `outputs/risk_assessment.json`.
+
+## Test suite
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The existing abnormal-event unit test runs without a video fixture. The optional integration test is skipped until the real-person fixture is provided.
+
+## Current phase status
+
+- Phase 1 — Video Loading: completed.
+- Phase 2 — YOLO Detection: partially completed; model loading/inference works, but no bundled real-person positive fixture exists.
+- Phase 3 — Tracking: partially completed; both paths are implemented, but no bundled real-person end-to-end evidence exists.
+- Phase 4 — Abnormal Event Detection: partially completed; two rules and their unit test exist, but real-video validation awaits the fixture.
+- Phase 5 — Risk Assessment: completed; transparent mappings and fixture output are covered by the passing test suite.
+- Phases 6--7: not started.
+
+The real-person fixture verification has also completed Phases 2--4: YOLO detection, persistent tracking IDs, and the currently implemented event rules are covered by the passing integration test.
