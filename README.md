@@ -113,3 +113,17 @@ The existing abnormal-event unit test runs without a video fixture. The optional
 - Phases 6--7: not started.
 
 The real-person fixture verification has also completed Phases 2--4: YOLO detection, persistent tracking IDs, and the currently implemented event rules are covered by the passing integration test.
+
+## Phase 6 explainable AI
+
+`src/yolo_gradcam.py` implements Grad-CAM for a real YOLOv8s object-detection prediction. It explains the raw YOLO class score associated with the selected post-NMS detection (currently verified for a `person`), not a rule-based abnormal event or a risk-assessment result.
+
+To generate an explanation from the first frame of the real-person fixture:
+
+```bash
+python -m unittest tests.test_yolo_gradcam -v
+```
+
+The output is saved as `outputs/test_yolo_gradcam_person.jpg` during the test; the module default is `outputs/yolo_gradcam_person.jpg`. The overlay combines the original frame with a Grad-CAM heatmap derived from gradients through YOLOv8s's final convolutional feature layer.
+
+Limitations: this is a class-score localization explanation, not a causal explanation, event explanation, or risk explanation. The implementation reloads the same local weights for the differentiable pass because Ultralytics prediction mode caches inference tensors that cannot participate in autograd. SHAP is not implemented.
