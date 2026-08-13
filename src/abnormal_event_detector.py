@@ -12,6 +12,7 @@ from typing import List, Optional
 
 from behavior_analyzer import BehaviorAnalyzer
 from event_rules import EventRuleEngine, build_default_rules, evaluate_restricted_region_rule, evaluate_stationary_rule
+from interaction_analyzer import CrowdInteractionAnalyzer
 from tracker import TrackingSnapshot
 
 
@@ -21,9 +22,12 @@ class EventDetection:
 
     event_type: str
     description: str
-    confidence: float = 0.0
+    confidence: Optional[float] = None
     evidence: List[str] = field(default_factory=list)
     object_id: Optional[int] = None
+    frame_number: Optional[int] = None
+    timestamp_seconds: Optional[float] = None
+    object_ids: List[int] = field(default_factory=list)
 
 
 class AbnormalEventDetector:
@@ -32,6 +36,7 @@ class AbnormalEventDetector:
     def __init__(self, rule_engine: Optional[EventRuleEngine] = None) -> None:
         self.events: List[EventDetection] = []
         self.behavior_analyzer = BehaviorAnalyzer()
+        self.interaction_analyzer = CrowdInteractionAnalyzer()
         self.rule_engine = rule_engine or EventRuleEngine(build_default_rules())
 
     def _find_rule(self, *fragments: str):
@@ -79,6 +84,8 @@ class AbnormalEventDetector:
                         confidence=0.9,
                         evidence=[f"stationary_frames={summary.stationary_frames}"],
                         object_id=track.id,
+                        object_ids=[track.id],
+                        frame_number=snapshot.frame_idx,
                     )
                 )
 
@@ -90,8 +97,36 @@ class AbnormalEventDetector:
                         confidence=0.95,
                         evidence=[f"bbox={list(track.bbox)}"],
                         object_id=track.id,
+                        object_ids=[track.id],
+                        frame_number=snapshot.frame_idx,
                     )
                 )
+
+        crowding_rule = self._find_rule("crowding")
+        if crowding_rule is not None and crowding_rule.enabled:
+            for signal in self.interaction_analyzer.evaluate_crowding(
+                snapshot,
+                minimum_person_count=int(crowding_rule.parameters.get("minimum_person_count", 3)),
+                persistence_frames=int(crowding_rule.parameters.get("persistence_frames", 3)),
+            ):
+                self.events.append(EventDetection(
+                    event_type=signal.event_type, description=signal.description,
+                    evidence=signal.evidence, object_ids=signal.object_ids,
+                    frame_number=snapshot.frame_idx,
+                ))
+
+        proximity_rule = self._find_rule("proximity")
+        if proximity_rule is not None and proximity_rule.enabled:
+            for signal in self.interaction_analyzer.evaluate_proximity(
+                snapshot,
+                normalized_distance_threshold=float(proximity_rule.parameters.get("normalized_distance_threshold", 0.20)),
+                persistence_frames=int(proximity_rule.parameters.get("persistence_frames", 3)),
+            ):
+                self.events.append(EventDetection(
+                    event_type=signal.event_type, description=signal.description,
+                    evidence=signal.evidence, object_ids=signal.object_ids,
+                    frame_number=snapshot.frame_idx,
+                ))
 
         return self.events
 
@@ -99,3 +134,4 @@ class AbnormalEventDetector:
         """Clear any accumulated state."""
         self.events.clear()
         self.behavior_analyzer = BehaviorAnalyzer()
+        self.interaction_analyzer = CrowdInteractionAnalyzer()

@@ -16,6 +16,8 @@ except ImportError:  # pragma: no cover - supports package execution
 DEFAULT_RISK_MAPPING: Dict[str, str] = {
     "Stationary Person": "Low",
     "Restricted Area Entry": "Medium",
+    "Crowding": "Medium",
+    "Proximity/Interaction": "Low",
 }
 DEFAULT_RISK_OUTPUT_PATH = Path(__file__).resolve().parent.parent / "outputs" / "risk_assessment.json"
 
@@ -31,6 +33,7 @@ class RiskAssessment:
     frame_number: Optional[int] = None
     timestamp_seconds: Optional[float] = None
     object_id: Optional[int] = None
+    object_ids: List[int] = field(default_factory=list)
     evidence: List[str] = field(default_factory=list)
 
     def as_dict(self) -> dict:
@@ -43,6 +46,7 @@ class RiskAssessment:
             "frame_number": self.frame_number,
             "timestamp_seconds": self.timestamp_seconds,
             "object_id": self.object_id,
+            "object_ids": self.object_ids,
             "evidence": self.evidence,
         }
 
@@ -66,15 +70,16 @@ class RiskAssessor:
         else:
             reason = f"Configured mapping assigns {event.event_type} to {risk_level} risk."
 
-        confidence = event.confidence if event.confidence > 0 else None
+        confidence = event.confidence if event.confidence is not None and event.confidence > 0 else None
         return RiskAssessment(
             event_type=event.event_type,
             risk_level=risk_level,
             reason=reason,
             confidence=confidence,
-            frame_number=frame_number,
-            timestamp_seconds=timestamp_seconds,
+            frame_number=frame_number if frame_number is not None else event.frame_number,
+            timestamp_seconds=timestamp_seconds if timestamp_seconds is not None else event.timestamp_seconds,
             object_id=event.object_id,
+            object_ids=list(event.object_ids),
             evidence=list(event.evidence),
         )
 

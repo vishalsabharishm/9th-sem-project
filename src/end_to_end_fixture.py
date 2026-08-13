@@ -124,12 +124,15 @@ def run_person_fixture(
             frame_events = event_detector.process_snapshot(
                 build_tracking_snapshot(frames_processed, current_tracks)
             )
+            timestamp_seconds = (frames_processed - 1) / metadata.fps if metadata.fps > 0 else None
+            for event in frame_events:
+                event.timestamp_seconds = timestamp_seconds
             all_events.extend(frame_events)
             risk_assessments.extend(
                 risk_assessor.assess_events(
                     frame_events,
-                    frame_number=frames_processed,
-                    timestamp_seconds=(frames_processed - 1) / metadata.fps if metadata.fps > 0 else None,
+                    frame_number=None,
+                    timestamp_seconds=None,
                 )
             )
 

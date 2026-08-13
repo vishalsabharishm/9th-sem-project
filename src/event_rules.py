@@ -13,6 +13,10 @@ from typing import List, Optional, Tuple
 DEFAULT_STATIONARY_FRAME_THRESHOLD = 5
 DEFAULT_MOVEMENT_THRESHOLD_PIXELS = 3.0
 DEFAULT_RESTRICTED_REGION = (0, 0, 200, 200)
+DEFAULT_CROWD_MINIMUM_PERSON_COUNT = 3
+DEFAULT_CROWD_PERSISTENCE_FRAMES = 3
+DEFAULT_PROXIMITY_NORMALIZED_DISTANCE = 0.20
+DEFAULT_PROXIMITY_PERSISTENCE_FRAMES = 3
 
 
 @dataclass
@@ -55,6 +59,22 @@ def build_default_rules() -> List[EventRule]:
             name="restricted_area_entry",
             description="Person enters the predefined restricted region",
             parameters={"restricted_region": DEFAULT_RESTRICTED_REGION},
+        ),
+        EventRule(
+            name="crowding",
+            description="Configured number of tracked persons persists in a frame",
+            parameters={
+                "minimum_person_count": DEFAULT_CROWD_MINIMUM_PERSON_COUNT,
+                "persistence_frames": DEFAULT_CROWD_PERSISTENCE_FRAMES,
+            },
+        ),
+        EventRule(
+            name="proximity_interaction",
+            description="Two tracked persons remain geometrically close",
+            parameters={
+                "normalized_distance_threshold": DEFAULT_PROXIMITY_NORMALIZED_DISTANCE,
+                "persistence_frames": DEFAULT_PROXIMITY_PERSISTENCE_FRAMES,
+            },
         ),
     ]
 

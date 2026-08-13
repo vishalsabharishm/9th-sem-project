@@ -34,6 +34,10 @@ class RiskAssessmentTests(unittest.TestCase):
         self.assertIsNone(assessment.confidence)
         self.assertIn("No risk mapping", assessment.reason)
 
+    def test_crowding_and_proximity_mappings(self):
+        self.assertEqual(self.assessor.assess(EventDetection("Crowding", "")).risk_level, "Medium")
+        self.assertEqual(self.assessor.assess(EventDetection("Proximity/Interaction", "")).risk_level, "Low")
+
 
 if __name__ == "__main__":
     unittest.main()

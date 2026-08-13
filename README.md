@@ -2,15 +2,16 @@
 
 ## Current implementation
 
-The project currently implements a Phase 1--4 foundation:
+The project currently implements a Phase 1--6 foundation:
 
 1. OpenCV video validation, loading, metadata inspection, and previewing.
 2. YOLOv8s frame-by-frame object detection and annotation.
 3. Two retained tracking paths: an inspectable greedy IoU tracker and an Ultralytics ByteTrack path with a BoT-SORT fallback.
-4. Basic rule-based abnormal-event detection: stationary person and restricted-area entry.
+4. Basic rule-based abnormal-event detection: stationary person, restricted-area entry, generic crowding, and generic proximity/interaction.
 5. Transparent, configurable rule-based risk assessment for those event records.
+6. Grad-CAM for an actual YOLOv8s person-class detection.
 
-XAI, dashboard/UI, stabbing detection, violence detection, and crowd detection are not implemented.
+Dashboard/UI, SHAP, stabbing detection, and violence detection are not implemented. Crowding and proximity are generic geometric signals, not violence or stabbing classifiers.
 
 ## Project structure
 
@@ -18,7 +19,7 @@ XAI, dashboard/UI, stabbing detection, violence detection, and crowd detection a
 data/       Input media. `person_fixture.mp4` is supplied by the user.
 docs/       Project documentation.
 models/     Local weights, including `yolov8s.pt`.
-outputs/    Generated videos, frames, and tracking JSON.
+outputs/    Generated videos, frames, tracking JSON, risk JSON, and XAI images.
 src/        Video loader, detection, tracking, event rules, and runners.
 tests/      Unit and optional end-to-end integration tests.
 ```
@@ -59,7 +60,7 @@ Runs Ultralytics ByteTrack (with a BoT-SORT fallback) and writes a tracked video
 python src/run_phase3.py
 ```
 
-Despite its legacy filename, this uses the greedy IoU `SimpleTracker`, invokes the stationary-person and restricted-area-entry rules, and writes `outputs/phase4_abnormal_events.mp4`.
+Despite its legacy filename, this uses the greedy IoU `SimpleTracker`, invokes stationary, restricted-area, crowding, and proximity rules, and writes `outputs/phase4_abnormal_events.mp4`.
 
 ## Real-person fixture verification
 
@@ -83,7 +84,7 @@ The optional test runs:
 video loader -> YOLOv8s detection -> SimpleTracker -> abnormal-event rules
 ```
 
-It requires at least one detection, a detected `person`, and a persistent tracking ID. It writes `outputs/tracking_results.json` and `outputs/risk_assessment.json`, and prints any stationary-person or restricted-area events. The test is intentionally skipped until `data/person_fixture.mp4` exists.
+It requires at least one detection, a detected `person`, and a persistent tracking ID. It writes `outputs/tracking_results.json` and `outputs/risk_assessment.json`, and prints emitted event types. The test is intentionally skipped until `data/person_fixture.mp4` exists.
 
 ## Phase 5 risk assessment
 
@@ -91,9 +92,19 @@ It requires at least one detection, a detected `person`, and a persistent tracki
 
 - `Stationary Person` -> `Low`
 - `Restricted Area Entry` -> `Medium`
+- `Crowding` -> `Medium`
+- `Proximity/Interaction` -> `Low`
 - Unmapped event types -> `Unknown` (no fabricated risk level or confidence)
 
-The mapping is configurable by constructing `RiskAssessor` with a different event-to-level dictionary. Each JSON record contains the event type, risk level, mapping reason, existing confidence when available, frame/timestamp fields when supplied, object ID, and event evidence. The fixture runner supplies the frame number and writes results to `outputs/risk_assessment.json`.
+The mapping is configurable by constructing `RiskAssessor` with a different event-to-level dictionary. Each JSON record contains the event type, risk level, mapping reason, existing confidence when available, frame/timestamp fields when supplied, involved object IDs, and event evidence. The fixture runner writes results to `outputs/risk_assessment.json`.
+
+## Generic crowd and interaction rules
+
+`Crowding` counts unique active person track IDs in each snapshot. Its technical-validation defaults are `minimum_person_count=3` and `persistence_frames=3`; it emits once after the condition persists and resets after it clears.
+
+`Proximity/Interaction` evaluates every pair of active person tracks. It divides centroid distance by the diagonal enclosing all current person boxes because the existing tracking snapshot does not include image dimensions. The defaults are `normalized_distance_threshold=0.20` and `persistence_frames=3`; each pair emits once after sustained proximity and resets when separated.
+
+Both rules are configured through `EventRule` parameters in `src/event_rules.py`. They are generic geometric abnormal-behaviour signals only, not crowd-safety research findings and not violence/stabbing classifiers. `person_fixture.mp4` is a small technical validation fixture, not a research dataset and not evidence of generalization.
 
 ## Test suite
 
