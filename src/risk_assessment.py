@@ -9,8 +9,20 @@ from typing import Dict, Iterable, List, Optional
 
 try:
     from abnormal_event_detector import EventDetection
+    from temporal_event_adapter import (
+        DECLARED_CONSTANT_EVENT_TYPES,
+        PROVENANCE_DECLARED,
+        PROVENANCE_MEASURED,
+        TEMPORAL_EVENT_TYPE,
+    )
 except ImportError:  # pragma: no cover - supports package execution
     from src.abnormal_event_detector import EventDetection
+    from src.temporal_event_adapter import (
+        DECLARED_CONSTANT_EVENT_TYPES,
+        PROVENANCE_DECLARED,
+        PROVENANCE_MEASURED,
+        TEMPORAL_EVENT_TYPE,
+    )
 
 
 DEFAULT_RISK_MAPPING: Dict[str, str] = {
@@ -18,8 +30,25 @@ DEFAULT_RISK_MAPPING: Dict[str, str] = {
     "Restricted Area Entry": "Medium",
     "Crowding": "Medium",
     "Proximity/Interaction": "Low",
+    TEMPORAL_EVENT_TYPE: "High",
 }
 DEFAULT_RISK_OUTPUT_PATH = Path(__file__).resolve().parent.parent / "outputs" / "risk_assessment.json"
+
+
+def _confidence_provenance(event_type: str, confidence: Optional[float]) -> Optional[str]:
+    """Tag a confidence value's origin so a report can never confuse a
+    calibrated model probability with an engineer's fixed rule weight.
+
+    Returns ``None`` when there is no confidence to tag (Crowding /
+    Proximity events are reported without a manufactured number).
+    """
+    if confidence is None:
+        return None
+    if event_type in DECLARED_CONSTANT_EVENT_TYPES:
+        return PROVENANCE_DECLARED
+    if event_type == TEMPORAL_EVENT_TYPE:
+        return PROVENANCE_MEASURED
+    return None
 
 
 @dataclass(frozen=True)
@@ -30,6 +59,7 @@ class RiskAssessment:
     risk_level: str
     reason: str
     confidence: Optional[float] = None
+    confidence_provenance: Optional[str] = None
     frame_number: Optional[int] = None
     timestamp_seconds: Optional[float] = None
     object_id: Optional[int] = None
@@ -43,6 +73,7 @@ class RiskAssessment:
             "risk_level": self.risk_level,
             "reason": self.reason,
             "confidence": self.confidence,
+            "confidence_provenance": self.confidence_provenance,
             "frame_number": self.frame_number,
             "timestamp_seconds": self.timestamp_seconds,
             "object_id": self.object_id,
@@ -76,6 +107,7 @@ class RiskAssessor:
             risk_level=risk_level,
             reason=reason,
             confidence=confidence,
+            confidence_provenance=_confidence_provenance(event.event_type, confidence),
             frame_number=frame_number if frame_number is not None else event.frame_number,
             timestamp_seconds=timestamp_seconds if timestamp_seconds is not None else event.timestamp_seconds,
             object_id=event.object_id,

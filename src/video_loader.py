@@ -5,6 +5,7 @@ pipeline stages can use :func:`open_video` and :func:`iter_frames` directly,
 while the current Phase 1 workflow can use :func:`load_video` for a preview.
 """
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator, Optional, Tuple, Union
@@ -37,6 +38,28 @@ class VideoMetadata:
     duration_seconds: float
 
 
+def long_path(path: PathLike) -> str:
+    """Return a path string this platform can stat and open past MAX_PATH.
+
+    On Windows a path of 260 or more characters is rejected by ``stat``
+    and ``open`` unless it carries the extended-length prefix, so a file
+    that genuinely exists is reported as missing purely because its name
+    is long. Dataset clips can exceed the limit on name length alone, so
+    every filesystem call routes through this. Other platforms are
+    returned unchanged.
+
+    This is the single path-handling helper for the project: dataset
+    tooling imports it from here rather than reimplementing it, so the
+    rule lives in exactly one place.
+    """
+    text = os.path.abspath(str(path))
+    if os.name != "nt" or text.startswith("\\\\?\\"):
+        return text
+    if text.startswith("\\\\"):  # UNC share: \\server\share -> \\?\UNC\server\share
+        return "\\\\?\\UNC" + text[1:]
+    return "\\\\?\\" + text
+
+
 def validate_video_file(video_path: PathLike) -> Path:
     """Validate a local video path and return its resolved ``Path``.
 
@@ -47,9 +70,10 @@ def validate_video_file(video_path: PathLike) -> Path:
         raise VideoLoadError("A local video file path is required.")
 
     path = Path(video_path).expanduser()
-    if not path.exists():
+    target = long_path(path)
+    if not os.path.exists(target):
         raise VideoLoadError(f"Video file does not exist: {path}")
-    if not path.is_file():
+    if not os.path.isfile(target):
         raise VideoLoadError(f"Video path is not a file: {path}")
     if path.suffix.lower() not in SUPPORTED_VIDEO_EXTENSIONS:
         supported = ", ".join(sorted(SUPPORTED_VIDEO_EXTENSIONS))
@@ -57,7 +81,12 @@ def validate_video_file(video_path: PathLike) -> Path:
             f"Unsupported video format '{path.suffix}'. Supported formats: {supported}"
         )
 
-    return path.resolve()
+    try:
+        return path.resolve()
+    except OSError:
+        # ``resolve`` can fail on an over-long Windows path; the absolute
+        # path is still correct and is what OpenCV is handed.
+        return Path(os.path.abspath(str(path)))
 
 
 def read_video_metadata(capture: cv2.VideoCapture) -> VideoMetadata:

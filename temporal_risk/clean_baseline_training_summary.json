@@ -1,0 +1,67 @@
+{
+  "config": {
+    "dataset_root": "/kaggle/temp/data/RWF-2000",
+    "seed": 42,
+    "epochs": 20,
+    "batch_size": 8,
+    "learning_rate_head": 0.001,
+    "learning_rate_backbone": 0.0001,
+    "weight_decay": 0.0001,
+    "optimizer": "AdamW",
+    "scheduler": "cosine_annealing",
+    "frozen_modules": ["stem", "layer1", "layer2"],
+    "early_stopping_metric": "roc_auc",
+    "early_stopping_patience": 5,
+    "device": "cuda",
+    "num_workers": 2,
+    "pretrained_backbone": true,
+    "use_amp": true,
+    "decision_threshold": 0.5,
+    "checkpoint_dir": "/kaggle/working/clean_experiment/training/checkpoints",
+    "holdout_validation": true,
+    "validation_fraction": 0.15
+  },
+  "reproducibility": {
+    "dataset_source": "https://zenodo.org/records/15687512",
+    "dataset_version_doi": "10.5281/zenodo.15687512",
+    "dataset_license": "CC-BY-4.0",
+    "intended_use": "Academic, non-commercial research. Videos are not redistributed.",
+    "model_architecture": "torchvision r3d_18 (VideoResNet), 33,371,472 params",
+    "pretrained_weights": "R3D_18_Weights.KINETICS400_V1",
+    "preprocessing": "BGR->RGB, resize (128,171) bilinear antialias=False, crop 112x112, scale to [0,1], normalize mean=(0.43216,0.394666,0.37645) std=(0.22803,0.22145,0.216989)"
+  },
+  "summary": {
+    "completed_epochs": 17,
+    "best_epoch": 12,
+    "best_value": 0.935342732134176,
+    "monitor": "roc_auc",
+    "best_checkpoint": "/kaggle/working/clean_experiment/training/checkpoints/best.pt",
+    "total_seconds": 7081.721966574,
+    "provenance": "kinetics400_pretrained+untrained_head",
+    "holdout_validation": true,
+    "monitor_set": "train-carved validation",
+    "evaluation_set_seen_during_training": false
+  },
+  "checkpoint_file": {
+    "path": "clean_experiment/training/checkpoints/best.pt",
+    "bytes_approx": 139172577,
+    "size_display": "132.74 MB",
+    "not_yet_downloaded_to_device": true
+  },
+  "threshold_sweep_on_validation_carve_top_rows": {
+    "note": "Full sweep in clean_baseline_threshold_sweep.txt. Selected threshold 0.16 is the first to reach accuracy>=0.8750 while precision>=0.80 and FPR<=0.20, then maximizes recall among ties before precision starts dropping.",
+    "0.14": {"acc": 0.8667, "prec": 0.8175, "recall": 0.9412, "f1": 0.8750, "spec": 0.7934, "FP": 25, "FN": 7},
+    "0.15": {"acc": 0.8667, "prec": 0.8175, "recall": 0.9412, "f1": 0.8750, "spec": 0.7934, "FP": 25, "FN": 7},
+    "0.16": {"acc": 0.8750, "prec": 0.8296, "recall": 0.9412, "f1": 0.8819, "spec": 0.8099, "FP": 23, "FN": 7},
+    "0.17": {"acc": 0.8708, "prec": 0.8333, "recall": 0.9244, "f1": 0.8765, "spec": 0.8182, "FP": 22, "FN": 9}
+  },
+  "source": {
+    "kaggle_notebook": "notebook7bb9a86555",
+    "version": 3,
+    "session": 344760335,
+    "output_paths": [
+      "clean_experiment/training/training_history.json (summary; per-epoch table not fully re-transcribed, available on Kaggle if needed)",
+      "clean_experiment/threshold_selection/threshold_sweep.txt (full sweep, transcribed)"
+    ]
+  }
+}

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Abnormal Event Detection &amp; Risk Assessment -- Demo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Explainable AI-Based Abnormal Event Detection and Risk Assessment in Surveillance Videos</h1>
+      <p class="subtitle">Final-project demo interface -- runs the real local pipeline, no mocked results</p>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel panel-input">
+      <h2>1. Choose a video</h2>
+
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="presets" type="button">Built-in clips</button>
+        <button class="tab-btn" data-tab="browse" type="button">Browse primary split</button>
+        <button class="tab-btn" data-tab="upload" type="button">Upload</button>
+      </div>
+
+      <div class="tab-panel" data-panel="presets">
+        <p class="hint">Three real RWF-2000 clips used to build and verify this pipeline.</p>
+        <div id="presetList" class="preset-list">Loading...</div>
+      </div>
+
+      <div class="tab-panel hidden" data-panel="browse">
+        <p class="hint">
+          All 394 primary-split evaluation clips already have a real,
+          precomputed temporal score
+          (<code>temporal_risk/primary_window_scores.csv</code>). Pick any of
+          them -- the video is loaded straight from the local dataset.
+        </p>
+        <input id="clipSearch" list="clipDataList" placeholder="Type to search clip_key, e.g. val/Val_Fight/..." autocomplete="off" />
+        <datalist id="clipDataList"></datalist>
+        <div id="clipSearchInfo" class="hint"></div>
+      </div>
+
+      <div class="tab-panel hidden" data-panel="upload">
+        <p class="hint">
+          <strong>Honest limitation:</strong> the R3D-18 checkpoint
+          (<code>best.pt</code>) is not present on this machine, so an
+          uploaded video cannot get a live temporal score. Upload only works
+          if you also pick the <code>clip_key</code> of a primary-split clip
+          that already has one -- ideally by uploading that exact file. YOLO
+          detection, tracking, and Phase-4 rules still run live on whatever
+          you upload.
+        </p>
+        <input id="videoUpload" type="file" accept="video/*" />
+        <input id="uploadClipSearch" list="clipDataList" placeholder="Matching clip_key (required)" autocomplete="off" />
+      </div>
+
+      <button id="analyzeBtn" class="analyze-btn" type="button" disabled>Analyze</button>
+      <div id="status" class="status"></div>
+    </section>
+
+    <section class="panel panel-results hidden" id="resultsPanel">
+      <h2>2. Result</h2>
+
+      <div class="result-grid">
+        <div class="result-video">
+          <video id="resultVideo" controls></video>
+          <div class="video-caption" id="videoCaption"></div>
+        </div>
+
+        <div class="result-headline">
+          <div class="badge-row">
+            <span class="badge" id="riskBadge">--</span>
+            <span class="badge ground-truth" id="truthBadge">--</span>
+          </div>
+          <div id="fpNotice" class="notice hidden">
+            Known false positive: the dataset ground-truth label is
+            NonFight, but the frozen aggregation rule fired anyway.
+            Included on purpose -- this project's own primary-split
+            precision (0.788) predicts some false positives, and a demo
+            that only shows successes would not be honest evidence.
+          </div>
+
+          <h3>Temporal evidence</h3>
+          <table class="kv-table" id="temporalTable"></table>
+
+          <h3>Phase-4 rule-engine events</h3>
+          <table class="events-table" id="eventsTable">
+            <thead><tr><th>Event type</th><th>Risk level</th><th>Occurrences</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <h3>Per-window fight probability (17 sliding windows)</h3>
+      <div id="windowChart" class="window-chart"></div>
+
+      <h3>Explanation report</h3>
+      <div id="explanation" class="explanation"></div>
+
+      <div class="artifact-links" id="artifactLinks"></div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

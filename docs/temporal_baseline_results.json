@@ -1,0 +1,135 @@
+{
+  "phase": "temporal_baseline",
+  "source": {
+    "kaggle_notebook": "notebook5d98537e15",
+    "version": 2,
+    "status": "Successfully ran in 8516.4s",
+    "accelerator": "GPU Tesla T4",
+    "torch": "2.10.0+cu128"
+  },
+  "model": {
+    "architecture": "R3D-18 (torchvision.models.video.r3d_18)",
+    "initialisation": "Kinetics-400 pretrained",
+    "provenance": "kinetics400_pretrained+untrained_head",
+    "frozen_modules": [
+      "stem",
+      "layer1",
+      "layer2"
+    ],
+    "trainable_modules": [
+      "layer3",
+      "layer4",
+      "fc"
+    ]
+  },
+  "training": {
+    "epoch_cap": 20,
+    "completed_epochs": 15,
+    "best_epoch": 10,
+    "early_stopping": {
+      "monitor": "roc_auc",
+      "patience": 5,
+      "triggered": true
+    },
+    "best_monitor_value": 0.9432216494845361,
+    "seconds": 7314.394461572001,
+    "batch_size": 8,
+    "optimizer": "AdamW",
+    "learning_rate_head": 0.001,
+    "learning_rate_backbone": 0.0001,
+    "weight_decay": 0.0001,
+    "scheduler": "cosine_annealing",
+    "mixed_precision": true,
+    "seed": 42,
+    "train_clips": 1600
+  },
+  "evaluation": {
+    "split": "primary (official 400 minus 6 confirmed leaks)",
+    "clips": 394,
+    "decision_threshold": 0.5,
+    "accuracy": 0.8604,
+    "precision_fight": 0.8962,
+    "recall_fight": 0.82,
+    "f1_fight": 0.8564,
+    "roc_auc": 0.9432,
+    "pr_auc": 0.9475,
+    "per_class": {
+      "NonFight": {
+        "precision": 0.8294,
+        "recall": 0.9021,
+        "f1": 0.8642,
+        "support": 194
+      },
+      "Fight": {
+        "precision": 0.8962,
+        "recall": 0.82,
+        "f1": 0.8564,
+        "support": 200
+      }
+    },
+    "confusion_matrix": {
+      "true_negative": 175,
+      "false_positive": 19,
+      "false_negative": 36,
+      "true_positive": 164
+    },
+    "forward_ms_per_clip": 28.58
+  },
+  "verification": {
+    "test_suite": "220 tests, OK (skipped=13)",
+    "cpu_smoke_test": "passed (untrained backbone, metrics not reportable)",
+    "fresh_process_checkpoint_load": "8/8 correct on a balanced spot check",
+    "dataset_validation": "RESULT: READY, 17/17 checks, 2000 clips"
+  },
+  "checkpoint": {
+    "path": "outputs/training/checkpoints/best.pt",
+    "bytes": 132744843,
+    "kaggle_dataset": "rwf2000-baseline-results"
+  },
+  "caveats": [
+    "Hyperparameters are InitialTrainingConfig defaults; no tuning was performed.",
+    "Evaluation loss rises after epoch 1 while training loss falls -- the model overfits; ROC-AUC was the early-stopping monitor for that reason.",
+    "At threshold 0.5 the model misses 36 of 200 fights against 19 false alarms; the operating point has not been tuned.",
+    "Not integrated with the event/risk/XAI pipeline."
+  ],
+  "threshold_selection": {
+    "selected_threshold": 0.14,
+    "baseline_threshold": 0.5,
+    "selection_rule": "max recall s.t. precision >= 0.80, FPR <= 0.20, accuracy >= baseline accuracy",
+    "sweep_grid": {
+      "start": 0.02,
+      "stop": 0.98,
+      "step": 0.02
+    },
+    "source": "tools/threshold_sweep.py on the run's own predictions.csv",
+    "at_selected": {
+      "threshold": 0.14,
+      "true_positive": 178,
+      "false_positive": 33,
+      "true_negative": 161,
+      "false_negative": 22,
+      "accuracy": 0.8604060913705583,
+      "precision": 0.8436018957345972,
+      "recall": 0.89,
+      "f1": 0.8661800486618004,
+      "specificity": 0.8298969072164949,
+      "balanced_accuracy": 0.8599484536082475,
+      "youden_j": 0.7198969072164949
+    },
+    "at_baseline": {
+      "threshold": 0.5,
+      "true_positive": 164,
+      "false_positive": 19,
+      "true_negative": 175,
+      "false_negative": 36,
+      "accuracy": 0.8604060913705583,
+      "precision": 0.8961748633879781,
+      "recall": 0.82,
+      "f1": 0.856396866840731,
+      "specificity": 0.9020618556701031,
+      "balanced_accuracy": 0.8610309278350515,
+      "youden_j": 0.7220618556701031
+    },
+    "caveat": "Selected on the same 394 held-out clips used for reporting, so it is optimistically biased. Re-derive on a validation subset carved from train (SplitPolicy.validation_fraction = 0.15) before final reporting."
+  }
+}

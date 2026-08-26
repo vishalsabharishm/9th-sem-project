@@ -1,0 +1,58 @@
+{
+"tool": "score_temporal_windows",
+"mode": "inference_only",
+"performs_training": false,
+"performs_threshold_selection": false,
+"performs_aggregation_selection": false,
+"modifies_checkpoint": false,
+"checkpoint": "/kaggle/input/notebooks/vishalsabharishm/notebook7bb9a86555/clean_experiment/training/checkpoints/best.pt",
+"model_provenance": "checkpoint:best.pt",
+"dataset_root": "/kaggle/temp/data/RWF-2000",
+"clip_length": 16,
+"stride": 8,
+"expected_windows_per_clip": 17,
+"carve_fraction": 0.15,
+"carve_seed": 42,
+"class_labels": [
+"NonFight",
+"Fight"
+],
+"positive_class": "Fight",
+"frozen_threshold_for_downstream_use_only": 0.16,
+"clean_experiment": "kaggle notebook7bb9a86555 version 3 (session 344760335)",
+"environment": {
+"python": "3.12.13",
+"torch": "2.10.0+cu128",
+"opencv": "4.13.0",
+"device": "cuda",
+"cuda_device": "Tesla T4"
+},
+"splits": [
+{
+"split": "carve",
+"clips": 240,
+"windows": 4080,
+"windows_per_clip_observed": [
+17
+],
+"clips_with_no_complete_window": [],
+"wall_seconds": 620.7797890479999,
+"forward_seconds": 126.46179573300225,
+"forward_ms_per_window": 30.995538169853493,
+"output": "/kaggle/working/temporal_risk/carve_window_scores.csv"
+},
+{
+"split": "primary",
+"clips": 394,
+"windows": 6698,
+"windows_per_clip_observed": [
+17
+],
+"clips_with_no_complete_window": [],
+"wall_seconds": 1180.2353795059998,
+"forward_seconds": 216.8452212910122,
+"forward_ms_per_window": 32.37462246805198,
+"output": "/kaggle/working/temporal_risk/primary_window_scores.csv"
+}
+]
+}

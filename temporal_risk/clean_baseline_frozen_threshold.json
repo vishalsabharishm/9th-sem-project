@@ -1,0 +1,47 @@
+{
+  "checkpoint": "training/checkpoints/best.pt",
+  "threshold": 0.16,
+  "selected_on": "train-carved held-out validation subset",
+  "selection_rule": {
+    "min_precision": 0.8,
+    "max_false_positive_rate": 0.2,
+    "min_accuracy": 0.875,
+    "objective": "maximise recall within the alarm budget",
+    "rationale": "Highest recall among thresholds holding precision >= 0.80, false-positive rate <= 0.20 and accuracy >= 0.8750."
+  },
+  "validation_operating_point": {
+    "threshold": 0.16,
+    "true_positive": 112,
+    "false_positive": 23,
+    "true_negative": 98,
+    "false_negative": 7,
+    "accuracy": 0.875,
+    "precision": 0.8296296296296296,
+    "recall": 0.9411764705882353,
+    "f1": 0.8818897637795274,
+    "specificity": 0.8099173553719008,
+    "balanced_accuracy": 0.875546912980068,
+    "youden_j": 0.7510938259601361
+  },
+  "validation_baseline_0.50": {
+    "threshold": 0.5,
+    "true_positive": 105,
+    "false_positive": 16,
+    "true_negative": 105,
+    "false_negative": 14,
+    "accuracy": 0.875,
+    "precision": 0.8677685950413223,
+    "recall": 0.8823529411764706,
+    "f1": 0.8749999999999999,
+    "specificity": 0.8677685950413223,
+    "balanced_accuracy": 0.8750607681088964,
+    "youden_j": 0.7501215362177929
+  },
+  "source": {
+    "kaggle_notebook": "notebook7bb9a86555",
+    "version": 3,
+    "session": 344760335,
+    "output_path": "clean_experiment/frozen.json",
+    "important_note": "This threshold was selected on a validation subset CARVED FROM TRAIN (validation_fraction=0.15), never on the 394-clip primary/evaluation set. This is what makes it the 'clean' baseline as opposed to Experiment 1's threshold=0.14, which was selected on the same 394 clips used for reporting (optimistically biased, see docs/temporal_baseline_results.md caveat)."
+  }
+}
