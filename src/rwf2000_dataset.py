@@ -7,10 +7,18 @@ Composes existing project pieces rather than reimplementing them:
     temporal_preprocessing  frames -> normalized R3D-18 tensor
     video_loader.long_path  filesystem access that survives MAX_PATH
 
-Three datasets are offered, matching the locked evaluation policy:
+Five datasets are offered, matching the locked evaluation policy:
 
 ``training``
-    The official 1600 training clips, unchanged.
+    The official 1600 training clips, unchanged. Used by the original
+    ``experiment1_primary_monitor`` protocol.
+``carved_train``
+    1360 clips: the official train split minus the carve validation subset.
+    Used by the ``carved_validation`` protocol.
+``carved_validation``
+    240 clips carved out of train, for early stopping and threshold
+    selection. Membership is recovered from the committed carve-scores CSV;
+    see :mod:`carved_validation`.
 ``primary_evaluation``
     394 held-out clips: the official 400 minus the 6 confirmed leaks.
     Headline metrics are reported on this set.
@@ -32,12 +40,14 @@ import torch
 from torch.utils.data import Dataset
 
 try:
+    from carved_validation import load_carved_split
     from dataset_inspection import normalize_label
     from rwf2000_config import LABEL_TO_INDEX, SamplingConfig
     from rwf2000_splits import build_evaluation_splits, clip_path, split_clip_paths
     from temporal_preprocessing import ClipPreprocessor, PreprocessingConfig
     from temporal_sampling import sample_indices
 except ImportError:  # pragma: no cover - supports package execution
+    from src.carved_validation import load_carved_split
     from src.dataset_inspection import normalize_label
     from src.rwf2000_config import LABEL_TO_INDEX, SamplingConfig
     from src.rwf2000_splits import (
@@ -225,6 +235,38 @@ def build_training_dataset(
     return RWF2000ClipDataset(
         root, split_clip_paths(root, TRAIN_SPLIT_DIRECTORY), settings
     )
+
+
+def build_carved_train_dataset(
+    root: Path,
+    config: Optional[DatasetConfig] = None,
+) -> RWF2000ClipDataset:
+    """Return the 1360-clip training remainder of the carved-validation split.
+
+    The official train split minus the 240 clips held out as carve validation
+    (see :mod:`carved_validation`). Use this together with
+    :func:`build_carved_validation_dataset` -- training on the full 1600 while
+    monitoring on the carve would leak the monitor set into training.
+    """
+    settings = config or DatasetConfig(training=True)
+    split = load_carved_split(root)
+    return RWF2000ClipDataset(root, split.train_remainder, settings)
+
+
+def build_carved_validation_dataset(
+    root: Path,
+    config: Optional[DatasetConfig] = None,
+) -> RWF2000ClipDataset:
+    """Return the 240-clip validation subset carved out of train.
+
+    This is the set the carved-validation protocol uses for early stopping and
+    decision-threshold selection, so that the primary evaluation set is never
+    consulted while any choice is still open. Deterministic sampling is forced
+    on: a monitor metric must not move because augmentation was re-rolled.
+    """
+    settings = config or DatasetConfig(training=False)
+    split = load_carved_split(root)
+    return RWF2000ClipDataset(root, split.carve_validation, settings)
 
 
 def build_primary_evaluation_dataset(

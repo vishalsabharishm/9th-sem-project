@@ -27,9 +27,17 @@ Two clearly separated modes:
     this 16 GB CPU-only machine.
 
 ``--train``
-    The real fine-tuning run: Kinetics-400 pretrained initialisation, the
-    full 1600-clip training split, evaluation on the 394 clean held-out
-    clips. Intended for a Colab/Kaggle GPU runtime.
+    The real fine-tuning run: Kinetics-400 pretrained initialisation on a
+    Colab/Kaggle GPU runtime. Which clips are used depends on
+    ``--protocol`` (see ``carved_validation``):
+
+    ``carved_validation`` (default) trains on the 1360-clip remainder of
+    the train split and monitors on the 240 clips carved out of it. The
+    394-clip reporting set is not loaded during training.
+
+    ``experiment1_primary_monitor`` reproduces the original baseline:
+    train on all 1600, monitor on the 394 reporting clips. Retained for
+    historical comparison; its metrics are optimistically biased.
 
 Metrics produced by ``--validate-pipeline`` describe an untrained network
 and must never be quoted as results.
@@ -61,9 +69,18 @@ try:
         ReproducibilityRecord,
         SamplingConfig,
     )
+    from carved_validation import (
+        PROTOCOL_CARVED,
+        PROTOCOL_EXPERIMENT1,
+        SUPPORTED_PROTOCOLS,
+        load_carved_split,
+        verify_disjoint,
+    )
     from rwf2000_dataset import (
         DatasetConfig,
         RWF2000ClipDataset,
+        build_carved_train_dataset,
+        build_carved_validation_dataset,
         build_official_validation_dataset,
         build_primary_evaluation_dataset,
         build_training_dataset,
@@ -85,9 +102,18 @@ except ImportError:  # pragma: no cover - supports package execution
         ReproducibilityRecord,
         SamplingConfig,
     )
+    from src.carved_validation import (
+        PROTOCOL_CARVED,
+        PROTOCOL_EXPERIMENT1,
+        SUPPORTED_PROTOCOLS,
+        load_carved_split,
+        verify_disjoint,
+    )
     from src.rwf2000_dataset import (
         DatasetConfig,
         RWF2000ClipDataset,
+        build_carved_train_dataset,
+        build_carved_validation_dataset,
         build_official_validation_dataset,
         build_primary_evaluation_dataset,
         build_training_dataset,
@@ -128,6 +154,12 @@ class TrainingRunConfig:
     """
 
     dataset_root: Path
+    # Which evaluation protocol this run follows. See src/carved_validation.py
+    # and docs/EXPERIMENT_REPRODUCIBILITY.md. 'carved_validation' is the
+    # correct, leakage-safe protocol and the default for new runs;
+    # 'experiment1_primary_monitor' reproduces the original biased baseline
+    # and is retained only for historical comparison.
+    protocol: str = PROTOCOL_CARVED
     seed: int = 42
     epochs: int = 30
     batch_size: int = 8
@@ -166,6 +198,11 @@ class TrainingRunConfig:
             raise TrainingError("decision_threshold must be in [0, 1].")
         if self.optimizer not in ("AdamW", "Adam", "SGD"):
             raise TrainingError(f"Unsupported optimizer {self.optimizer!r}.")
+        if self.protocol not in SUPPORTED_PROTOCOLS:
+            raise TrainingError(
+                f"Unsupported protocol {self.protocol!r}; expected one of "
+                f"{list(SUPPORTED_PROTOCOLS)}."
+            )
 
     @classmethod
     def from_initial_config(
@@ -423,33 +460,55 @@ def _maybe_subset(dataset: RWF2000ClipDataset, limit: Optional[int]):
 def build_dataloaders(
     config: TrainingRunConfig,
 ) -> Tuple[DataLoader, DataLoader, Dict[str, int]]:
-    """Build the training and primary-evaluation loaders.
+    """Build the training and monitor loaders for the configured protocol.
 
-    Training uses the official 1600 clips with temporal jitter; evaluation
-    uses the 394 clean held-out clips with deterministic sampling. The 6
-    confirmed leaks never enter either loader.
+    ``carved_validation`` (default, correct): trains on the 1360-clip
+    remainder of the official train split and monitors on the 240-clip carve
+    subset held out of train. The 394-clip primary evaluation set is never
+    loaded here, so no training-time choice can be influenced by it.
+
+    ``experiment1_primary_monitor`` (original/baseline, retained for
+    historical comparison): trains on all 1600 train clips and monitors on
+    the 394-clip primary set -- the same set headline metrics are reported
+    on. This is the protocol whose threshold ``rwf2000_config`` documents as
+    "optimistically biased". It is reproduced faithfully, not fixed.
+
+    The 6 confirmed leaks never enter any loader under either protocol.
     """
-    train_dataset = build_training_dataset(
-        config.dataset_root,
-        DatasetConfig(
-            sampling=config.sampling,
-            preprocessing=config.preprocessing,
-            training=True,
-            seed=config.seed,
-        ),
+    train_config = DatasetConfig(
+        sampling=config.sampling,
+        preprocessing=config.preprocessing,
+        training=True,
+        seed=config.seed,
     )
-    eval_dataset = build_primary_evaluation_dataset(
-        config.dataset_root,
-        DatasetConfig(
-            sampling=config.sampling,
-            preprocessing=config.preprocessing,
-            training=False,
-            seed=config.seed,
-        ),
+    eval_config = DatasetConfig(
+        sampling=config.sampling,
+        preprocessing=config.preprocessing,
+        training=False,
+        seed=config.seed,
     )
+
+    if config.protocol == PROTOCOL_CARVED:
+        split = load_carved_split(config.dataset_root)
+        problems = verify_disjoint(split)
+        if problems:
+            raise TrainingError(
+                "Carved-validation split failed its leakage check; refusing to "
+                "train on it: " + "; ".join(problems)
+            )
+        train_dataset = build_carved_train_dataset(config.dataset_root, train_config)
+        eval_dataset = build_carved_validation_dataset(config.dataset_root, eval_config)
+        monitor_set = "carve_validation (240 clips carved from train)"
+    else:
+        train_dataset = build_training_dataset(config.dataset_root, train_config)
+        eval_dataset = build_primary_evaluation_dataset(config.dataset_root, eval_config)
+        monitor_set = "primary_evaluation (394 clips -- ALSO THE REPORTING SET)"
+
     sizes = {
+        "protocol": config.protocol,
+        "monitor_set": monitor_set,
         "train_clips": len(train_dataset),
-        "primary_evaluation_clips": len(eval_dataset),
+        "monitor_clips": len(eval_dataset),
     }
 
     train_loader = DataLoader(
@@ -583,10 +642,20 @@ def run_training(config: TrainingRunConfig, log=print) -> dict:
     log(f"mixed precision : {'on' if scaler is not None else 'off'}")
     log(f"frozen modules  : {frozen}")
     log(f"train clips     : {len(train_loader.dataset)} (of {sizes['train_clips']})")
+    log(f"protocol        : {config.protocol}")
+    log(f"monitor set     : {sizes['monitor_set']}")
     log(
-        f"eval clips      : {len(eval_loader.dataset)} "
-        f"(of {sizes['primary_evaluation_clips']} clean held-out)"
+        f"monitor clips   : {len(eval_loader.dataset)} "
+        f"(of {sizes['monitor_clips']})"
     )
+    if config.protocol == PROTOCOL_EXPERIMENT1:
+        log(
+            "WARNING: this is the original/baseline protocol. Early stopping "
+            "and checkpoint selection use the SAME 394 clips headline metrics "
+            "are reported on, so any threshold or metric derived from this run "
+            "is optimistically biased. Use --protocol carved_validation for "
+            "results that will be reported."
+        )
 
     epochs_without_improvement = 0
     started = time.perf_counter()
@@ -673,6 +742,16 @@ def build_arg_parser() -> argparse.ArgumentParser:
         help="Run real fine-tuning. Intended for a GPU runtime.",
     )
     parser.add_argument("--root", default="data/rwf2000/RWF-2000", help="Dataset root.")
+    parser.add_argument(
+        "--protocol",
+        choices=list(SUPPORTED_PROTOCOLS),
+        default=PROTOCOL_CARVED,
+        help="Evaluation protocol. 'carved_validation' (default) monitors on a "
+        "240-clip subset carved out of train and never loads the reporting set "
+        "during training. 'experiment1_primary_monitor' reproduces the original "
+        "biased baseline, which monitors on the reporting set itself; kept for "
+        "historical comparison only. See docs/EXPERIMENT_REPRODUCIBILITY.md.",
+    )
     parser.add_argument("--device", default=None, help="cpu or cuda.")
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--batch-size", type=int, default=None)
@@ -740,6 +819,7 @@ def config_from_args(args: argparse.Namespace) -> TrainingRunConfig:
         overrides["history_dir"] = Path(args.history_dir)
     if args.clip_length is not None:
         overrides["sampling"] = SamplingConfig(clip_length=args.clip_length)
+    overrides["protocol"] = args.protocol
 
     return TrainingRunConfig.from_initial_config(Path(args.root), **overrides)
 
