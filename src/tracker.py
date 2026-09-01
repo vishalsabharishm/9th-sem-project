@@ -56,6 +56,21 @@ def build_tracking_snapshot(frame_idx: int, tracks: List[Track]) -> TrackingSnap
     return TrackingSnapshot(frame_idx=frame_idx, tracks=list(tracks))
 
 
+def active_tracks(tracks: List[Track], tracker_frame_idx: int) -> List[Track]:
+    """Return only the tracks matched to a detection in the current frame.
+
+    ``SimpleTracker.update`` keeps a track for ``max_age`` frames after its
+    last detection, and a retained track keeps its final bounding box. That
+    frozen box has zero centroid motion, so ``BehaviorAnalyzer`` scores it
+    stationary and the rule engine reports an object that is no longer there.
+    Anything reasoning about what is present *now* -- rule evaluation, and
+    drawing -- must filter on ``last_seen`` first.
+
+    ``tracker_frame_idx`` is ``SimpleTracker.frame_idx`` read after ``update``.
+    """
+    return [track for track in tracks if track.last_seen == tracker_frame_idx]
+
+
 class SimpleTracker:
     def __init__(self, iou_threshold: float = 0.3, max_age: int = 30, min_hits: int = 1, trail_length: int = 30):
         self.iou_threshold = iou_threshold

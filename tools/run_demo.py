@@ -54,7 +54,7 @@ from temporal_event_adapter import (  # noqa: E402
     TemporalEventAdapter,
     WindowScore,
 )
-from tracker import SimpleTracker, build_tracking_snapshot, draw_tracks  # noqa: E402
+from tracker import SimpleTracker, active_tracks, build_tracking_snapshot, draw_tracks  # noqa: E402
 
 
 DEMO_CLIPS = {
@@ -226,7 +226,13 @@ def run_demo(video_path: Path, clip_key: str, model_path: Path, output_dir: Path
             confidences = np.array([])
             class_ids = np.array([])
 
-        tracks = tracker.update(boxes, class_ids, confidences)
+        # SimpleTracker retains a track for max_age frames after its last
+        # detection, with its bounding box frozen at the last observed
+        # position. Those retained tracks must not reach the rule engine (a
+        # frozen box reads as a stationary person) and must not be drawn (a
+        # frozen box reads as a ghost detection). src/end_to_end_fixture.py
+        # already filters them; the demo does the same here.
+        tracks = active_tracks(tracker.update(boxes, class_ids, confidences), tracker.frame_idx)
         snapshot = build_tracking_snapshot(frame_idx + 1, tracks)
         frame_events = event_detector.process_snapshot(snapshot)
         all_events.extend(frame_events)
