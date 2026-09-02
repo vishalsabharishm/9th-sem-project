@@ -52,6 +52,7 @@ import random
 import sys
 import time
 from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 
@@ -380,8 +381,18 @@ class Checkpointer:
         epoch: int,
         metrics: Optional[BinaryMetrics],
         config: TrainingRunConfig,
+        training_provenance: Optional[str] = None,
     ) -> Dict[str, Optional[str]]:
-        """Write the ``last`` checkpoint, and ``best`` when it improves."""
+        """Write the ``last`` checkpoint, and ``best`` when it improves.
+
+        ``training_provenance`` is the model wrapper's provenance string at the
+        time of saving (``random_init``, ``kinetics400_pretrained+untrained_head``,
+        ...). Recording it makes the checkpoint self-describing: without it a
+        smoke-test checkpoint is indistinguishable from a real one once loaded,
+        because ``load_checkpoint`` overwrites provenance with
+        ``checkpoint:<filename>`` regardless of what the weights are. See
+        ``src/checkpoint_identity.py``.
+        """
         self.directory.mkdir(parents=True, exist_ok=True)
         monitored = getattr(metrics, self.monitor, None) if metrics else None
         payload = {
@@ -393,6 +404,9 @@ class Checkpointer:
             "config": config.as_dict(),
             "num_classes": NUM_CLASSES,
             "class_labels": list(CANONICAL_LABELS),
+            "training_provenance": training_provenance,
+            "protocol": config.protocol,
+            "saved_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         }
         torch.save(payload, self.last_path)
 
@@ -674,7 +688,9 @@ def run_training(config: TrainingRunConfig, log=print) -> dict:
             scheduler.step()
 
         improved = checkpointer.is_improvement(getattr(metrics, config.early_stopping_metric, None))
-        written = checkpointer.save(module, epoch, metrics, config)
+        written = checkpointer.save(
+            module, epoch, metrics, config, training_provenance=wrapper.provenance
+        )
         epochs_without_improvement = 0 if improved else epochs_without_improvement + 1
 
         record = {

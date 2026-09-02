@@ -10,6 +10,99 @@ outputs, test results, and measurements of known defects).
 
 ---
 
+## Step 3 — Checkpoint identity and integrity
+
+Branch `step3-checkpoint-identity`.
+
+Closes the hole where a randomly initialised checkpoint could masquerade as the
+trained model, and validates the historical Experiment-1 metrics from their raw
+predictions. No model was retrained, no research result altered.
+
+### Historical metric verification (zero cost, done first)
+
+Recomputed Experiment 1's metrics from `outputs/temporal_violence/evaluation/predictions.csv`
+(394 clips, 200 Fight / 194 NonFight) with this project's own
+`temporal_metrics.binary_metrics`:
+
+| Metric | Recomputed | Recorded | Difference |
+|---|---:|---:|---:|
+| accuracy | 0.8604060914 | 0.8604 | +0.0000060914 |
+| precision (Fight) | 0.8961748634 | 0.8962 | −0.0000251366 |
+| recall (Fight) | 0.8200000000 | 0.8200 | 0 |
+| F1 (Fight) | 0.8563968668 | 0.8564 | −0.0000031332 |
+| ROC-AUC | 0.9430283505 | 0.9432 | −0.0001716495 |
+| PR-AUC | 0.9473887311 | 0.9475 | −0.0001112689 |
+
+Confusion matrix reproduces **exactly** (TN 175 / FP 19 / FN 36 / TP 164), as do
+both class supports.
+
+The two rank metrics differ beyond rounding, and the cause was identified rather
+than dismissed: `predictions.csv` stores probabilities to 6 decimals, tying 105
+of 394 rows (48 clips all at `1.000000`). ROC-AUC depends on ordering, so the
+true value is unrecoverable from the file; it must lie in
+**[0.9428092784, 0.9432860825]**, and the recorded 0.9432 falls inside. The
+recorded values are consistent with the raw predictions; the difference is
+precision loss in the CSV, not an error in either.
+
+Not yet an independent check of the metric code: scikit-learn is not installed
+here, so `temporal_metrics` still has no cross-implementation comparison.
+
+### Added
+
+- **`src/checkpoint_identity.py`** — provenance guard and identity recording.
+  Rejects on random initialisation, missing monitored value, missing metrics,
+  missing required metadata, subset (smoke-test) runs, wrong class head, or
+  epoch < 1. Explicitly does not use filename, file size, or `torch.load`
+  succeeding as evidence.
+- **`tools/verify_historical_metrics.py`** — the recomputation above, with
+  tie-bound analysis for the rank metrics.
+- **`tools/record_checkpoint.py`** — verify-then-record; writes
+  `models/temporal_violence/CHECKPOINT.md` and `checkpoint_records.json`.
+- **`models/temporal_violence/CHECKPOINT.md`** — documents `best.pt` as ABSENT,
+  with its source, expected size, what it unblocks, and the caveat that no hash
+  was ever recorded.
+- **`tests/test_checkpoint_identity.py`** (36 tests + 8 subtests).
+- **`docs/CHECKPOINT_INTEGRITY.md`**.
+
+### Changed
+
+- **`src/temporal_training.py`** — `Checkpointer.save` now records
+  `training_provenance`, `protocol` and `saved_at`. This is the actual fix:
+  before it, the information was never written, so no guard could read it.
+- **`src/evaluate_temporal_baseline.py`** — verifies before loading; refuses to
+  report metrics on a rejected checkpoint.
+- **`tools/score_temporal_windows.py`** — same guard replaces the weaker
+  Step-2 `is_task_specific` check.
+- **`tests/test_temporal_reproducibility.py`** — 7 tests for the historical
+  metric verification, including a hash pin on `predictions.csv`.
+
+### Verified empirically
+
+A real smoke-test checkpoint was generated (`--validate-pipeline`, random init,
+4 clips, 132,743,435 bytes — within 0.3% of the authentic file's size):
+
+- old guard: `is_task_specific = True` → **accepted**
+- new guard: **rejected**, citing `training_provenance='random_init'` and both
+  subset limits
+
+Note `monitored_value` was `1.0`, so a missing-value check alone would not have
+caught it.
+
+### Checkpoint retrieval
+
+**Not possible from this environment.** No Kaggle CLI, no credentials, no
+`best.pt` anywhere on the machine, nothing bundled in the archives. kaggle.com
+is reachable but the notebook is private. No replacement was created; the manual
+procedure is documented in `docs/CHECKPOINT_INTEGRITY.md` §7.
+
+### Untouched
+
+`predictions.csv`, all historical result JSON, `temporal_risk/`, the golden
+reference, and all Kaggle-derived records. New outputs go to
+`outputs/step3_checkpoint_identity/`.
+
+---
+
 ## Step 2 — Reproducible temporal protocol
 
 Branch `step2-reproducible-temporal-protocol`.

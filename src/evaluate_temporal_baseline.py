@@ -44,6 +44,7 @@ try:
         build_official_validation_dataset,
         build_primary_evaluation_dataset,
     )
+    from checkpoint_identity import verify_trained_checkpoint
     from temporal_metrics import BinaryMetrics, binary_metrics
     from temporal_model import (
         R3D18TemporalModel,
@@ -59,6 +60,7 @@ except ImportError:  # pragma: no cover - supports package execution
         build_official_validation_dataset,
         build_primary_evaluation_dataset,
     )
+    from src.checkpoint_identity import verify_trained_checkpoint
     from src.temporal_metrics import BinaryMetrics, binary_metrics
     from src.temporal_model import (
         R3D18TemporalModel,
@@ -342,6 +344,15 @@ def evaluate_checkpoint(
             class_labels=CANONICAL_LABELS,
         )
     )
+    # is_task_specific alone is not enough: load_checkpoint sets provenance to
+    # checkpoint:<name> for ANY loadable file, so a --validate-pipeline
+    # smoke-test checkpoint would pass it. Verify the recorded training
+    # evidence before reporting anything. See src/checkpoint_identity.py.
+    verdict = verify_trained_checkpoint(checkpoint)
+    verdict.raise_if_rejected()
+    for warning in verdict.warnings:
+        log(f"WARNING      : {warning}")
+
     wrapper.load_checkpoint(checkpoint)
     if not wrapper.is_task_specific:
         raise EvaluationError(
@@ -349,6 +360,8 @@ def evaluate_checkpoint(
         )
     log(f"checkpoint   : {checkpoint}")
     log(f"provenance   : {wrapper.provenance}")
+    log(f"trained as   : {verdict.metadata.get('training_provenance') or 'legacy (inferred)'}")
+    log(f"protocol     : {verdict.metadata.get('protocol') or 'not recorded'}")
     log(f"device       : {resolved}")
 
     dataset = SPLIT_BUILDERS[split](

@@ -168,6 +168,16 @@ def _load_model(checkpoint: Path, device: str):
     """Load the fine-tuned 2-class R3D-18, refusing anything non-task-specific."""
     from temporal_model import R3D18TemporalModel, TemporalModelConfig  # local import: torch
 
+    from checkpoint_identity import verify_trained_checkpoint
+
+    # Verify the recorded training evidence BEFORE loading. is_task_specific
+    # is not sufficient: it is true for any loadable file, including the
+    # smoke-test checkpoint --validate-pipeline writes.
+    verdict = verify_trained_checkpoint(checkpoint)
+    verdict.raise_if_rejected()
+    for warning in verdict.warnings:
+        print(f"WARNING: {warning}")
+
     model = R3D18TemporalModel(
         TemporalModelConfig(
             num_classes=2,

@@ -189,5 +189,59 @@ class DemoAgreementTests(unittest.TestCase):
             self.assertEqual(rows[clip]["alarm_frame"], frame, f"disagreement on {clip}")
 
 
+class HistoricalMetricVerificationTests(unittest.TestCase):
+    """Experiment 1's recorded metrics must be re-derivable from its predictions.
+
+    Added in Step 3. The threshold-dependent metrics must match exactly. The
+    rank metrics (ROC-AUC, PR-AUC) cannot: predictions.csv stores probabilities
+    to 6 decimals, which ties 105 of 394 rows, so the exact value is
+    unrecoverable -- they are checked against the interval those ties allow.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        sys.path.insert(0, str(REPO_ROOT / "tools"))
+        from verify_historical_metrics import verify
+
+        cls.report = verify()
+
+    def test_sample_count_matches_the_recorded_clip_count(self):
+        self.assertEqual(self.report["sample_count"], 394)
+        self.assertTrue(self.report["sample_count_matches_record"])
+
+    def test_class_distribution_is_the_primary_split(self):
+        self.assertEqual(self.report["class_distribution"], {"Fight": 200, "NonFight": 194})
+
+    def test_confusion_matrix_reproduces_exactly(self):
+        self.assertTrue(self.report["confusion_exact_match"])
+        for name, check in self.report["confusion_matrix"].items():
+            self.assertEqual(check["difference"], 0, f"{name} differs")
+
+    def test_threshold_dependent_metrics_reproduce_within_recorded_rounding(self):
+        self.assertTrue(self.report["threshold_dependent_metrics_agree_exactly"])
+
+    def test_rank_metrics_are_consistent_with_the_stored_precision(self):
+        for name in ("roc_auc", "pr_auc"):
+            check = self.report["scalar_metrics"][name]
+            low, high = check["tie_bounds"]["min"], check["tie_bounds"]["max"]
+            self.assertLessEqual(low, check["recorded"], name)
+            self.assertLessEqual(check["recorded"], high, name)
+
+    def test_the_stored_precision_really_does_introduce_ties(self):
+        """Documents why the rank metrics need an interval rather than a point."""
+        ties = self.report["score_ties"]
+        self.assertEqual(ties["decimal_places_stored"], [6])
+        self.assertGreater(ties["rows_involved_in_ties"], 0)
+        self.assertLess(ties["distinct_values"], ties["rows"])
+
+    def test_predictions_csv_is_unchanged(self):
+        """The historical artifact must never be edited."""
+        self.assertEqual(
+            self.report["predictions_sha256"],
+            "76b7b078f533f927a03e6e5b136cc06aaf03b45d7381bc1c7b810c08d32cf799",
+            "outputs/temporal_violence/evaluation/predictions.csv has been modified",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
