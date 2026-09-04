@@ -16,7 +16,55 @@ of training.
 
 ## Present and verified
 
-_None. No verified checkpoint is present in this working tree._
+### `best.pt`
+
+| Field | Value |
+|---|---|
+| SHA-256 | `a32271bfb5a9c273f84672b16ecd5fa351fdd617d39a2c5c73f5c667255a559a` |
+| Size | 132,744,907 bytes |
+| Modified (UTC) | 2026-09-04T17:00:41+00:00 |
+| Retrieved from | Kaggle notebook7bb9a86555 v3 (session 344760335), clean_experiment/training/checkpoints/best.pt, downloaded 2026-09-04 as best.zip |
+| Accepted | yes |
+| Training provenance | not recorded (legacy) |
+| Protocol | not recorded (pre-Step-2) |
+| Monitor | roc_auc = 0.935342732134176 |
+| Best epoch | 12 |
+| Classes | 2 ['NonFight', 'Fight'] |
+
+**Warnings:**
+
+- no training_provenance field (checkpoint predates Step 3); initialisation inferred from config.pretrained_backbone.
+- no protocol recorded (checkpoint predates Step 2); which evaluation protocol produced it must be established from its documentation.
+
+<details><summary>Training configuration</summary>
+
+```json
+{
+  "seed": 42,
+  "epochs": 20,
+  "batch_size": 8,
+  "optimizer": "AdamW",
+  "scheduler": "cosine_annealing",
+  "learning_rate_head": 0.001,
+  "learning_rate_backbone": 0.0001,
+  "weight_decay": 0.0001,
+  "frozen_modules": [
+    "stem",
+    "layer1",
+    "layer2"
+  ],
+  "pretrained_backbone": true,
+  "use_amp": true,
+  "device": "cuda",
+  "early_stopping_metric": "roc_auc",
+  "early_stopping_patience": 5,
+  "decision_threshold": 0.5,
+  "limit_train_clips": null,
+  "limit_eval_clips": null
+}
+```
+
+</details>
 
 ## Known but absent
 

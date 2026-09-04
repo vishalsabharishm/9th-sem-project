@@ -47,12 +47,20 @@ from abnormal_event_detector import AbnormalEventDetector, EventDetection  # noq
 from config import OUTPUTS_DIR, ensure_directories  # noqa: E402
 from detection import DEFAULT_MODEL_PATH, load_yolo_model  # noqa: E402
 from risk_assessment import RiskAssessor, write_risk_assessments  # noqa: E402
+from checkpoint_identity import file_sha256  # noqa: E402
 from temporal_event_adapter import (  # noqa: E402
+    PROVENANCE_LIVE_INFERENCE,
     TEMPORAL_EVENT_TYPE,
     FrozenAggregationRule,
     PrecomputedWindowScoreSource,
     TemporalEventAdapter,
     WindowScore,
+    window_score_from,
+)
+from temporal_runtime import (  # noqa: E402
+    RUNTIME_CLIP_LENGTH,
+    RUNTIME_STRIDE,
+    build_violence_engine,
 )
 from tracker import SimpleTracker, active_tracks, build_tracking_snapshot, draw_tracks  # noqa: E402
 
@@ -74,6 +82,13 @@ DEMO_CLIPS = {
 
 FROZEN_JSON = REPO_ROOT / "temporal_risk" / "frozen_aggregation.json"
 PRIMARY_CSV = REPO_ROOT / "temporal_risk" / "primary_window_scores.csv"
+
+# Shown when a clip has no row in the evaluation CSV and therefore no dataset
+# label -- which is the normal case for live inference on arbitrary footage.
+# The absence is preserved separately in ``ground_truth_available`` so a
+# consumer can distinguish "no label exists" from a label that happens to read
+# like one; only the display string changes.
+GROUND_TRUTH_UNAVAILABLE = "Not available"
 
 
 def current_window_probability(windows: List[WindowScore], frame_idx: int) -> Optional[float]:
@@ -166,34 +181,129 @@ class PrecomputedReplaySource(WindowScoreSource):
 class LiveInferenceSource(WindowScoreSource):
     """Scores windows by running R3D-18 on the frames as they arrive.
 
-    Deliberately not implemented yet. The seam it will use exists and is
-    tested -- ``temporal_runtime.build_violence_engine`` builds the verified
-    engine and ``temporal_event_adapter.window_score_from`` converts each
-    result into a ``WindowScore`` -- but wiring it needs the checkpoint
-    (``best.pt``), which is not on this machine. Constructing this raises
-    rather than degrading to replay: a silent fallback would make it
-    impossible to tell which mode produced a given output.
+    Every frame is handed to ``TemporalInferenceEngine``, which buffers it and
+    runs a forward pass whenever a 16-frame window completes at stride 8. The
+    result is converted by ``temporal_event_adapter.window_score_from``, which
+    refuses a prediction whose weights were not trained for this task.
+
+    Model construction, preprocessing and provenance validation are NOT
+    reimplemented here: they come from ``temporal_runtime.build_violence_engine``,
+    the same factory ``tools/score_temporal_windows.py`` uses, so the runtime
+    and the offline scorer cannot drift apart on the regime that produced the
+    committed evidence.
+
+    CAUSALITY. Unlike the replay source, this one cannot look ahead: a score
+    exists only once its window's sixteenth frame has been observed and the
+    forward pass has run. ``hud_probability`` therefore reports the most
+    recently *completed* window, never one still filling. This is a visible
+    behavioural difference from CSV mode and it is the correct one -- the
+    replay's look-ahead is an artifact of having the whole file up front.
     """
 
     name = SOURCE_LIVE
 
-    def __init__(self, *args, **kwargs) -> None:
-        raise NotImplementedError(
-            "Live temporal inference is not wired yet (integration Phase 4). "
-            "The engine factory and the WindowScore converter exist and are "
-            "tested, but the R3D-18 checkpoint best.pt is not present on this "
-            "machine. Use the default --temporal-source csv."
+    def __init__(
+        self,
+        checkpoint: Path,
+        device: str = "cpu",
+        clip_length: int = RUNTIME_CLIP_LENGTH,
+        stride: int = RUNTIME_STRIDE,
+    ) -> None:
+        self.checkpoint = Path(checkpoint)
+        self.device = device
+        self.clip_length = clip_length
+        self.stride = stride
+
+        # Raises CheckpointIntegrityError on a missing, random-init, smoke-test
+        # or otherwise unverifiable checkpoint. There is no fallback path.
+        self.engine, self.verdict = build_violence_engine(
+            self.checkpoint, device=device, clip_length=clip_length, stride=stride
         )
+        self.checkpoint_sha256 = file_sha256(self.checkpoint)
+        self.checkpoint_bytes = self.checkpoint.stat().st_size
+        self.model_provenance = self.engine.model.provenance
+
+        self._window_index = 0
+        self._inference_seconds: List[float] = []
+
+    def windows_completed_at(self, frame_idx: int, frame: np.ndarray) -> List[WindowScore]:
+        """Feed one frame to the model; return a score only if a window closed."""
+        result = self.engine.add_frame(frame, frame_number=frame_idx)
+        if result is None:
+            return []
+        score = window_score_from(result, self._window_index)
+        self._window_index += 1
+        self._inference_seconds.append(result.inference_seconds)
+        return [score]
+
+    def hud_probability(self, frame_idx: int, observed: List[WindowScore]) -> Optional[float]:
+        """Strictly causal: the most recently completed window, or nothing yet."""
+        return observed[-1].fight_probability if observed else None
+
+    @property
+    def total_inference_seconds(self) -> float:
+        return float(sum(self._inference_seconds))
+
+    def describe(self) -> dict:
+        per_window = self._inference_seconds
+        return {
+            "temporal_source": self.name,
+            "score_provenance": PROVENANCE_LIVE_INFERENCE,
+            "checkpoint_path": str(self.checkpoint),
+            "checkpoint_sha256": self.checkpoint_sha256,
+            "checkpoint_bytes": self.checkpoint_bytes,
+            "model_provenance": self.model_provenance,
+            "device": self.device,
+            "window_geometry": {
+                "clip_length": self.clip_length,
+                "stride": self.stride,
+                "windows_completed": self._window_index,
+            },
+            "inference_seconds_total": round(self.total_inference_seconds, 4),
+            "inference_seconds_per_window": [round(value, 4) for value in per_window],
+            "inference_seconds_mean_per_window": (
+                round(self.total_inference_seconds / len(per_window), 4) if per_window else None
+            ),
+            "checkpoint_warnings": list(self.verdict.warnings),
+            "note": (
+                "every score was produced by an R3D-18 forward pass in this "
+                "process on frames decoded from this video; no CSV was read"
+            ),
+        }
 
 
 def build_window_source(
-    temporal_source: str, clip_key: str, windows: List[WindowScore]
+    temporal_source: str,
+    clip_key: str,
+    windows: Optional[List[WindowScore]],
+    checkpoint: Optional[Path] = None,
+    device: str = "cpu",
 ) -> WindowScoreSource:
-    """Select a window-score source by name. Never falls back silently."""
+    """Select a window-score source by name. Never falls back silently.
+
+    A failure in live mode raises. Degrading to replay would produce an output
+    indistinguishable from a genuine live run, which is exactly the confusion
+    this whole integration exists to prevent.
+    """
     if temporal_source == SOURCE_CSV:
+        if windows is None:
+            raise SystemExit(
+                f"No precomputed window scores found for clip '{clip_key}' in "
+                f"{PRIMARY_CSV}. Use --temporal-source live --checkpoint <path> "
+                "to score an unrecorded clip."
+            )
         return PrecomputedReplaySource(clip_key, windows)
+
     if temporal_source == SOURCE_LIVE:
-        return LiveInferenceSource()
+        if checkpoint is None:
+            raise SystemExit(
+                "--temporal-source live requires --checkpoint <path to best.pt>. "
+                "There is no default and no fallback: an unverified or absent "
+                "checkpoint must never silently become a CSV replay or an "
+                "untrained model."
+            )
+        return LiveInferenceSource(checkpoint, device=device)
+
     raise SystemExit(
         f"Unknown temporal source {temporal_source!r}; expected one of "
         f"{list(SUPPORTED_TEMPORAL_SOURCES)}."
@@ -292,6 +402,8 @@ def run_demo(
     output_dir: Path,
     *,
     temporal_source: str = SOURCE_CSV,
+    checkpoint: Optional[Path] = None,
+    device: str = "cpu",
 ) -> dict:
     """Run the full pipeline on one clip.
 
@@ -309,12 +421,15 @@ def run_demo(
 
     frozen_rule = FrozenAggregationRule.load(FROZEN_JSON)
     score_source = PrecomputedWindowScoreSource(PRIMARY_CSV)
+    # A CSV row is required for replay, but NOT for live inference: live mode
+    # must be able to score a clip that was never in the committed file, which
+    # is also the strongest available evidence that a model actually ran.
     windows = score_source.get(clip_key)
-    if windows is None:
-        raise SystemExit(f"No precomputed window scores found for clip '{clip_key}' in {PRIMARY_CSV}")
     true_label = score_source.true_label(clip_key)
 
-    window_source = build_window_source(temporal_source, clip_key, windows)
+    window_source = build_window_source(
+        temporal_source, clip_key, windows, checkpoint=checkpoint, device=device
+    )
     adapter = TemporalEventAdapter(frozen_rule)
 
     model = load_yolo_model(model_path)
@@ -409,7 +524,10 @@ def run_demo(
     summary = {
         "clip_key": clip_key,
         "video_path": str(video_path),
-        "ground_truth_label": true_label,
+        "ground_truth_label": (
+            true_label if true_label is not None else GROUND_TRUTH_UNAVAILABLE
+        ),
+        "ground_truth_available": true_label is not None,
         "frames_processed": frame_idx,
         "n_phase4_rule_events": len([e for e in all_events if e.event_type != TEMPORAL_EVENT_TYPE]),
         "temporal_violence_signal_fired": temporal_event is not None,
@@ -417,6 +535,12 @@ def run_demo(
         "temporal_event_evidence": temporal_event.evidence if temporal_event is not None else None,
         "annotated_video": str(out_video_path),
         "risk_assessment_json": str(risk_json_path),
+        "temporal_provenance": window_source.describe(),
+        "windows_observed": len(observed_windows),
+        "final_temporal_decision": (
+            "Fight" if temporal_event is not None else "NonFight"
+        ),
+        "alert_risk_level": ("High" if temporal_event is not None else None),
     }
 
     report_path = output_dir / f"demo_{stem}_explanation.md"
@@ -437,10 +561,33 @@ def main() -> None:
                          help="Override: clip key as it appears in temporal_risk/primary_window_scores.csv.")
     parser.add_argument("--model-path", type=Path, default=DEFAULT_MODEL_PATH)
     parser.add_argument("--output-dir", type=Path, default=OUTPUTS_DIR / "demo")
+    parser.add_argument(
+        "--temporal-source",
+        choices=list(SUPPORTED_TEMPORAL_SOURCES),
+        default=SOURCE_CSV,
+        help="Where sliding-window violence scores come from. 'csv' (default) "
+        "replays the committed per-window probabilities and runs no temporal "
+        "model. 'live' runs R3D-18 on the decoded frames and requires "
+        "--checkpoint; it never falls back to csv or to untrained weights.",
+    )
+    parser.add_argument(
+        "--checkpoint",
+        type=Path,
+        default=None,
+        help="Verified 2-class R3D-18 checkpoint. Required by "
+        "--temporal-source live. Validated by src/checkpoint_identity.py "
+        "before any inference runs.",
+    )
+    parser.add_argument(
+        "--device", default="cpu", help="Device for temporal inference (cpu or cuda)."
+    )
     args = parser.parse_args()
 
     if args.video_path and args.clip_key:
         video_path, clip_key = args.video_path, args.clip_key
+    elif args.video_path and args.temporal_source == SOURCE_LIVE:
+        # Live inference needs no CSV row, so a clip key is only a label here.
+        video_path, clip_key = args.video_path, str(args.video_path)
     else:
         preset = DEMO_CLIPS[args.clip]
         video_path, clip_key = preset["video"], preset["clip_key"]
@@ -448,7 +595,15 @@ def main() -> None:
     if not Path(video_path).exists():
         raise SystemExit(f"Demo video not found: {video_path}")
 
-    summary = run_demo(Path(video_path), clip_key, args.model_path, args.output_dir)
+    summary = run_demo(
+        Path(video_path),
+        clip_key,
+        args.model_path,
+        args.output_dir,
+        temporal_source=args.temporal_source,
+        checkpoint=args.checkpoint,
+        device=args.device,
+    )
     print(json.dumps(summary, indent=2, default=str))
 
 

@@ -1,0 +1,77 @@
+[
+  {
+    "identity": {
+      "filename": "best.pt",
+      "sha256": "a32271bfb5a9c273f84672b16ecd5fa351fdd617d39a2c5c73f5c667255a559a",
+      "bytes": 132744907,
+      "modified_utc": "2026-09-04T17:00:41+00:00",
+      "retrieved_from": "Kaggle notebook7bb9a86555 v3 (session 344760335), clean_experiment/training/checkpoints/best.pt, downloaded 2026-09-04 as best.zip"
+    },
+    "verification": {
+      "accepted": true,
+      "rejections": [],
+      "warnings": [
+        "no training_provenance field (checkpoint predates Step 3); initialisation inferred from config.pretrained_backbone.",
+        "no protocol recorded (checkpoint predates Step 2); which evaluation protocol produced it must be established from its documentation."
+      ],
+      "inferred_initialisation": true
+    },
+    "training": {
+      "training_provenance": null,
+      "protocol": null,
+      "monitor": "roc_auc",
+      "monitored_value": 0.935342732134176,
+      "epoch": 12,
+      "saved_at": null,
+      "num_classes": 2,
+      "class_labels": [
+        "NonFight",
+        "Fight"
+      ],
+      "tensor_count": 122
+    },
+    "configuration": {
+      "seed": 42,
+      "epochs": 20,
+      "batch_size": 8,
+      "optimizer": "AdamW",
+      "scheduler": "cosine_annealing",
+      "learning_rate_head": 0.001,
+      "learning_rate_backbone": 0.0001,
+      "weight_decay": 0.0001,
+      "frozen_modules": [
+        "stem",
+        "layer1",
+        "layer2"
+      ],
+      "pretrained_backbone": true,
+      "use_amp": true,
+      "device": "cuda",
+      "early_stopping_metric": "roc_auc",
+      "early_stopping_patience": 5,
+      "decision_threshold": 0.5,
+      "limit_train_clips": null,
+      "limit_eval_clips": null
+    },
+    "metrics_at_save": {
+      "accuracy": 0.875,
+      "precision": 0.8677685950413223,
+      "recall": 0.8823529411764706,
+      "f1": 0.8749999999999999,
+      "roc_auc": 0.935342732134176,
+      "pr_auc": 0.9413886859398198,
+      "confusion_matrix": {
+        "true_negative": 105,
+        "false_positive": 16,
+        "false_negative": 14,
+        "true_positive": 105
+      },
+      "threshold": 0.5,
+      "support": {
+        "NonFight": 121,
+        "Fight": 119
+      }
+    },
+    "recorded_at": "2026-09-04T17:01:39+00:00"
+  }
+]

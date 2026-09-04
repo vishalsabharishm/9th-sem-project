@@ -71,17 +71,26 @@ class SourceSelectionTests(unittest.TestCase):
         with self.assertRaises(SystemExit):
             build_window_source("guess", CLIP_KEY, committed_windows())
 
-    def test_live_source_raises_rather_than_falling_back_to_csv(self):
-        """A silent fallback would make an output ambiguous about its origin."""
-        with self.assertRaises(NotImplementedError) as caught:
-            build_window_source(SOURCE_LIVE, CLIP_KEY, committed_windows())
-        message = str(caught.exception)
-        self.assertIn("Phase 4", message)
-        self.assertIn("best.pt", message)
+    def test_live_without_a_checkpoint_raises_rather_than_falling_back_to_csv(self):
+        """A silent fallback would make an output ambiguous about its origin.
 
-    def test_live_source_cannot_be_constructed_directly_either(self):
-        with self.assertRaises(NotImplementedError):
-            LiveInferenceSource()
+        Updated in Phase 4: live inference is now implemented, so this no
+        longer raises NotImplementedError. The enduring property it protects is
+        unchanged -- selecting live without a usable checkpoint must fail, even
+        when valid CSV windows are sitting right there.
+        """
+        with self.assertRaises(SystemExit) as caught:
+            build_window_source(SOURCE_LIVE, CLIP_KEY, committed_windows(), checkpoint=None)
+        message = str(caught.exception)
+        self.assertIn("--checkpoint", message)
+        self.assertIn("never silently become a CSV replay", message)
+
+    def test_live_source_cannot_be_constructed_without_a_valid_checkpoint(self):
+        """Constructing the source directly is guarded too, not just the factory."""
+        from checkpoint_identity import CheckpointIntegrityError
+
+        with self.assertRaises(CheckpointIntegrityError):
+            LiveInferenceSource(REPO_ROOT / "does" / "not" / "exist.pt")
 
     def test_the_abstract_base_defines_the_contract(self):
         base = WindowScoreSource()
