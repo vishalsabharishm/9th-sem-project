@@ -88,6 +88,118 @@ def current_window_probability(windows: List[WindowScore], frame_idx: int) -> Op
     return None
 
 
+# --------------------------------------------------------------------------
+# Window-score sources
+#
+# The demo used to load every window score up front and call
+# ``evaluate_clip`` BEFORE the frame loop, then replay when the decision would
+# have fired. That made causality a display property rather than a
+# computation, and left no seam a live model could occupy.
+#
+# A source now yields window scores DURING the loop, and the clip-level
+# decision is taken afterwards from what the source actually produced. The CSV
+# replay source and a future live-inference source differ only in where the
+# numbers come from; everything downstream is identical.
+# --------------------------------------------------------------------------
+
+SOURCE_CSV = "csv"
+SOURCE_LIVE = "live"
+SUPPORTED_TEMPORAL_SOURCES = (SOURCE_CSV, SOURCE_LIVE)
+
+
+class WindowScoreSource:
+    """Yields sliding-window scores as frames are processed."""
+
+    name = "abstract"
+
+    def windows_completed_at(self, frame_idx: int, frame: np.ndarray) -> List[WindowScore]:
+        """Return the windows that complete at this frame, in window order."""
+        raise NotImplementedError
+
+    def hud_probability(
+        self, frame_idx: int, observed: List[WindowScore]
+    ) -> Optional[float]:
+        """The probability to display on the overlay for this frame."""
+        raise NotImplementedError
+
+    def describe(self) -> dict:
+        """Provenance of the scores this source produced, for the run record."""
+        return {"temporal_source": self.name}
+
+
+class PrecomputedReplaySource(WindowScoreSource):
+    """Replays real scores transcribed from Kaggle, keyed by clip.
+
+    Behaviour is deliberately identical to the pre-inversion demo, including
+    the HUD's look-ahead: ``current_window_probability`` reports the highest
+    score of any window *covering* the current frame, which for a window not
+    yet complete is information a live system could not have. That is a known
+    property of the replay (audit finding E2), and preserving it exactly is
+    what keeps this refactor byte-identical. A live source cannot look ahead
+    and will necessarily differ here.
+    """
+
+    name = SOURCE_CSV
+
+    def __init__(self, clip_key: str, windows: List[WindowScore]) -> None:
+        self.clip_key = clip_key
+        self._windows = list(windows)
+
+    def windows_completed_at(self, frame_idx: int, frame: np.ndarray) -> List[WindowScore]:
+        return [w for w in self._windows if w.last_frame == frame_idx]
+
+    def hud_probability(self, frame_idx: int, observed: List[WindowScore]) -> Optional[float]:
+        return current_window_probability(self._windows, frame_idx)
+
+    def describe(self) -> dict:
+        return {
+            "temporal_source": self.name,
+            "scores_from": str(PRIMARY_CSV),
+            "clip_key": self.clip_key,
+            "note": (
+                "real per-window probabilities from the clean-baseline checkpoint, "
+                "precomputed on Kaggle and replayed here; no model ran in this process"
+            ),
+        }
+
+
+class LiveInferenceSource(WindowScoreSource):
+    """Scores windows by running R3D-18 on the frames as they arrive.
+
+    Deliberately not implemented yet. The seam it will use exists and is
+    tested -- ``temporal_runtime.build_violence_engine`` builds the verified
+    engine and ``temporal_event_adapter.window_score_from`` converts each
+    result into a ``WindowScore`` -- but wiring it needs the checkpoint
+    (``best.pt``), which is not on this machine. Constructing this raises
+    rather than degrading to replay: a silent fallback would make it
+    impossible to tell which mode produced a given output.
+    """
+
+    name = SOURCE_LIVE
+
+    def __init__(self, *args, **kwargs) -> None:
+        raise NotImplementedError(
+            "Live temporal inference is not wired yet (integration Phase 4). "
+            "The engine factory and the WindowScore converter exist and are "
+            "tested, but the R3D-18 checkpoint best.pt is not present on this "
+            "machine. Use the default --temporal-source csv."
+        )
+
+
+def build_window_source(
+    temporal_source: str, clip_key: str, windows: List[WindowScore]
+) -> WindowScoreSource:
+    """Select a window-score source by name. Never falls back silently."""
+    if temporal_source == SOURCE_CSV:
+        return PrecomputedReplaySource(clip_key, windows)
+    if temporal_source == SOURCE_LIVE:
+        return LiveInferenceSource()
+    raise SystemExit(
+        f"Unknown temporal source {temporal_source!r}; expected one of "
+        f"{list(SUPPORTED_TEMPORAL_SOURCES)}."
+    )
+
+
 def draw_hud(frame: np.ndarray, frame_idx: int, current_prob: Optional[float],
              temporal_fired: bool, risk_level: str) -> np.ndarray:
     height, width = frame.shape[:2]
@@ -173,7 +285,25 @@ def write_explanation_report(path: Path, summary: dict, windows: List[WindowScor
     Path(path).write_text("".join(lines), encoding="utf-8")
 
 
-def run_demo(video_path: Path, clip_key: str, model_path: Path, output_dir: Path) -> dict:
+def run_demo(
+    video_path: Path,
+    clip_key: str,
+    model_path: Path,
+    output_dir: Path,
+    *,
+    temporal_source: str = SOURCE_CSV,
+) -> dict:
+    """Run the full pipeline on one clip.
+
+    ``temporal_source`` selects where sliding-window scores come from. It is
+    keyword-only with a CSV default so existing callers -- the CLI and
+    ``web/server.py`` -- are unaffected.
+
+    Window scores are produced DURING the frame loop by the selected source and
+    accumulated; the clip-level decision is taken afterwards from what was
+    actually observed. Previously the decision was computed before the loop
+    from the whole CSV, and the loop only replayed when it would have fired.
+    """
     ensure_directories()
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -184,8 +314,8 @@ def run_demo(video_path: Path, clip_key: str, model_path: Path, output_dir: Path
         raise SystemExit(f"No precomputed window scores found for clip '{clip_key}' in {PRIMARY_CSV}")
     true_label = score_source.true_label(clip_key)
 
+    window_source = build_window_source(temporal_source, clip_key, windows)
     adapter = TemporalEventAdapter(frozen_rule)
-    temporal_event = adapter.evaluate_clip(clip_key, windows)
 
     model = load_yolo_model(model_path)
     tracker = SimpleTracker()
@@ -209,6 +339,8 @@ def run_demo(video_path: Path, clip_key: str, model_path: Path, output_dir: Path
     frame_idx = 0
     temporal_signal_frame: Optional[int] = None
     running_scores: List[float] = []
+    # Windows the source actually produced, in completion order.
+    observed_windows: List[WindowScore] = []
 
     while True:
         ok, frame = cap.read()
@@ -237,14 +369,16 @@ def run_demo(video_path: Path, clip_key: str, model_path: Path, output_dir: Path
         frame_events = event_detector.process_snapshot(snapshot)
         all_events.extend(frame_events)
 
-        # Causal replay: only count a window once its last frame has been "seen".
-        newly_seen = [w for w in windows if w.last_frame == frame_idx]
+        # Windows complete as frames arrive; the decision is re-evaluated on
+        # everything observed so far, exactly as a streaming system would.
+        newly_seen = window_source.windows_completed_at(frame_idx, frame)
+        observed_windows.extend(newly_seen)
         running_scores.extend(w.fight_probability for w in newly_seen)
         fired_so_far = frozen_rule.decide(running_scores) if running_scores else False
         if fired_so_far and temporal_signal_frame is None:
             temporal_signal_frame = frame_idx
 
-        current_prob = current_window_probability(windows, frame_idx)
+        current_prob = window_source.hud_probability(frame_idx, observed_windows)
         abnormal_ids = {e.object_id for e in frame_events if e.object_id is not None}
         annotated = draw_tracks(frame, tracks, model.names, abnormal_ids)
         annotated = draw_hud(
@@ -257,6 +391,10 @@ def run_demo(video_path: Path, clip_key: str, model_path: Path, output_dir: Path
 
     cap.release()
     writer.release()
+
+    # The clip-level decision, taken after the loop from the windows the source
+    # actually produced -- not from a file read before the video was opened.
+    temporal_event = adapter.evaluate_clip(clip_key, observed_windows)
 
     if temporal_event is not None:
         temporal_event.frame_number = (
@@ -282,7 +420,9 @@ def run_demo(video_path: Path, clip_key: str, model_path: Path, output_dir: Path
     }
 
     report_path = output_dir / f"demo_{stem}_explanation.md"
-    write_explanation_report(report_path, summary, windows, risk_assessments, frozen_rule)
+    write_explanation_report(
+        report_path, summary, observed_windows, risk_assessments, frozen_rule
+    )
     summary["explanation_report"] = str(report_path)
 
     return summary

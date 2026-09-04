@@ -165,34 +165,18 @@ def verify_geometry(
 
 
 def _load_model(checkpoint: Path, device: str):
-    """Load the fine-tuned 2-class R3D-18, refusing anything non-task-specific."""
-    from temporal_model import R3D18TemporalModel, TemporalModelConfig  # local import: torch
+    """Load the fine-tuned 2-class R3D-18 through the shared runtime factory.
 
-    from checkpoint_identity import verify_trained_checkpoint
+    Model construction and provenance validation live in
+    ``src/temporal_runtime.py`` so this tool and the demo cannot drift apart on
+    how the violence model is built. The factory runs the Step-3 checkpoint
+    guard and pins num_classes / class labels to the committed regime.
+    """
+    from temporal_runtime import build_violence_model
 
-    # Verify the recorded training evidence BEFORE loading. is_task_specific
-    # is not sufficient: it is true for any loadable file, including the
-    # smoke-test checkpoint --validate-pipeline writes.
-    verdict = verify_trained_checkpoint(checkpoint)
-    verdict.raise_if_rejected()
+    model, verdict = build_violence_model(checkpoint, device)
     for warning in verdict.warnings:
         print(f"WARNING: {warning}")
-
-    model = R3D18TemporalModel(
-        TemporalModelConfig(
-            num_classes=2,
-            device=device,
-            pretrained_backbone=False,
-            checkpoint_path=Path(checkpoint),
-            class_labels=("NonFight", "Fight"),
-        )
-    )
-    if not model.is_task_specific:
-        raise WindowScoringError(
-            f"Model provenance is {model.provenance!r}, which is not a "
-            "task-specific checkpoint. Refusing to emit violence probabilities "
-            "from weights that were never trained for this task."
-        )
     return model
 
 

@@ -35,7 +35,7 @@ import csv
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 try:
     from abnormal_event_detector import EventDetection
@@ -46,6 +46,16 @@ except ImportError:  # pragma: no cover - supports package execution
 TEMPORAL_EVENT_TYPE = "Temporal Violence Signal"
 PROVENANCE_MEASURED = "measured_model_probability"
 PROVENANCE_DECLARED = "declared_rule_constant"
+# A score this process computed by running the model, as distinct from
+# PROVENANCE_MEASURED, which is a real model output transcribed from a Kaggle
+# run and replayed from CSV. Both are genuine measurements; only the live one
+# proves inference happened here, so a report must be able to tell them apart.
+PROVENANCE_LIVE_INFERENCE = "live_model_inference"
+
+# Index of the positive class in the model's output, per
+# rwf2000_config.LABEL_TO_INDEX = {"NonFight": 0, "Fight": 1}. Named here so
+# the conversion below cannot silently read the wrong column.
+FIGHT_CLASS_INDEX = 1
 
 # Event types whose EventDetection.confidence is a fixed number the rule
 # engine assigns to itself (see event_rules.py / abnormal_event_detector.py),
@@ -116,6 +126,77 @@ class WindowScore:
     first_frame: int
     last_frame: int
     fight_probability: float
+
+
+def window_score_from(
+    result: Any,
+    window_index: int,
+    require_task_specific: bool = True,
+) -> WindowScore:
+    """Convert one live inference result into a :class:`WindowScore`.
+
+    This is the seam between ``TemporalInferenceEngine`` and the aggregation
+    rule. Until it existed, ``WindowScore`` could only be built from a CSV row,
+    so a live model had no way to reach the decision path at all.
+
+    ``result`` is duck-typed rather than annotated as
+    ``TemporalInferenceResult``: importing that type here would pull torch into
+    a module the CSV replay path depends on, for no benefit. Anything carrying
+    ``frame_numbers`` and ``prediction.probabilities`` works.
+
+    The four fields map directly, with nothing invented:
+
+    ==================  ==========================================
+    ``window_index``    the caller's own counter
+    ``first_frame``     ``result.frame_numbers[0]``
+    ``last_frame``      ``result.frame_numbers[-1]``
+    ``fight_probability`` ``result.prediction.probabilities[0, 1]``
+    ==================  ==========================================
+
+    ``require_task_specific`` defaults to True and is the reason this function
+    exists rather than the conversion being inlined. ``TemporalPrediction``
+    already knows whether its weights were trained for this task; a
+    random-init or Kinetics-400 forward pass produces a number in [0, 1] that
+    looks exactly like a violence probability and is not one. Refusing it here
+    means an untrained model cannot reach ``FrozenAggregationRule`` and raise a
+    "High" risk alert. Set it False only in tests that deliberately exercise
+    the plumbing with untrained weights.
+    """
+    frame_numbers = list(getattr(result, "frame_numbers", []) or [])
+    if not frame_numbers:
+        raise TemporalAdapterError(
+            "Inference result carries no frame numbers, so the window it covers "
+            "is unknown and no WindowScore can be built from it."
+        )
+    prediction = getattr(result, "prediction", None)
+    if prediction is None:
+        raise TemporalAdapterError("Inference result carries no prediction.")
+
+    if require_task_specific and not getattr(prediction, "is_task_specific", False):
+        raise TemporalAdapterError(
+            f"Refusing to build a WindowScore from a non-task-specific "
+            f"prediction (provenance={getattr(prediction, 'provenance', 'unknown')!r}). "
+            "Its output is not a violence probability, and feeding it to the "
+            "frozen aggregation rule would raise a fabricated alert."
+        )
+
+    probabilities = getattr(prediction, "probabilities", None)
+    if probabilities is None:
+        raise TemporalAdapterError("Prediction carries no probabilities.")
+    try:
+        fight_probability = float(probabilities[0][FIGHT_CLASS_INDEX])
+    except (IndexError, TypeError) as error:
+        raise TemporalAdapterError(
+            f"Prediction probabilities are not shaped (1, 2); cannot read the "
+            f"Fight column at index {FIGHT_CLASS_INDEX}: {error}"
+        ) from error
+
+    return WindowScore(
+        window_index=int(window_index),
+        first_frame=int(frame_numbers[0]),
+        last_frame=int(frame_numbers[-1]),
+        fight_probability=fight_probability,
+    )
 
 
 class PrecomputedWindowScoreSource:
