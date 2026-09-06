@@ -1,0 +1,1017 @@
+{
+  "tool": "select_temporal_aggregation_v2",
+  "protocol_version": "v2-carve-only-2026-09",
+  "artifact_kind": "carve-validation checkpoint",
+  "contains_primary_results": false,
+  "scope": "carve split only (240 clips). The 394-clip primary evaluation is not read, referenced or evaluated anywhere in this run.",
+  "dataset": {
+    "identifier": "temporal_risk/carve_window_scores.csv",
+    "sha256": "b35543502f6bf97b9fa44e1c042b5745507f38855a45f9e41302fdecae4d5cb6",
+    "split": "carve",
+    "clips": 240,
+    "fight_clips": 119,
+    "nonfight_clips": 121,
+    "windows_per_clip": 17,
+    "windows": 4080
+  },
+  "source_grouping": {
+    "folds": 5,
+    "grouping_unit": "source video",
+    "grouping": "inferred from the '<source_id>_<index>.avi' filename convention",
+    "grouping_helper": "src/metric_intervals.py:source_video_id",
+    "sources": 122,
+    "sources_shared_between_folds": 0,
+    "clips_assigned": 240,
+    "clips_assigned_exactly_once": true,
+    "fold_sizes": {
+      "0": 48,
+      "1": 48,
+      "2": 48,
+      "3": 48,
+      "4": 48
+    },
+    "fold_fight_clips": {
+      "0": 23,
+      "1": 29,
+      "2": 22,
+      "3": 23,
+      "4": 22
+    }
+  },
+  "window_geometry": {
+    "clip_length": 16,
+    "stride": 8,
+    "windows_per_clip": 17,
+    "adjacent_window_frame_overlap": 8,
+    "independence_caveat": "consecutive windows share 8 of their 16 frames, so a run of n consecutive windows above threshold covers 8n + 8 frames and is NOT n independent observations"
+  },
+  "deployed_incumbent": {
+    "rule": "max",
+    "threshold": 0.14,
+    "status": "FROZEN -- not re-tuned, not replaced by this script",
+    "source": "temporal_risk/frozen_aggregation.json",
+    "carve_metrics": {
+      "tp": 85,
+      "fp": 21,
+      "tn": 100,
+      "fn": 34,
+      "accuracy": 0.7708333333333334,
+      "precision": 0.8018867924528302,
+      "recall": 0.7142857142857143,
+      "specificity": 0.8264462809917356,
+      "fpr": 0.17355371900826447,
+      "f1": 0.7555555555555555
+    },
+    "reproduced_from_raw_scores": true
+  },
+  "threshold_calibration": {
+    "method": "false-positive budget matched to the deployed incumbent on carve",
+    "target_false_positives": 21,
+    "target_fpr": 0.17355371900826447,
+    "rationale": "thresholds are derived, not swept: a per-family sweep would add hundreds of configurations to 240 clips holding ~122 independent source videos. Calibrating to a fixed alarm budget turns the threshold into a constant and reduces the comparison to recall at matched false-alarm rate"
+  },
+  "candidate_set": {
+    "closed": true,
+    "size": 6,
+    "names": [
+      "max_fpr_matched",
+      "topk_2",
+      "topk_3",
+      "topk_5",
+      "consecutive_2",
+      "consecutive_3"
+    ],
+    "fixed_before_results_were_seen": true,
+    "excluded_by_protocol": [
+      "EMA / temporal smoothing (adds a free alpha on a sequence already smoothed by 50% window overlap)",
+      "mean re-tuning (all 99 thresholds already swept by select_temporal_aggregation.py)",
+      "k-of-n re-tuning (all 17 k values already swept)",
+      "any k or n outside {2, 3, 5} and {2, 3}"
+    ]
+  },
+  "candidates": [
+    {
+      "name": "max_fpr_matched",
+      "family": "max",
+      "params": {},
+      "role": "validation-only control",
+      "alarm_monotone": true,
+      "description": "max over the prefix, threshold calibrated to the incumbent carve FPR. NOT the deployed rule: it exists so the candidate families are compared under the same FPR-matching objective the deployed rule was never selected under",
+      "threshold": 0.143885,
+      "target_false_positives": 21,
+      "target_fpr": 0.17355371900826447,
+      "achieved_false_positives": 21,
+      "achieved_fpr": 0.17355371900826447,
+      "exact_fpr_match": true,
+      "metrics": {
+        "tp": 85,
+        "fp": 21,
+        "tn": 100,
+        "fn": 34,
+        "accuracy": 0.7708333333333334,
+        "precision": 0.8018867924528302,
+        "recall": 0.7142857142857143,
+        "specificity": 0.8264462809917356,
+        "fpr": 0.17355371900826447,
+        "f1": 0.7555555555555555
+      },
+      "streaming_behaviour": {
+        "declared_alarm_monotone": true,
+        "alarm_retraction_clips": 0,
+        "observed_alarm_monotone": true,
+        "note": "clips where the rule crosses the threshold on some prefix and is back below it by the final window; measured on carve at this candidate's calibrated threshold"
+      }
+    },
+    {
+      "name": "topk_2",
+      "family": "topk_mean",
+      "params": {
+        "k": 2
+      },
+      "role": "candidate",
+      "alarm_monotone": false,
+      "description": "mean of the highest min(2, m) scores in the prefix",
+      "threshold": 0.134295,
+      "target_false_positives": 21,
+      "target_fpr": 0.17355371900826447,
+      "achieved_false_positives": 21,
+      "achieved_fpr": 0.17355371900826447,
+      "exact_fpr_match": true,
+      "metrics": {
+        "tp": 82,
+        "fp": 21,
+        "tn": 100,
+        "fn": 37,
+        "accuracy": 0.7583333333333333,
+        "precision": 0.7961165048543689,
+        "recall": 0.6890756302521008,
+        "specificity": 0.8264462809917356,
+        "fpr": 0.17355371900826447,
+        "f1": 0.7387387387387387
+      },
+      "streaming_behaviour": {
+        "declared_alarm_monotone": false,
+        "alarm_retraction_clips": 2,
+        "observed_alarm_monotone": false,
+        "note": "clips where the rule crosses the threshold on some prefix and is back below it by the final window; measured on carve at this candidate's calibrated threshold"
+      }
+    },
+    {
+      "name": "topk_3",
+      "family": "topk_mean",
+      "params": {
+        "k": 3
+      },
+      "role": "candidate",
+      "alarm_monotone": false,
+      "description": "mean of the highest min(3, m) scores in the prefix",
+      "threshold": 0.1271253333333333,
+      "target_false_positives": 21,
+      "target_fpr": 0.17355371900826447,
+      "achieved_false_positives": 21,
+      "achieved_fpr": 0.17355371900826447,
+      "exact_fpr_match": true,
+      "metrics": {
+        "tp": 81,
+        "fp": 21,
+        "tn": 100,
+        "fn": 38,
+        "accuracy": 0.7541666666666667,
+        "precision": 0.7941176470588235,
+        "recall": 0.680672268907563,
+        "specificity": 0.8264462809917356,
+        "fpr": 0.17355371900826447,
+        "f1": 0.7330316742081447
+      },
+      "streaming_behaviour": {
+        "declared_alarm_monotone": false,
+        "alarm_retraction_clips": 3,
+        "observed_alarm_monotone": false,
+        "note": "clips where the rule crosses the threshold on some prefix and is back below it by the final window; measured on carve at this candidate's calibrated threshold"
+      }
+    },
+    {
+      "name": "topk_5",
+      "family": "topk_mean",
+      "params": {
+        "k": 5
+      },
+      "role": "candidate",
+      "alarm_monotone": false,
+      "description": "mean of the highest min(5, m) scores in the prefix",
+      "threshold": 0.105295,
+      "target_false_positives": 21,
+      "target_fpr": 0.17355371900826447,
+      "achieved_false_positives": 21,
+      "achieved_fpr": 0.17355371900826447,
+      "exact_fpr_match": true,
+      "metrics": {
+        "tp": 80,
+        "fp": 21,
+        "tn": 100,
+        "fn": 39,
+        "accuracy": 0.75,
+        "precision": 0.7920792079207921,
+        "recall": 0.6722689075630253,
+        "specificity": 0.8264462809917356,
+        "fpr": 0.17355371900826447,
+        "f1": 0.7272727272727273
+      },
+      "streaming_behaviour": {
+        "declared_alarm_monotone": false,
+        "alarm_retraction_clips": 5,
+        "observed_alarm_monotone": false,
+        "note": "clips where the rule crosses the threshold on some prefix and is back below it by the final window; measured on carve at this candidate's calibrated threshold"
+      }
+    },
+    {
+      "name": "consecutive_2",
+      "family": "consecutive_persistence",
+      "params": {
+        "n": 2
+      },
+      "role": "candidate",
+      "alarm_monotone": true,
+      "description": "some run of 2 consecutive completed windows at or above threshold; those 2 windows overlap by 8 of 16 frames",
+      "threshold": 0.110809,
+      "target_false_positives": 21,
+      "target_fpr": 0.17355371900826447,
+      "achieved_false_positives": 21,
+      "achieved_fpr": 0.17355371900826447,
+      "exact_fpr_match": true,
+      "metrics": {
+        "tp": 77,
+        "fp": 21,
+        "tn": 100,
+        "fn": 42,
+        "accuracy": 0.7375,
+        "precision": 0.7857142857142857,
+        "recall": 0.6470588235294118,
+        "specificity": 0.8264462809917356,
+        "fpr": 0.17355371900826447,
+        "f1": 0.7096774193548386
+      },
+      "streaming_behaviour": {
+        "declared_alarm_monotone": true,
+        "alarm_retraction_clips": 0,
+        "observed_alarm_monotone": true,
+        "note": "clips where the rule crosses the threshold on some prefix and is back below it by the final window; measured on carve at this candidate's calibrated threshold"
+      }
+    },
+    {
+      "name": "consecutive_3",
+      "family": "consecutive_persistence",
+      "params": {
+        "n": 3
+      },
+      "role": "candidate",
+      "alarm_monotone": true,
+      "description": "some run of 3 consecutive completed windows at or above threshold; adjacent windows overlap by 8 of 16 frames",
+      "threshold": 0.100667,
+      "target_false_positives": 21,
+      "target_fpr": 0.17355371900826447,
+      "achieved_false_positives": 21,
+      "achieved_fpr": 0.17355371900826447,
+      "exact_fpr_match": true,
+      "metrics": {
+        "tp": 72,
+        "fp": 21,
+        "tn": 100,
+        "fn": 47,
+        "accuracy": 0.7166666666666667,
+        "precision": 0.7741935483870968,
+        "recall": 0.6050420168067226,
+        "specificity": 0.8264462809917356,
+        "fpr": 0.17355371900826447,
+        "f1": 0.679245283018868
+      },
+      "streaming_behaviour": {
+        "declared_alarm_monotone": true,
+        "alarm_retraction_clips": 0,
+        "observed_alarm_monotone": true,
+        "note": "clips where the rule crosses the threshold on some prefix and is back below it by the final window; measured on carve at this candidate's calibrated threshold"
+      }
+    }
+  ],
+  "grouped_cross_validation": {
+    "max_fpr_matched": {
+      "note": "descriptive only; the threshold is re-derived on each training fold and never influences the main carve selection or the promotion gate",
+      "folds": [
+        {
+          "fold": 0,
+          "clips": 48,
+          "sources": 23,
+          "threshold_from_training_folds": 0.183359,
+          "training_false_positive_budget": 17,
+          "tp": 9,
+          "fp": 0,
+          "tn": 25,
+          "fn": 14,
+          "accuracy": 0.7083333333333334,
+          "precision": 1.0,
+          "recall": 0.391304347826087,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.5625
+        },
+        {
+          "fold": 1,
+          "clips": 48,
+          "sources": 24,
+          "threshold_from_training_folds": 0.181272,
+          "training_false_positive_budget": 18,
+          "tp": 23,
+          "fp": 0,
+          "tn": 19,
+          "fn": 6,
+          "accuracy": 0.875,
+          "precision": 1.0,
+          "recall": 0.7931034482758621,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.8846153846153846
+        },
+        {
+          "fold": 2,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.112879,
+          "training_false_positive_budget": 16,
+          "tp": 16,
+          "fp": 8,
+          "tn": 18,
+          "fn": 6,
+          "accuracy": 0.7083333333333334,
+          "precision": 0.6666666666666666,
+          "recall": 0.7272727272727273,
+          "specificity": 0.6923076923076923,
+          "fpr": 0.3076923076923077,
+          "f1": 0.6956521739130435
+        },
+        {
+          "fold": 3,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.112473,
+          "training_false_positive_budget": 17,
+          "tp": 18,
+          "fp": 8,
+          "tn": 17,
+          "fn": 5,
+          "accuracy": 0.7291666666666666,
+          "precision": 0.6923076923076923,
+          "recall": 0.782608695652174,
+          "specificity": 0.68,
+          "fpr": 0.32,
+          "f1": 0.7346938775510203
+        },
+        {
+          "fold": 4,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.143887,
+          "training_false_positive_budget": 16,
+          "tp": 18,
+          "fp": 4,
+          "tn": 22,
+          "fn": 4,
+          "accuracy": 0.8333333333333334,
+          "precision": 0.8181818181818182,
+          "recall": 0.8181818181818182,
+          "specificity": 0.8461538461538461,
+          "fpr": 0.15384615384615385,
+          "f1": 0.8181818181818182
+        }
+      ],
+      "recall": {
+        "mean": 0.7024942074417337,
+        "std": 0.1584077604141464,
+        "folds_defined": 5
+      },
+      "fpr": {
+        "mean": 0.15630769230769231,
+        "std": 0.14041561301613942,
+        "folds_defined": 5
+      },
+      "precision": {
+        "mean": 0.8354312354312354,
+        "std": 0.14382567726616205,
+        "folds_defined": 5
+      },
+      "f1": {
+        "mean": 0.7391286508522533,
+        "std": 0.11002122025233732,
+        "folds_defined": 5
+      }
+    },
+    "topk_2": {
+      "note": "descriptive only; the threshold is re-derived on each training fold and never influences the main carve selection or the promotion gate",
+      "folds": [
+        {
+          "fold": 0,
+          "clips": 48,
+          "sources": 23,
+          "threshold_from_training_folds": 0.1860015,
+          "training_false_positive_budget": 17,
+          "tp": 7,
+          "fp": 0,
+          "tn": 25,
+          "fn": 16,
+          "accuracy": 0.6666666666666666,
+          "precision": 1.0,
+          "recall": 0.30434782608695654,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.4666666666666667
+        },
+        {
+          "fold": 1,
+          "clips": 48,
+          "sources": 24,
+          "threshold_from_training_folds": 0.176449,
+          "training_false_positive_budget": 18,
+          "tp": 22,
+          "fp": 0,
+          "tn": 19,
+          "fn": 7,
+          "accuracy": 0.8541666666666666,
+          "precision": 1.0,
+          "recall": 0.7586206896551724,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.8627450980392156
+        },
+        {
+          "fold": 2,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.109463,
+          "training_false_positive_budget": 16,
+          "tp": 14,
+          "fp": 8,
+          "tn": 18,
+          "fn": 8,
+          "accuracy": 0.6666666666666666,
+          "precision": 0.6363636363636364,
+          "recall": 0.6363636363636364,
+          "specificity": 0.6923076923076923,
+          "fpr": 0.3076923076923077,
+          "f1": 0.6363636363636364
+        },
+        {
+          "fold": 3,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.1084735,
+          "training_false_positive_budget": 17,
+          "tp": 18,
+          "fp": 8,
+          "tn": 17,
+          "fn": 5,
+          "accuracy": 0.7291666666666666,
+          "precision": 0.6923076923076923,
+          "recall": 0.782608695652174,
+          "specificity": 0.68,
+          "fpr": 0.32,
+          "f1": 0.7346938775510203
+        },
+        {
+          "fold": 4,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.15317150000000002,
+          "training_false_positive_budget": 16,
+          "tp": 17,
+          "fp": 3,
+          "tn": 23,
+          "fn": 5,
+          "accuracy": 0.8333333333333334,
+          "precision": 0.85,
+          "recall": 0.7727272727272727,
+          "specificity": 0.8846153846153846,
+          "fpr": 0.11538461538461539,
+          "f1": 0.8095238095238095
+        }
+      ],
+      "recall": {
+        "mean": 0.6509336240970424,
+        "std": 0.18116430185280633,
+        "folds_defined": 5
+      },
+      "fpr": {
+        "mean": 0.14861538461538465,
+        "std": 0.1413898885766446,
+        "folds_defined": 5
+      },
+      "precision": {
+        "mean": 0.8357342657342656,
+        "std": 0.15132072158325927,
+        "folds_defined": 5
+      },
+      "f1": {
+        "mean": 0.7019986176288697,
+        "std": 0.14011363658623568,
+        "folds_defined": 5
+      }
+    },
+    "topk_3": {
+      "note": "descriptive only; the threshold is re-derived on each training fold and never influences the main carve selection or the promotion gate",
+      "folds": [
+        {
+          "fold": 0,
+          "clips": 48,
+          "sources": 23,
+          "threshold_from_training_folds": 0.14236133333333334,
+          "training_false_positive_budget": 17,
+          "tp": 8,
+          "fp": 0,
+          "tn": 25,
+          "fn": 15,
+          "accuracy": 0.6875,
+          "precision": 1.0,
+          "recall": 0.34782608695652173,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.5161290322580645
+        },
+        {
+          "fold": 1,
+          "clips": 48,
+          "sources": 24,
+          "threshold_from_training_folds": 0.14175166666666666,
+          "training_false_positive_budget": 18,
+          "tp": 23,
+          "fp": 0,
+          "tn": 19,
+          "fn": 6,
+          "accuracy": 0.875,
+          "precision": 1.0,
+          "recall": 0.7931034482758621,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.8846153846153846
+        },
+        {
+          "fold": 2,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.10741833333333334,
+          "training_false_positive_budget": 16,
+          "tp": 13,
+          "fp": 8,
+          "tn": 18,
+          "fn": 9,
+          "accuracy": 0.6458333333333334,
+          "precision": 0.6190476190476191,
+          "recall": 0.5909090909090909,
+          "specificity": 0.6923076923076923,
+          "fpr": 0.3076923076923077,
+          "f1": 0.6046511627906977
+        },
+        {
+          "fold": 3,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.10694166666666667,
+          "training_false_positive_budget": 17,
+          "tp": 18,
+          "fp": 8,
+          "tn": 17,
+          "fn": 5,
+          "accuracy": 0.7291666666666666,
+          "precision": 0.6923076923076923,
+          "recall": 0.782608695652174,
+          "specificity": 0.68,
+          "fpr": 0.32,
+          "f1": 0.7346938775510203
+        },
+        {
+          "fold": 4,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.14000866666666664,
+          "training_false_positive_budget": 16,
+          "tp": 17,
+          "fp": 3,
+          "tn": 23,
+          "fn": 5,
+          "accuracy": 0.8333333333333334,
+          "precision": 0.85,
+          "recall": 0.7727272727272727,
+          "specificity": 0.8846153846153846,
+          "fpr": 0.11538461538461539,
+          "f1": 0.8095238095238095
+        }
+      ],
+      "recall": {
+        "mean": 0.6574349189041844,
+        "std": 0.17184298979459495,
+        "folds_defined": 5
+      },
+      "fpr": {
+        "mean": 0.14861538461538465,
+        "std": 0.1413898885766446,
+        "folds_defined": 5
+      },
+      "precision": {
+        "mean": 0.8322710622710622,
+        "std": 0.15597069597069596,
+        "folds_defined": 5
+      },
+      "f1": {
+        "mean": 0.7099226533477954,
+        "std": 0.13393252668193684,
+        "folds_defined": 5
+      }
+    },
+    "topk_5": {
+      "note": "descriptive only; the threshold is re-derived on each training fold and never influences the main carve selection or the promotion gate",
+      "folds": [
+        {
+          "fold": 0,
+          "clips": 48,
+          "sources": 23,
+          "threshold_from_training_folds": 0.12467840000000001,
+          "training_false_positive_budget": 17,
+          "tp": 7,
+          "fp": 0,
+          "tn": 25,
+          "fn": 16,
+          "accuracy": 0.6666666666666666,
+          "precision": 1.0,
+          "recall": 0.30434782608695654,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.4666666666666667
+        },
+        {
+          "fold": 1,
+          "clips": 48,
+          "sources": 24,
+          "threshold_from_training_folds": 0.1219278,
+          "training_false_positive_budget": 18,
+          "tp": 23,
+          "fp": 0,
+          "tn": 19,
+          "fn": 6,
+          "accuracy": 0.875,
+          "precision": 1.0,
+          "recall": 0.7931034482758621,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.8846153846153846
+        },
+        {
+          "fold": 2,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.0992426,
+          "training_false_positive_budget": 16,
+          "tp": 13,
+          "fp": 8,
+          "tn": 18,
+          "fn": 9,
+          "accuracy": 0.6458333333333334,
+          "precision": 0.6190476190476191,
+          "recall": 0.5909090909090909,
+          "specificity": 0.6923076923076923,
+          "fpr": 0.3076923076923077,
+          "f1": 0.6046511627906977
+        },
+        {
+          "fold": 3,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.0992426,
+          "training_false_positive_budget": 17,
+          "tp": 18,
+          "fp": 7,
+          "tn": 18,
+          "fn": 5,
+          "accuracy": 0.75,
+          "precision": 0.72,
+          "recall": 0.782608695652174,
+          "specificity": 0.72,
+          "fpr": 0.28,
+          "f1": 0.7499999999999999
+        },
+        {
+          "fold": 4,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.11205900000000002,
+          "training_false_positive_budget": 16,
+          "tp": 17,
+          "fp": 4,
+          "tn": 22,
+          "fn": 5,
+          "accuracy": 0.8125,
+          "precision": 0.8095238095238095,
+          "recall": 0.7727272727272727,
+          "specificity": 0.8461538461538461,
+          "fpr": 0.15384615384615385,
+          "f1": 0.7906976744186046
+        }
+      ],
+      "recall": {
+        "mean": 0.6487392667302713,
+        "std": 0.18766185556377912,
+        "folds_defined": 5
+      },
+      "fpr": {
+        "mean": 0.1483076923076923,
+        "std": 0.13173256034717196,
+        "folds_defined": 5
+      },
+      "precision": {
+        "mean": 0.8297142857142857,
+        "std": 0.15153862427950862,
+        "folds_defined": 5
+      },
+      "f1": {
+        "mean": 0.6993261776982708,
+        "std": 0.1472022305542742,
+        "folds_defined": 5
+      }
+    },
+    "consecutive_2": {
+      "note": "descriptive only; the threshold is re-derived on each training fold and never influences the main carve selection or the promotion gate",
+      "folds": [
+        {
+          "fold": 0,
+          "clips": 48,
+          "sources": 23,
+          "threshold_from_training_folds": 0.148861,
+          "training_false_positive_budget": 17,
+          "tp": 6,
+          "fp": 0,
+          "tn": 25,
+          "fn": 17,
+          "accuracy": 0.6458333333333334,
+          "precision": 1.0,
+          "recall": 0.2608695652173913,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.41379310344827586
+        },
+        {
+          "fold": 1,
+          "clips": 48,
+          "sources": 24,
+          "threshold_from_training_folds": 0.133955,
+          "training_false_positive_budget": 18,
+          "tp": 21,
+          "fp": 1,
+          "tn": 18,
+          "fn": 8,
+          "accuracy": 0.8125,
+          "precision": 0.9545454545454546,
+          "recall": 0.7241379310344828,
+          "specificity": 0.9473684210526315,
+          "fpr": 0.05263157894736842,
+          "f1": 0.823529411764706
+        },
+        {
+          "fold": 2,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.099627,
+          "training_false_positive_budget": 16,
+          "tp": 13,
+          "fp": 8,
+          "tn": 18,
+          "fn": 9,
+          "accuracy": 0.6458333333333334,
+          "precision": 0.6190476190476191,
+          "recall": 0.5909090909090909,
+          "specificity": 0.6923076923076923,
+          "fpr": 0.3076923076923077,
+          "f1": 0.6046511627906977
+        },
+        {
+          "fold": 3,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.099627,
+          "training_false_positive_budget": 17,
+          "tp": 18,
+          "fp": 7,
+          "tn": 18,
+          "fn": 5,
+          "accuracy": 0.75,
+          "precision": 0.72,
+          "recall": 0.782608695652174,
+          "specificity": 0.72,
+          "fpr": 0.28,
+          "f1": 0.7499999999999999
+        },
+        {
+          "fold": 4,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.106108,
+          "training_false_positive_budget": 16,
+          "tp": 17,
+          "fp": 6,
+          "tn": 20,
+          "fn": 5,
+          "accuracy": 0.7708333333333334,
+          "precision": 0.7391304347826086,
+          "recall": 0.7727272727272727,
+          "specificity": 0.7692307692307693,
+          "fpr": 0.23076923076923078,
+          "f1": 0.7555555555555555
+        }
+      ],
+      "recall": {
+        "mean": 0.6262505111080824,
+        "std": 0.19505769513140184,
+        "folds_defined": 5
+      },
+      "fpr": {
+        "mean": 0.17421862348178138,
+        "std": 0.12436915481412568,
+        "folds_defined": 5
+      },
+      "precision": {
+        "mean": 0.8065447016751364,
+        "std": 0.14595821324109745,
+        "folds_defined": 5
+      },
+      "f1": {
+        "mean": 0.6695058467118471,
+        "std": 0.1464255830045755,
+        "folds_defined": 5
+      }
+    },
+    "consecutive_3": {
+      "note": "descriptive only; the threshold is re-derived on each training fold and never influences the main carve selection or the promotion gate",
+      "folds": [
+        {
+          "fold": 0,
+          "clips": 48,
+          "sources": 23,
+          "threshold_from_training_folds": 0.124398,
+          "training_false_positive_budget": 17,
+          "tp": 4,
+          "fp": 0,
+          "tn": 25,
+          "fn": 19,
+          "accuracy": 0.6041666666666666,
+          "precision": 1.0,
+          "recall": 0.17391304347826086,
+          "specificity": 1.0,
+          "fpr": 0.0,
+          "f1": 0.29629629629629634
+        },
+        {
+          "fold": 1,
+          "clips": 48,
+          "sources": 24,
+          "threshold_from_training_folds": 0.112893,
+          "training_false_positive_budget": 18,
+          "tp": 20,
+          "fp": 1,
+          "tn": 18,
+          "fn": 9,
+          "accuracy": 0.7916666666666666,
+          "precision": 0.9523809523809523,
+          "recall": 0.6896551724137931,
+          "specificity": 0.9473684210526315,
+          "fpr": 0.05263157894736842,
+          "f1": 0.7999999999999999
+        },
+        {
+          "fold": 2,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.082008,
+          "training_false_positive_budget": 16,
+          "tp": 13,
+          "fp": 8,
+          "tn": 18,
+          "fn": 9,
+          "accuracy": 0.6458333333333334,
+          "precision": 0.6190476190476191,
+          "recall": 0.5909090909090909,
+          "specificity": 0.6923076923076923,
+          "fpr": 0.3076923076923077,
+          "f1": 0.6046511627906977
+        },
+        {
+          "fold": 3,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.082008,
+          "training_false_positive_budget": 17,
+          "tp": 17,
+          "fp": 7,
+          "tn": 18,
+          "fn": 6,
+          "accuracy": 0.7291666666666666,
+          "precision": 0.7083333333333334,
+          "recall": 0.7391304347826086,
+          "specificity": 0.72,
+          "fpr": 0.28,
+          "f1": 0.723404255319149
+        },
+        {
+          "fold": 4,
+          "clips": 48,
+          "sources": 25,
+          "threshold_from_training_folds": 0.089883,
+          "training_false_positive_budget": 16,
+          "tp": 17,
+          "fp": 6,
+          "tn": 20,
+          "fn": 5,
+          "accuracy": 0.7708333333333334,
+          "precision": 0.7391304347826086,
+          "recall": 0.7727272727272727,
+          "specificity": 0.7692307692307693,
+          "fpr": 0.23076923076923078,
+          "f1": 0.7555555555555555
+        }
+      ],
+      "recall": {
+        "mean": 0.5932670028622052,
+        "std": 0.21846560894608386,
+        "folds_defined": 5
+      },
+      "fpr": {
+        "mean": 0.17421862348178138,
+        "std": 0.12436915481412568,
+        "folds_defined": 5
+      },
+      "precision": {
+        "mean": 0.8037784679089027,
+        "std": 0.14696953185589226,
+        "folds_defined": 5
+      },
+      "f1": {
+        "mean": 0.6359814539923396,
+        "std": 0.18177479962674117,
+        "folds_defined": 5
+      }
+    }
+  },
+  "promotion": {
+    "promoted": false,
+    "selected": null,
+    "gate": {
+      "criterion": "carve recall at matched false-positive budget",
+      "incumbent_tp": 85,
+      "incumbent_recall": 0.7142857142857143,
+      "required_extra_true_positives": 5,
+      "required_tp": 90,
+      "tie_breakers": [
+        "higher recall (more true positives)",
+        "fewer false positives",
+        "lower parameter complexity",
+        "retain the incumbent"
+      ],
+      "candidates_evaluated": 5,
+      "candidates_clearing_gate": 0,
+      "candidates_blocked_by_gate": [
+        {
+          "name": "topk_2",
+          "tp": 82,
+          "extra_tp_over_incumbent": -3,
+          "required_extra_tp": 5
+        },
+        {
+          "name": "topk_3",
+          "tp": 81,
+          "extra_tp_over_incumbent": -4,
+          "required_extra_tp": 5
+        },
+        {
+          "name": "topk_5",
+          "tp": 80,
+          "extra_tp_over_incumbent": -5,
+          "required_extra_tp": 5
+        },
+        {
+          "name": "consecutive_2",
+          "tp": 77,
+          "extra_tp_over_incumbent": -8,
+          "required_extra_tp": 5
+        },
+        {
+          "name": "consecutive_3",
+          "tp": 72,
+          "extra_tp_over_incumbent": -13,
+          "required_extra_tp": 5
+        }
+      ]
+    },
+    "decision": "NO CANDIDATE PROMOTED",
+    "rationale": "no candidate reached the pre-registered gate of 90 carve true positives (5 more Fight clips than the incumbent's 85) at the matched false-positive budget. The gate was fixed before any candidate was evaluated and is not relaxed to produce a winner. The deployed rule max >= 0.14 therefore stands unchanged, and no primary evaluation is licensed by this run."
+  },
+  "run": {
+    "timestamp_utc": "2026-09-06T09:11:17.889774+00:00",
+    "git_commit": "94f0b78d892e0c5ac0424c18e0f247997edd7619",
+    "tool_sha256": "c0b37948fe54e52faa9fd71277fbb3d090287813fa39d5fec997cdaf6e2c7dbf",
+    "python": "3.11.2"
+  }
+}
