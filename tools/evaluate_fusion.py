@@ -2,6 +2,8 @@
 """
 tools/evaluate_fusion.py
 
+SUPERSEDED -- REFUSES TO RUN BY DEFAULT. See SUPERSEDED_NOTICE below.
+
 Apply the pre-registered fusion protocol: calibrate on the FIT split, evaluate
 once on the EVAL split, report paired statistics.
 
@@ -232,11 +234,35 @@ def paired_bootstrap(rows, first, second, clusters=False, resamples=BOOTSTRAP, s
                       + ("source videos" if clusters else "clips")}
 
 
+SUPERSEDED_NOTICE = "\n".join([
+    "REFUSED: this tool evaluates the fresh validation carve, which was proved to be",
+    "R3D TRAINING data. holdout_validation is true with validation_fraction 0.15, so",
+    "the 240-clip carve IS the holdout and the remainder this carve was drawn from is",
+    "the training set. Measured memorization gap: +0.244 recall. Any number produced",
+    "here would compare a memorized temporal branch against a non-memorized spatial",
+    "one, and would be uninterpretable in either direction.",
+    "",
+    "Superseded by temporal_risk/frozen_confirmatory_fusion_protocol.json, which",
+    "calibrates on the 240-clip carve (genuine R3D holdout) and reserves the primary",
+    "394 for a single authorised confirmatory evaluation.",
+    "",
+    "See outputs/fusion/fusion_blocked_contamination.md. Pass",
+    "--i-understand-this-carve-is-training-data only to reproduce the contamination",
+    "evidence itself; it still yields no valid fusion result.",
+])
+
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--output", type=Path, default=FUSION_DIR / "fusion_evaluation.json")
+    parser.add_argument("--i-understand-this-carve-is-training-data", action="store_true",
+                        dest="acknowledged",
+                        help="reproduce the contamination evidence; produces no valid result")
     args = parser.parse_args(argv)
+
+    if not args.acknowledged:
+        print(SUPERSEDED_NOTICE, file=sys.stderr)
+        return 3
 
     protocol = json.loads(PROTOCOL.read_text(encoding="utf-8"))
     fit_rows, fit_payload = load_split("fit")
