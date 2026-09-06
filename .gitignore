@@ -53,3 +53,13 @@ logs/
 checkpoints/
 wandb/
 mlruns/
+
+# Exception: the paired clean-vs-sliding analysis artifacts are research
+# evidence, not regenerable output. clean_baseline_alignment.json in
+# particular cannot be rebuilt without the checkpoint, which is not in the
+# repository, and tests/test_paired_comparison.py reads these files. Scoped to
+# this one directory; every other path under outputs/ stays ignored. Placed
+# last so it also overrides the *.csv rule above.
+!outputs/temporal_risk/
+!outputs/temporal_risk/paired_clean_vs_sliding_window/
+!outputs/temporal_risk/paired_clean_vs_sliding_window/**

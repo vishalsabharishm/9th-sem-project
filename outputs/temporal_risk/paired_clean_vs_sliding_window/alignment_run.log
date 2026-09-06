@@ -1,0 +1,28 @@
+checkpoint : models\temporal_violence\best.pt
+provenance : checkpoint:best.pt
+clips      : 394 (sorted primary evaluation order)
+re-running whole-clip inference locally; this takes ~15 minutes on CPU
+  25/394  (47s elapsed)
+  50/394  (105s elapsed)
+  75/394  (154s elapsed)
+  100/394  (196s elapsed)
+  125/394  (244s elapsed)
+  150/394  (290s elapsed)
+  175/394  (328s elapsed)
+  200/394  (382s elapsed)
+  225/394  (426s elapsed)
+  250/394  (462s elapsed)
+  275/394  (499s elapsed)
+  300/394  (544s elapsed)
+  325/394  (587s elapsed)
+  350/394  (620s elapsed)
+  375/394  (657s elapsed)
+
+label mismatches            : 0
+rows over tolerance         : 0
+exact at six decimals       : 284/394
+max abs difference          : 3.160e-04
+mean abs difference         : 4.476e-06
+ALIGNMENT SUPPORTED         : True
+
+Wrote C:\Projects\9th-sem-project\outputs\temporal_risk\paired_clean_vs_sliding_window\clean_baseline_alignment.json

@@ -1,0 +1,3660 @@
+{
+  "tool": "recover_clean_baseline_alignment",
+  "hypothesis": "recovered row i corresponds to sorted primary clip i",
+  "basis": "evaluate_temporal_baseline.py writes this exact header, iterates the primary evaluation dataset with shuffle=False, and that dataset is built from rwf2000_splits sorted relative paths",
+  "clean_predictions": "C:\\Users\\VISHAL SABHARISH\\Downloads\\predictions.csv",
+  "clean_predictions_sha256": "ee6c26994a29042f630d262754381a28b3d0cc27cc03b42e9a5c818da1a58ce3",
+  "checkpoint": "models\\temporal_violence\\best.pt",
+  "checkpoint_sha256": "a32271bfb5a9c273f84672b16ecd5fa351fdd617d39a2c5c73f5c667255a559a",
+  "model_provenance": "checkpoint:best.pt",
+  "device": "cpu",
+  "clips": 394,
+  "match_tolerance": 0.001,
+  "label_mismatches": 0,
+  "rows_over_tolerance": 0,
+  "max_abs_difference": 0.0003159627571105439,
+  "mean_abs_difference": 4.475560096138673e-06,
+  "exact_matches_at_six_decimals": 284,
+  "alignment_supported": true,
+  "worst_rows": [
+    {
+      "index": 204,
+      "clip": "val/Val_NonFight/1W8hsVvyKt4_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.711586,
+      "local_probability": 0.7119019627571106,
+      "abs_difference": 0.0003159627571105439
+    },
+    {
+      "index": 255,
+      "clip": "val/Val_NonFight/IMA4zYs83Lo_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.548281,
+      "local_probability": 0.5485119819641113,
+      "abs_difference": 0.00023098196411130978
+    },
+    {
+      "index": 65,
+      "clip": "val/Val_Fight/MxkTo5F-nvU_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.427629,
+      "local_probability": 0.42745161056518555,
+      "abs_difference": 0.00017738943481443448
+    },
+    {
+      "index": 123,
+      "clip": "val/Val_Fight/YDOJvzChqSg_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.865312,
+      "local_probability": 0.8651494979858398,
+      "abs_difference": 0.00016250201416012633
+    },
+    {
+      "index": 64,
+      "clip": "val/Val_Fight/MxkTo5F-nvU_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.518927,
+      "local_probability": 0.5190121531486511,
+      "abs_difference": 8.515314865109591e-05
+    },
+    {
+      "index": 379,
+      "clip": "val/Val_NonFight/wMcODEtzJIA_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.610329,
+      "local_probability": 0.6103827357292175,
+      "abs_difference": 5.37357292175189e-05
+    },
+    {
+      "index": 339,
+      "clip": "val/Val_NonFight/myaBOqJ3_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.814579,
+      "local_probability": 0.8145279288291931,
+      "abs_difference": 5.1071170806937793e-05
+    },
+    {
+      "index": 346,
+      "clip": "val/Val_NonFight/nuf-d5GugL0_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.135086,
+      "local_probability": 0.13503538072109222,
+      "abs_difference": 5.06192789077875e-05
+    },
+    {
+      "index": 345,
+      "clip": "val/Val_NonFight/nuf-d5GugL0_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.670342,
+      "local_probability": 0.6702924370765686,
+      "abs_difference": 4.9562923431389905e-05
+    },
+    {
+      "index": 127,
+      "clip": "val/Val_Fight/e5Dmmply_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.825752,
+      "local_probability": 0.8257042765617371,
+      "abs_difference": 4.772343826298098e-05
+    }
+  ],
+  "wall_seconds": 690.0481299999956,
+  "per_clip": [
+    {
+      "index": 0,
+      "clip": "val/Val_Fight/0Ow4cotKOuw_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999556,
+      "local_probability": 0.9995556473731995,
+      "abs_difference": 3.526268005371591e-07
+    },
+    {
+      "index": 1,
+      "clip": "val/Val_Fight/0Ow4cotKOuw_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999998807907104,
+      "abs_difference": 1.1920928955078125e-07
+    },
+    {
+      "index": 2,
+      "clip": "val/Val_Fight/0Ow4cotKOuw_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 3,
+      "clip": "val/Val_Fight/0Ow4cotKOuw_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999998,
+      "local_probability": 0.9999979734420776,
+      "abs_difference": 2.6557922416792223e-08
+    },
+    {
+      "index": 4,
+      "clip": "val/Val_Fight/0Ow4cotKOuw_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999942,
+      "local_probability": 0.9999421834945679,
+      "abs_difference": 1.8349456787358776e-07
+    },
+    {
+      "index": 5,
+      "clip": "val/Val_Fight/1Kbw1bUw_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.99992,
+      "local_probability": 0.9999203681945801,
+      "abs_difference": 3.681945800471098e-07
+    },
+    {
+      "index": 6,
+      "clip": "val/Val_Fight/1Kbw1bUw_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.93375,
+      "local_probability": 0.9337509870529175,
+      "abs_difference": 9.87052917511555e-07
+    },
+    {
+      "index": 7,
+      "clip": "val/Val_Fight/1Kbw1bUw_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.998521,
+      "local_probability": 0.9985218644142151,
+      "abs_difference": 8.644142150959766e-07
+    },
+    {
+      "index": 8,
+      "clip": "val/Val_Fight/1Kbw1bUw_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.298151,
+      "local_probability": 0.2981429994106293,
+      "abs_difference": 8.000589370726896e-06
+    },
+    {
+      "index": 9,
+      "clip": "val/Val_Fight/1MVS2QPWbHc_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.60111,
+      "local_probability": 0.6011090874671936,
+      "abs_difference": 9.125328064296667e-07
+    },
+    {
+      "index": 10,
+      "clip": "val/Val_Fight/1MVS2QPWbHc_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.306628,
+      "local_probability": 0.3066387474536896,
+      "abs_difference": 1.0747453689563535e-05
+    },
+    {
+      "index": 11,
+      "clip": "val/Val_Fight/1MVS2QPWbHc_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999701,
+      "local_probability": 0.9997013211250305,
+      "abs_difference": 3.211250305668045e-07
+    },
+    {
+      "index": 12,
+      "clip": "val/Val_Fight/1MVS2QPWbHc_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999997,
+      "local_probability": 0.9999967813491821,
+      "abs_difference": 2.1865081789584906e-07
+    },
+    {
+      "index": 13,
+      "clip": "val/Val_Fight/1MVS2QPWbHc_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 14,
+      "clip": "val/Val_Fight/1MVS2QPWbHc_5.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.038434,
+      "local_probability": 0.03843345120549202,
+      "abs_difference": 5.487945079832302e-07
+    },
+    {
+      "index": 15,
+      "clip": "val/Val_Fight/39BFeYnbu-I_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 16,
+      "clip": "val/Val_Fight/39BFeYnbu-I_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 17,
+      "clip": "val/Val_Fight/39BFeYnbu-I_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999982,
+      "local_probability": 0.9999817609786987,
+      "abs_difference": 2.390213013070408e-07
+    },
+    {
+      "index": 18,
+      "clip": "val/Val_Fight/39BFeYnbu-I_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 19,
+      "clip": "val/Val_Fight/39BFeYnbu-I_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 20,
+      "clip": "val/Val_Fight/39BFeYnbu-I_5.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.991203,
+      "local_probability": 0.9912017583847046,
+      "abs_difference": 1.2416152953553805e-06
+    },
+    {
+      "index": 21,
+      "clip": "val/Val_Fight/39BFeYnbu-I_6.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 22,
+      "clip": "val/Val_Fight/39BFeYnbu-I_7.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 23,
+      "clip": "val/Val_Fight/39BFeYnbu-I_8.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 24,
+      "clip": "val/Val_Fight/48J5lk4QcpE_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.997185,
+      "local_probability": 0.9971854090690613,
+      "abs_difference": 4.09069061291234e-07
+    },
+    {
+      "index": 25,
+      "clip": "val/Val_Fight/48J5lk4QcpE_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999877,
+      "local_probability": 0.9998772144317627,
+      "abs_difference": 2.1443176267954556e-07
+    },
+    {
+      "index": 26,
+      "clip": "val/Val_Fight/48J5lk4QcpE_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999998807907104,
+      "abs_difference": 1.1920928955078125e-07
+    },
+    {
+      "index": 27,
+      "clip": "val/Val_Fight/48J5lk4QcpE_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.984816,
+      "local_probability": 0.9848161935806274,
+      "abs_difference": 1.9358062741670068e-07
+    },
+    {
+      "index": 28,
+      "clip": "val/Val_Fight/6Rl7q_kXYbg_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.998979,
+      "local_probability": 0.9989790916442871,
+      "abs_difference": 9.164428715902062e-08
+    },
+    {
+      "index": 29,
+      "clip": "val/Val_Fight/6Rl7q_kXYbg_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999986,
+      "local_probability": 0.9999862909317017,
+      "abs_difference": 2.9093170161864634e-07
+    },
+    {
+      "index": 30,
+      "clip": "val/Val_Fight/6Rl7q_kXYbg_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 31,
+      "clip": "val/Val_Fight/6Rl7q_kXYbg_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.997568,
+      "local_probability": 0.9975678324699402,
+      "abs_difference": 1.6753005982472757e-07
+    },
+    {
+      "index": 32,
+      "clip": "val/Val_Fight/6Rl7q_kXYbg_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.428498,
+      "local_probability": 0.4284975826740265,
+      "abs_difference": 4.173259735007484e-07
+    },
+    {
+      "index": 33,
+      "clip": "val/Val_Fight/6Rl7q_kXYbg_5.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.990055,
+      "local_probability": 0.9900546073913574,
+      "abs_difference": 3.9260864259649253e-07
+    },
+    {
+      "index": 34,
+      "clip": "val/Val_Fight/7gLKFV5voOg_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.995686,
+      "local_probability": 0.9956858158111572,
+      "abs_difference": 1.8418884273341263e-07
+    },
+    {
+      "index": 35,
+      "clip": "val/Val_Fight/7gLKFV5voOg_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.976637,
+      "local_probability": 0.9766369462013245,
+      "abs_difference": 5.3798675514471483e-08
+    },
+    {
+      "index": 36,
+      "clip": "val/Val_Fight/83d-16REC40_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.990695,
+      "local_probability": 0.9906944036483765,
+      "abs_difference": 5.963516235274469e-07
+    },
+    {
+      "index": 37,
+      "clip": "val/Val_Fight/83d-16REC40_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999628,
+      "local_probability": 0.9996278285980225,
+      "abs_difference": 1.7140197750009634e-07
+    },
+    {
+      "index": 38,
+      "clip": "val/Val_Fight/A7FCl8G35Cs_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 39,
+      "clip": "val/Val_Fight/A7FCl8G35Cs_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999996,
+      "local_probability": 0.9999958276748657,
+      "abs_difference": 1.723251342733434e-07
+    },
+    {
+      "index": 40,
+      "clip": "val/Val_Fight/ASGGSDG_183.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999983,
+      "local_probability": 0.9999827146530151,
+      "abs_difference": 2.8534698481852416e-07
+    },
+    {
+      "index": 41,
+      "clip": "val/Val_Fight/EFv961C5RgY_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 42,
+      "clip": "val/Val_Fight/EFv961C5RgY_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 43,
+      "clip": "val/Val_Fight/FXC43fACfPc_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.015913,
+      "local_probability": 0.01591312512755394,
+      "abs_difference": 1.2512755393975783e-07
+    },
+    {
+      "index": 44,
+      "clip": "val/Val_Fight/FXC43fACfPc_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.012941,
+      "local_probability": 0.012941883876919746,
+      "abs_difference": 8.838769197470203e-07
+    },
+    {
+      "index": 45,
+      "clip": "val/Val_Fight/FXC43fACfPc_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 46,
+      "clip": "val/Val_Fight/FXC43fACfPc_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 47,
+      "clip": "val/Val_Fight/I-QiUMPTWNE_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.989303,
+      "local_probability": 0.989303469657898,
+      "abs_difference": 4.6965789790576196e-07
+    },
+    {
+      "index": 48,
+      "clip": "val/Val_Fight/I-QiUMPTWNE_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.633723,
+      "local_probability": 0.6337222456932068,
+      "abs_difference": 7.543067932491709e-07
+    },
+    {
+      "index": 49,
+      "clip": "val/Val_Fight/I-QiUMPTWNE_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.903681,
+      "local_probability": 0.9036813378334045,
+      "abs_difference": 3.3783340458448663e-07
+    },
+    {
+      "index": 50,
+      "clip": "val/Val_Fight/I-QiUMPTWNE_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999605,
+      "local_probability": 0.9996046423912048,
+      "abs_difference": 3.57608795131803e-07
+    },
+    {
+      "index": 51,
+      "clip": "val/Val_Fight/I-QiUMPTWNE_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.996108,
+      "local_probability": 0.9961078763008118,
+      "abs_difference": 1.2369918822585646e-07
+    },
+    {
+      "index": 52,
+      "clip": "val/Val_Fight/I-QiUMPTWNE_5.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.505475,
+      "local_probability": 0.5054701566696167,
+      "abs_difference": 4.84333038330842e-06
+    },
+    {
+      "index": 53,
+      "clip": "val/Val_Fight/I-QiUMPTWNE_6.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.933251,
+      "local_probability": 0.9332492351531982,
+      "abs_difference": 1.764846801810549e-06
+    },
+    {
+      "index": 54,
+      "clip": "val/Val_Fight/I-QiUMPTWNE_7.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.992718,
+      "local_probability": 0.9927178621292114,
+      "abs_difference": 1.378707885635322e-07
+    },
+    {
+      "index": 55,
+      "clip": "val/Val_Fight/I-QiUMPTWNE_8.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.084022,
+      "local_probability": 0.08402194827795029,
+      "abs_difference": 5.1722049712599194e-08
+    },
+    {
+      "index": 56,
+      "clip": "val/Val_Fight/JECBfnp2ZXc_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.0628,
+      "local_probability": 0.06279953569173813,
+      "abs_difference": 4.6430826186605323e-07
+    },
+    {
+      "index": 57,
+      "clip": "val/Val_Fight/JECBfnp2ZXc_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.047514,
+      "local_probability": 0.04751431569457054,
+      "abs_difference": 3.1569457054070327e-07
+    },
+    {
+      "index": 58,
+      "clip": "val/Val_Fight/JECBfnp2ZXc_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999998807907104,
+      "abs_difference": 1.1920928955078125e-07
+    },
+    {
+      "index": 59,
+      "clip": "val/Val_Fight/JECBfnp2ZXc_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999998807907104,
+      "abs_difference": 1.1920928955078125e-07
+    },
+    {
+      "index": 60,
+      "clip": "val/Val_Fight/JECBfnp2ZXc_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.968181,
+      "local_probability": 0.9681811332702637,
+      "abs_difference": 1.3327026371356965e-07
+    },
+    {
+      "index": 61,
+      "clip": "val/Val_Fight/JECBfnp2ZXc_5.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.089044,
+      "local_probability": 0.08904433250427246,
+      "abs_difference": 3.325042724627858e-07
+    },
+    {
+      "index": 62,
+      "clip": "val/Val_Fight/JECBfnp2ZXc_6.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.038293,
+      "local_probability": 0.03829336538910866,
+      "abs_difference": 3.653891086571881e-07
+    },
+    {
+      "index": 63,
+      "clip": "val/Val_Fight/MxkTo5F-nvU_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.856627,
+      "local_probability": 0.8566135764122009,
+      "abs_difference": 1.3423587799099579e-05
+    },
+    {
+      "index": 64,
+      "clip": "val/Val_Fight/MxkTo5F-nvU_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.518927,
+      "local_probability": 0.5190121531486511,
+      "abs_difference": 8.515314865109591e-05
+    },
+    {
+      "index": 65,
+      "clip": "val/Val_Fight/MxkTo5F-nvU_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.427629,
+      "local_probability": 0.42745161056518555,
+      "abs_difference": 0.00017738943481443448
+    },
+    {
+      "index": 66,
+      "clip": "val/Val_Fight/MxkTo5F-nvU_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999996423721313,
+      "abs_difference": 3.5762786865234375e-07
+    },
+    {
+      "index": 67,
+      "clip": "val/Val_Fight/MxkTo5F-nvU_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.998252,
+      "local_probability": 0.9982509016990662,
+      "abs_difference": 1.098300933866092e-06
+    },
+    {
+      "index": 68,
+      "clip": "val/Val_Fight/OvDMIkTb4XU_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 69,
+      "clip": "val/Val_Fight/OvDMIkTb4XU_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999996,
+      "local_probability": 0.9999963045120239,
+      "abs_difference": 3.045120239297816e-07
+    },
+    {
+      "index": 70,
+      "clip": "val/Val_Fight/OvDMIkTb4XU_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 71,
+      "clip": "val/Val_Fight/OvDMIkTb4XU_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999999,
+      "local_probability": 0.999998927116394,
+      "abs_difference": 7.288360592827559e-08
+    },
+    {
+      "index": 72,
+      "clip": "val/Val_Fight/OvDMIkTb4XU_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 73,
+      "clip": "val/Val_Fight/Q0v2MB0b_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.136373,
+      "local_probability": 0.1363765448331833,
+      "abs_difference": 3.544833183294349e-06
+    },
+    {
+      "index": 74,
+      "clip": "val/Val_Fight/Qj3oZsaqNGE_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.218872,
+      "local_probability": 0.2188718020915985,
+      "abs_difference": 1.9790840150024636e-07
+    },
+    {
+      "index": 75,
+      "clip": "val/Val_Fight/Qj3oZsaqNGE_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999932,
+      "local_probability": 0.9999319314956665,
+      "abs_difference": 6.850433353911001e-08
+    },
+    {
+      "index": 76,
+      "clip": "val/Val_Fight/Qtcwz_K2Gvo_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.996331,
+      "local_probability": 0.996331512928009,
+      "abs_difference": 5.129280090665489e-07
+    },
+    {
+      "index": 77,
+      "clip": "val/Val_Fight/Qtcwz_K2Gvo_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.961513,
+      "local_probability": 0.9615157842636108,
+      "abs_difference": 2.784263610888793e-06
+    },
+    {
+      "index": 78,
+      "clip": "val/Val_Fight/RETYTDF_523.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999821,
+      "local_probability": 0.9998205304145813,
+      "abs_difference": 4.6958541866093384e-07
+    },
+    {
+      "index": 79,
+      "clip": "val/Val_Fight/RETYTDF_524.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.99998,
+      "local_probability": 0.9999799728393555,
+      "abs_difference": 2.7160644511248222e-08
+    },
+    {
+      "index": 80,
+      "clip": "val/Val_Fight/RIXaF_TkLlU_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.53018,
+      "local_probability": 0.5301799774169922,
+      "abs_difference": 2.258300779711675e-08
+    },
+    {
+      "index": 81,
+      "clip": "val/Val_Fight/RIXaF_TkLlU_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999987,
+      "local_probability": 0.9999874830245972,
+      "abs_difference": 4.830245972087255e-07
+    },
+    {
+      "index": 82,
+      "clip": "val/Val_Fight/RIXaF_TkLlU_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 83,
+      "clip": "val/Val_Fight/RIXaF_TkLlU_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999814,
+      "local_probability": 0.9998143315315247,
+      "abs_difference": 3.315315246776862e-07
+    },
+    {
+      "index": 84,
+      "clip": "val/Val_Fight/RIXaF_TkLlU_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999415,
+      "local_probability": 0.9994152784347534,
+      "abs_difference": 2.784347533646425e-07
+    },
+    {
+      "index": 85,
+      "clip": "val/Val_Fight/RIXaF_TkLlU_5.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.515555,
+      "local_probability": 0.5155540704727173,
+      "abs_difference": 9.295272827003487e-07
+    },
+    {
+      "index": 86,
+      "clip": "val/Val_Fight/RTHTRS_697.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999993,
+      "local_probability": 0.9999933242797852,
+      "abs_difference": 3.2427978513549505e-07
+    },
+    {
+      "index": 87,
+      "clip": "val/Val_Fight/RTHTRS_698.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 88,
+      "clip": "val/Val_Fight/RTHTRS_699.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 89,
+      "clip": "val/Val_Fight/RTHTRS_705.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 90,
+      "clip": "val/Val_Fight/RTHTRS_706.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 91,
+      "clip": "val/Val_Fight/RTHTRS_707.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999999,
+      "local_probability": 0.9999988079071045,
+      "abs_difference": 1.9209289547905684e-07
+    },
+    {
+      "index": 92,
+      "clip": "val/Val_Fight/RTHTRS_717.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999997615814209,
+      "abs_difference": 2.384185791015625e-07
+    },
+    {
+      "index": 93,
+      "clip": "val/Val_Fight/RTHTRS_718.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 94,
+      "clip": "val/Val_Fight/RTHTRS_719.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 95,
+      "clip": "val/Val_Fight/RTHTRS_720.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999999,
+      "local_probability": 0.9999992847442627,
+      "abs_difference": 2.8474426272406816e-07
+    },
+    {
+      "index": 96,
+      "clip": "val/Val_Fight/Ry5c1PbcIa0_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.862895,
+      "local_probability": 0.8628951907157898,
+      "abs_difference": 1.9071578982732262e-07
+    },
+    {
+      "index": 97,
+      "clip": "val/Val_Fight/SDFDSSDF_972.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999743,
+      "local_probability": 0.9997428059577942,
+      "abs_difference": 1.9404220585883536e-07
+    },
+    {
+      "index": 98,
+      "clip": "val/Val_Fight/SDFDSSDF_973.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999997,
+      "local_probability": 0.9999967813491821,
+      "abs_difference": 2.1865081789584906e-07
+    },
+    {
+      "index": 99,
+      "clip": "val/Val_Fight/SDFDSSDF_974.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 100,
+      "clip": "val/Val_Fight/SDFDSSDF_976.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.998252,
+      "local_probability": 0.9982522130012512,
+      "abs_difference": 2.1300125119250168e-07
+    },
+    {
+      "index": 101,
+      "clip": "val/Val_Fight/SDFDSSDF_977.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 102,
+      "clip": "val/Val_Fight/SDFDSSDF_978.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999998807907104,
+      "abs_difference": 1.1920928955078125e-07
+    },
+    {
+      "index": 103,
+      "clip": "val/Val_Fight/SJRnWfHAx_E_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999995,
+      "local_probability": 0.9999946355819702,
+      "abs_difference": 3.6441802975240023e-07
+    },
+    {
+      "index": 104,
+      "clip": "val/Val_Fight/SJRnWfHAx_E_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999995,
+      "local_probability": 0.9999949932098389,
+      "abs_difference": 6.79016110005648e-09
+    },
+    {
+      "index": 105,
+      "clip": "val/Val_Fight/SJRnWfHAx_E_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999997615814209,
+      "abs_difference": 2.384185791015625e-07
+    },
+    {
+      "index": 106,
+      "clip": "val/Val_Fight/SJRnWfHAx_E_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.910785,
+      "local_probability": 0.9107843637466431,
+      "abs_difference": 6.362533568893269e-07
+    },
+    {
+      "index": 107,
+      "clip": "val/Val_Fight/TYRFDVD_1104.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.302011,
+      "local_probability": 0.3020109236240387,
+      "abs_difference": 7.637596127763047e-08
+    },
+    {
+      "index": 108,
+      "clip": "val/Val_Fight/TYRFDVD_1105.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999995,
+      "local_probability": 0.999995231628418,
+      "abs_difference": 2.3162841800150602e-07
+    },
+    {
+      "index": 109,
+      "clip": "val/Val_Fight/TYRFDVD_1106.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.457528,
+      "local_probability": 0.45753782987594604,
+      "abs_difference": 9.829875946054667e-06
+    },
+    {
+      "index": 110,
+      "clip": "val/Val_Fight/TYRFDVD_1109.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999995231628418,
+      "abs_difference": 4.76837158203125e-07
+    },
+    {
+      "index": 111,
+      "clip": "val/Val_Fight/TYRFDVD_1110.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.664267,
+      "local_probability": 0.6642675399780273,
+      "abs_difference": 5.399780272918875e-07
+    },
+    {
+      "index": 112,
+      "clip": "val/Val_Fight/TYRFDVD_1112.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.242734,
+      "local_probability": 0.24273410439491272,
+      "abs_difference": 1.043949127144117e-07
+    },
+    {
+      "index": 113,
+      "clip": "val/Val_Fight/TYRFDVD_1113.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999893,
+      "local_probability": 0.9998925924301147,
+      "abs_difference": 4.075698852856746e-07
+    },
+    {
+      "index": 114,
+      "clip": "val/Val_Fight/Wq0BuA8GM84_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 115,
+      "clip": "val/Val_Fight/XM0NI7ZmwWM_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.054518,
+      "local_probability": 0.054518211632966995,
+      "abs_difference": 2.1163296699822087e-07
+    },
+    {
+      "index": 116,
+      "clip": "val/Val_Fight/XM0NI7ZmwWM_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.033548,
+      "local_probability": 0.0335472896695137,
+      "abs_difference": 7.103304862990378e-07
+    },
+    {
+      "index": 117,
+      "clip": "val/Val_Fight/XM0NI7ZmwWM_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.914163,
+      "local_probability": 0.9141624569892883,
+      "abs_difference": 5.430107116177751e-07
+    },
+    {
+      "index": 118,
+      "clip": "val/Val_Fight/XM0NI7ZmwWM_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.113995,
+      "local_probability": 0.11399491876363754,
+      "abs_difference": 8.123636245638277e-08
+    },
+    {
+      "index": 119,
+      "clip": "val/Val_Fight/Xcd0v-KhKL4_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 120,
+      "clip": "val/Val_Fight/YDOJvzChqSg_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.728885,
+      "local_probability": 0.7288563847541809,
+      "abs_difference": 2.8615245819096913e-05
+    },
+    {
+      "index": 121,
+      "clip": "val/Val_Fight/YDOJvzChqSg_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.829607,
+      "local_probability": 0.8295947313308716,
+      "abs_difference": 1.22686691284013e-05
+    },
+    {
+      "index": 122,
+      "clip": "val/Val_Fight/YDOJvzChqSg_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.989121,
+      "local_probability": 0.9891198873519897,
+      "abs_difference": 1.1126480102818803e-06
+    },
+    {
+      "index": 123,
+      "clip": "val/Val_Fight/YDOJvzChqSg_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.865312,
+      "local_probability": 0.8651494979858398,
+      "abs_difference": 0.00016250201416012633
+    },
+    {
+      "index": 124,
+      "clip": "val/Val_Fight/YDOJvzChqSg_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.658931,
+      "local_probability": 0.6589043140411377,
+      "abs_difference": 2.6685958862349146e-05
+    },
+    {
+      "index": 125,
+      "clip": "val/Val_Fight/bW2vHhYbzHM_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.001114,
+      "local_probability": 0.0011135892709717155,
+      "abs_difference": 4.107290282845226e-07
+    },
+    {
+      "index": 126,
+      "clip": "val/Val_Fight/e5Dmmply_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.093573,
+      "local_probability": 0.0935688316822052,
+      "abs_difference": 4.1683177948032e-06
+    },
+    {
+      "index": 127,
+      "clip": "val/Val_Fight/e5Dmmply_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.825752,
+      "local_probability": 0.8257042765617371,
+      "abs_difference": 4.772343826298098e-05
+    },
+    {
+      "index": 128,
+      "clip": "val/Val_Fight/e5Dmmply_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.08657,
+      "local_probability": 0.08655886352062225,
+      "abs_difference": 1.113647937774076e-05
+    },
+    {
+      "index": 129,
+      "clip": "val/Val_Fight/etyiEs3j8x8_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999679,
+      "local_probability": 0.9996788501739502,
+      "abs_difference": 1.498260497889703e-07
+    },
+    {
+      "index": 130,
+      "clip": "val/Val_Fight/etyiEs3j8x8_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999983,
+      "local_probability": 0.9999829530715942,
+      "abs_difference": 4.692840571696166e-08
+    },
+    {
+      "index": 131,
+      "clip": "val/Val_Fight/etyiEs3j8x8_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.260256,
+      "local_probability": 0.2602548599243164,
+      "abs_difference": 1.1400756835810988e-06
+    },
+    {
+      "index": 132,
+      "clip": "val/Val_Fight/etyiEs3j8x8_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.888631,
+      "local_probability": 0.8886294960975647,
+      "abs_difference": 1.5039024352514474e-06
+    },
+    {
+      "index": 133,
+      "clip": "val/Val_Fight/etyiEs3j8x8_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.996167,
+      "local_probability": 0.9961668848991394,
+      "abs_difference": 1.1510086062038738e-07
+    },
+    {
+      "index": 134,
+      "clip": "val/Val_Fight/etyiEs3j8x8_5.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.997624,
+      "local_probability": 0.99762362241745,
+      "abs_difference": 3.7758255000408525e-07
+    },
+    {
+      "index": 135,
+      "clip": "val/Val_Fight/etyiEs3j8x8_8.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.971362,
+      "local_probability": 0.9713621735572815,
+      "abs_difference": 1.7355728154644368e-07
+    },
+    {
+      "index": 136,
+      "clip": "val/Val_Fight/fbtEhNq5a6E_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999998,
+      "local_probability": 0.9999980926513672,
+      "abs_difference": 9.265136713398903e-08
+    },
+    {
+      "index": 137,
+      "clip": "val/Val_Fight/g-qjkePEXQA_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999926,
+      "local_probability": 0.9999264478683472,
+      "abs_difference": 4.478683471864642e-07
+    },
+    {
+      "index": 138,
+      "clip": "val/Val_Fight/g-qjkePEXQA_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.997346,
+      "local_probability": 0.9973464012145996,
+      "abs_difference": 4.0121459965458683e-07
+    },
+    {
+      "index": 139,
+      "clip": "val/Val_Fight/g-qjkePEXQA_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999857,
+      "local_probability": 0.9998570680618286,
+      "abs_difference": 6.806182861751608e-08
+    },
+    {
+      "index": 140,
+      "clip": "val/Val_Fight/g-qjkePEXQA_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.998801,
+      "local_probability": 0.9988013505935669,
+      "abs_difference": 3.5059356684463694e-07
+    },
+    {
+      "index": 141,
+      "clip": "val/Val_Fight/g6jdqkcdgqk_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.991416,
+      "local_probability": 0.9914154410362244,
+      "abs_difference": 5.589637755987198e-07
+    },
+    {
+      "index": 142,
+      "clip": "val/Val_Fight/g6jdqkcdgqk_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999995231628418,
+      "abs_difference": 4.76837158203125e-07
+    },
+    {
+      "index": 143,
+      "clip": "val/Val_Fight/g6jdqkcdgqk_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.005143,
+      "local_probability": 0.005143484100699425,
+      "abs_difference": 4.841006994247415e-07
+    },
+    {
+      "index": 144,
+      "clip": "val/Val_Fight/g6jdqkcdgqk_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.243118,
+      "local_probability": 0.24309608340263367,
+      "abs_difference": 2.191659736633378e-05
+    },
+    {
+      "index": 145,
+      "clip": "val/Val_Fight/g6jdqkcdgqk_5.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 146,
+      "clip": "val/Val_Fight/hytjfg_354.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999997615814209,
+      "abs_difference": 2.384185791015625e-07
+    },
+    {
+      "index": 147,
+      "clip": "val/Val_Fight/mwuiYEBdkJs_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 148,
+      "clip": "val/Val_Fight/mwuiYEBdkJs_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999994,
+      "local_probability": 0.9999936819076538,
+      "abs_difference": 3.1809234624091687e-07
+    },
+    {
+      "index": 149,
+      "clip": "val/Val_Fight/mwuiYEBdkJs_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999999,
+      "local_probability": 0.9999986886978149,
+      "abs_difference": 3.113021850298381e-07
+    },
+    {
+      "index": 150,
+      "clip": "val/Val_Fight/mwuiYEBdkJs_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 151,
+      "clip": "val/Val_Fight/mwuiYEBdkJs_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999998807907104,
+      "abs_difference": 1.1920928955078125e-07
+    },
+    {
+      "index": 152,
+      "clip": "val/Val_Fight/mwuiYEBdkJs_5.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 153,
+      "clip": "val/Val_Fight/nVdn1krnTCQ_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 154,
+      "clip": "val/Val_Fight/nVdn1krnTCQ_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 155,
+      "clip": "val/Val_Fight/nVdn1krnTCQ_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 156,
+      "clip": "val/Val_Fight/nVdn1krnTCQ_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.836776,
+      "local_probability": 0.8368048667907715,
+      "abs_difference": 2.88667907715201e-05
+    },
+    {
+      "index": 157,
+      "clip": "val/Val_Fight/nVdn1krnTCQ_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999954,
+      "local_probability": 0.999954342842102,
+      "abs_difference": 3.428421020412742e-07
+    },
+    {
+      "index": 158,
+      "clip": "val/Val_Fight/nVdn1krnTCQ_6.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.998889,
+      "local_probability": 0.9988889098167419,
+      "abs_difference": 9.018325808352046e-08
+    },
+    {
+      "index": 159,
+      "clip": "val/Val_Fight/nuf-d5GugL0_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999884,
+      "local_probability": 0.9998836517333984,
+      "abs_difference": 3.48266601557512e-07
+    },
+    {
+      "index": 160,
+      "clip": "val/Val_Fight/nuf-d5GugL0_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999998807907104,
+      "abs_difference": 1.1920928955078125e-07
+    },
+    {
+      "index": 161,
+      "clip": "val/Val_Fight/nuf-d5GugL0_10.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 162,
+      "clip": "val/Val_Fight/nuf-d5GugL0_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 163,
+      "clip": "val/Val_Fight/nuf-d5GugL0_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 164,
+      "clip": "val/Val_Fight/nuf-d5GugL0_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 165,
+      "clip": "val/Val_Fight/nuf-d5GugL0_5.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 166,
+      "clip": "val/Val_Fight/nuf-d5GugL0_6.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 167,
+      "clip": "val/Val_Fight/nuf-d5GugL0_7.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999998,
+      "local_probability": 0.9999983310699463,
+      "abs_difference": 3.3106994623555153e-07
+    },
+    {
+      "index": 168,
+      "clip": "val/Val_Fight/nuf-d5GugL0_9.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 169,
+      "clip": "val/Val_Fight/qaAclucigpY_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.972422,
+      "local_probability": 0.9724223017692566,
+      "abs_difference": 3.017692565832064e-07
+    },
+    {
+      "index": 170,
+      "clip": "val/Val_Fight/qaAclucigpY_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.998631,
+      "local_probability": 0.998630166053772,
+      "abs_difference": 8.339462280737564e-07
+    },
+    {
+      "index": 171,
+      "clip": "val/Val_Fight/qaAclucigpY_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.113902,
+      "local_probability": 0.11390209943056107,
+      "abs_difference": 9.94305610624302e-08
+    },
+    {
+      "index": 172,
+      "clip": "val/Val_Fight/qaAclucigpY_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.105214,
+      "local_probability": 0.10521373152732849,
+      "abs_difference": 2.684726715107555e-07
+    },
+    {
+      "index": 173,
+      "clip": "val/Val_Fight/tf_X7GtOGyE_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999861,
+      "local_probability": 0.9998611211776733,
+      "abs_difference": 1.2117767334007823e-07
+    },
+    {
+      "index": 174,
+      "clip": "val/Val_Fight/tf_X7GtOGyE_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999973,
+      "local_probability": 0.9999731779098511,
+      "abs_difference": 1.7790985107346557e-07
+    },
+    {
+      "index": 175,
+      "clip": "val/Val_Fight/tf_X7GtOGyE_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 176,
+      "clip": "val/Val_Fight/tf_X7GtOGyE_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.993319,
+      "local_probability": 0.9933179616928101,
+      "abs_difference": 1.0383071898933949e-06
+    },
+    {
+      "index": 177,
+      "clip": "val/Val_Fight/trtrhrt_1039.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 178,
+      "clip": "val/Val_Fight/trtrhrt_1040.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 179,
+      "clip": "val/Val_Fight/trtrhrt_1048.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 180,
+      "clip": "val/Val_Fight/trtrhrt_1049.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 181,
+      "clip": "val/Val_Fight/trtrhrt_1050.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 182,
+      "clip": "val/Val_Fight/trtrhrt_1053.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.987275,
+      "local_probability": 0.987275242805481,
+      "abs_difference": 2.428054809433533e-07
+    },
+    {
+      "index": 183,
+      "clip": "val/Val_Fight/trtrhrt_1054.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999995,
+      "local_probability": 0.9999946355819702,
+      "abs_difference": 3.6441802975240023e-07
+    },
+    {
+      "index": 184,
+      "clip": "val/Val_Fight/v4dhdnsxiX4_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 185,
+      "clip": "val/Val_Fight/v4dhdnsxiX4_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 186,
+      "clip": "val/Val_Fight/v4dhdnsxiX4_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 187,
+      "clip": "val/Val_Fight/v4dhdnsxiX4_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999995231628418,
+      "abs_difference": 4.76837158203125e-07
+    },
+    {
+      "index": 188,
+      "clip": "val/Val_Fight/xDjgfhGt-YA_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 189,
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.806559,
+      "local_probability": 0.8065592050552368,
+      "abs_difference": 2.0505523679048565e-07
+    },
+    {
+      "index": 190,
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.87701,
+      "local_probability": 0.8770092129707336,
+      "abs_difference": 7.87029266313688e-07
+    },
+    {
+      "index": 191,
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999998807907104,
+      "abs_difference": 1.1920928955078125e-07
+    },
+    {
+      "index": 192,
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.880095,
+      "local_probability": 0.8800957798957825,
+      "abs_difference": 7.798957825100317e-07
+    },
+    {
+      "index": 193,
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_4.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.997684,
+      "local_probability": 0.9976843595504761,
+      "abs_difference": 3.595504760589563e-07
+    },
+    {
+      "index": 194,
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_5.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.862942,
+      "local_probability": 0.8629427552223206,
+      "abs_difference": 7.552223205697928e-07
+    },
+    {
+      "index": 195,
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_6.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999688,
+      "local_probability": 0.9996881484985352,
+      "abs_difference": 1.4849853513521083e-07
+    },
+    {
+      "index": 196,
+      "clip": "val/Val_Fight/zOqs7Oh9oDM_0.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.740023,
+      "local_probability": 0.7400240302085876,
+      "abs_difference": 1.0302085876601197e-06
+    },
+    {
+      "index": 197,
+      "clip": "val/Val_Fight/zOqs7Oh9oDM_1.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.999996,
+      "local_probability": 0.9999957084655762,
+      "abs_difference": 2.9153442382412464e-07
+    },
+    {
+      "index": 198,
+      "clip": "val/Val_Fight/zOqs7Oh9oDM_2.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 1.0,
+      "local_probability": 1.0,
+      "abs_difference": 0.0
+    },
+    {
+      "index": 199,
+      "clip": "val/Val_Fight/zOqs7Oh9oDM_3.avi",
+      "dataset_label": "Fight",
+      "recovered_label": "Fight",
+      "recovered_probability": 0.99998,
+      "local_probability": 0.999980092048645,
+      "abs_difference": 9.204864503953303e-08
+    },
+    {
+      "index": 200,
+      "clip": "val/Val_NonFight/10uSOcwS_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000488,
+      "local_probability": 0.0004883568035438657,
+      "abs_difference": 3.568035438656909e-07
+    },
+    {
+      "index": 201,
+      "clip": "val/Val_NonFight/1AURh0Wj_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.024282,
+      "local_probability": 0.024280378594994545,
+      "abs_difference": 1.6214050054565166e-06
+    },
+    {
+      "index": 202,
+      "clip": "val/Val_NonFight/1MVS2QPWbHc_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.4991,
+      "local_probability": 0.499105304479599,
+      "abs_difference": 5.304479599010925e-06
+    },
+    {
+      "index": 203,
+      "clip": "val/Val_NonFight/1MVS2QPWbHc_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.998213,
+      "local_probability": 0.9982129335403442,
+      "abs_difference": 6.64596557786723e-08
+    },
+    {
+      "index": 204,
+      "clip": "val/Val_NonFight/1W8hsVvyKt4_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.711586,
+      "local_probability": 0.7119019627571106,
+      "abs_difference": 0.0003159627571105439
+    },
+    {
+      "index": 205,
+      "clip": "val/Val_NonFight/1W8hsVvyKt4_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999995231628418,
+      "abs_difference": 4.76837158203125e-07
+    },
+    {
+      "index": 206,
+      "clip": "val/Val_NonFight/1W8hsVvyKt4_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 1.0,
+      "local_probability": 0.9999998807907104,
+      "abs_difference": 1.1920928955078125e-07
+    },
+    {
+      "index": 207,
+      "clip": "val/Val_NonFight/1W8hsVvyKt4_3.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.003015,
+      "local_probability": 0.003014632733538747,
+      "abs_difference": 3.6726646125305115e-07
+    },
+    {
+      "index": 208,
+      "clip": "val/Val_NonFight/2lrARl7utL4_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.206061,
+      "local_probability": 0.2060612142086029,
+      "abs_difference": 2.1420860291110344e-07
+    },
+    {
+      "index": 209,
+      "clip": "val/Val_NonFight/2lrARl7utL4_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.988471,
+      "local_probability": 0.9884710311889648,
+      "abs_difference": 3.1188964855211054e-08
+    },
+    {
+      "index": 210,
+      "clip": "val/Val_NonFight/2lrARl7utL4_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.564994,
+      "local_probability": 0.5649941563606262,
+      "abs_difference": 1.563606262244832e-07
+    },
+    {
+      "index": 211,
+      "clip": "val/Val_NonFight/2qFnVnnZ_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.002142,
+      "local_probability": 0.0021418442483991385,
+      "abs_difference": 1.557516008613563e-07
+    },
+    {
+      "index": 212,
+      "clip": "val/Val_NonFight/32wXo9Dt_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.023037,
+      "local_probability": 0.023037724196910858,
+      "abs_difference": 7.241969108597035e-07
+    },
+    {
+      "index": 213,
+      "clip": "val/Val_NonFight/39BFeYnbu-I_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.999952,
+      "local_probability": 0.9999523162841797,
+      "abs_difference": 3.1628417973550427e-07
+    },
+    {
+      "index": 214,
+      "clip": "val/Val_NonFight/4I1DGWsh_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.045561,
+      "local_probability": 0.045557841658592224,
+      "abs_difference": 3.158341407773213e-06
+    },
+    {
+      "index": 215,
+      "clip": "val/Val_NonFight/4p2iGvo8_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.089154,
+      "local_probability": 0.08915700018405914,
+      "abs_difference": 3.0001840591459272e-06
+    },
+    {
+      "index": 216,
+      "clip": "val/Val_NonFight/66U2c3YMjOI_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.634527,
+      "local_probability": 0.6345189213752747,
+      "abs_difference": 8.07862472529397e-06
+    },
+    {
+      "index": 217,
+      "clip": "val/Val_NonFight/66U2c3YMjOI_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.008851,
+      "local_probability": 0.008851094171404839,
+      "abs_difference": 9.417140483906905e-08
+    },
+    {
+      "index": 218,
+      "clip": "val/Val_NonFight/6Rl7q_kXYbg_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.98682,
+      "local_probability": 0.9868202805519104,
+      "abs_difference": 2.8055191036990834e-07
+    },
+    {
+      "index": 219,
+      "clip": "val/Val_NonFight/6doZoiaG9PM_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.051191,
+      "local_probability": 0.0511910654604435,
+      "abs_difference": 6.546044349631241e-08
+    },
+    {
+      "index": 220,
+      "clip": "val/Val_NonFight/6doZoiaG9PM_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.012997,
+      "local_probability": 0.012997346930205822,
+      "abs_difference": 3.4693020582211853e-07
+    },
+    {
+      "index": 221,
+      "clip": "val/Val_NonFight/6doZoiaG9PM_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.106603,
+      "local_probability": 0.1066046953201294,
+      "abs_difference": 1.6953201293912201e-06
+    },
+    {
+      "index": 222,
+      "clip": "val/Val_NonFight/6doZoiaG9PM_3.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.004903,
+      "local_probability": 0.00490331556648016,
+      "abs_difference": 3.1556648015951955e-07
+    },
+    {
+      "index": 223,
+      "clip": "val/Val_NonFight/7gLKFV5voOg_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.037585,
+      "local_probability": 0.037582676857709885,
+      "abs_difference": 2.3231422901157095e-06
+    },
+    {
+      "index": 224,
+      "clip": "val/Val_NonFight/8SmT9rE9_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.435985,
+      "local_probability": 0.4359683096408844,
+      "abs_difference": 1.6690359115612008e-05
+    },
+    {
+      "index": 225,
+      "clip": "val/Val_NonFight/8m3onRfr_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000457,
+      "local_probability": 0.0004564729460980743,
+      "abs_difference": 5.270539019256782e-07
+    },
+    {
+      "index": 226,
+      "clip": "val/Val_NonFight/8s3rES1a_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.002823,
+      "local_probability": 0.0028231791220605373,
+      "abs_difference": 1.7912206053734975e-07
+    },
+    {
+      "index": 227,
+      "clip": "val/Val_NonFight/8tWVjrUW_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.01837,
+      "local_probability": 0.018371667712926865,
+      "abs_difference": 1.6677129268637125e-06
+    },
+    {
+      "index": 228,
+      "clip": "val/Val_NonFight/9JxNZtUK_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 3.9e-05,
+      "local_probability": 3.853760790661909e-05,
+      "abs_difference": 4.6239209338091243e-07
+    },
+    {
+      "index": 229,
+      "clip": "val/Val_NonFight/9kly-mpQczg_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.010468,
+      "local_probability": 0.010467984713613987,
+      "abs_difference": 1.528638601290544e-08
+    },
+    {
+      "index": 230,
+      "clip": "val/Val_NonFight/9kly-mpQczg_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.096344,
+      "local_probability": 0.09634425491094589,
+      "abs_difference": 2.549109458932497e-07
+    },
+    {
+      "index": 231,
+      "clip": "val/Val_NonFight/A7FCl8G35Cs_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.032835,
+      "local_probability": 0.032835181802511215,
+      "abs_difference": 1.8180251121213686e-07
+    },
+    {
+      "index": 232,
+      "clip": "val/Val_NonFight/A7FCl8G35Cs_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.999987,
+      "local_probability": 0.9999873638153076,
+      "abs_difference": 3.6381530765794423e-07
+    },
+    {
+      "index": 233,
+      "clip": "val/Val_NonFight/Assault006_x264_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.998167,
+      "local_probability": 0.9981666803359985,
+      "abs_difference": 3.1966400149130436e-07
+    },
+    {
+      "index": 234,
+      "clip": "val/Val_NonFight/Assault006_x264_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.998108,
+      "local_probability": 0.9981080293655396,
+      "abs_difference": 2.9365539555570308e-08
+    },
+    {
+      "index": 235,
+      "clip": "val/Val_NonFight/BOnEkkm1_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.004832,
+      "local_probability": 0.004832518752664328,
+      "abs_difference": 5.187526643272641e-07
+    },
+    {
+      "index": 236,
+      "clip": "val/Val_NonFight/Bp3wCVsS_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000144,
+      "local_probability": 0.00014417515194509178,
+      "abs_difference": 1.7515194509178035e-07
+    },
+    {
+      "index": 237,
+      "clip": "val/Val_NonFight/BySljls4_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 4.5e-05,
+      "local_probability": 4.5333581510931253e-05,
+      "abs_difference": 3.335815109312506e-07
+    },
+    {
+      "index": 238,
+      "clip": "val/Val_NonFight/CrBTbDcb_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000307,
+      "local_probability": 0.000306555099086836,
+      "abs_difference": 4.449009131640008e-07
+    },
+    {
+      "index": 239,
+      "clip": "val/Val_NonFight/Cw0HuNI5_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.001239,
+      "local_probability": 0.001238816766999662,
+      "abs_difference": 1.8323300033816145e-07
+    },
+    {
+      "index": 240,
+      "clip": "val/Val_NonFight/DeCoZoey_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 9.6e-05,
+      "local_probability": 9.588382818037644e-05,
+      "abs_difference": 1.1617181962356215e-07
+    },
+    {
+      "index": 241,
+      "clip": "val/Val_NonFight/EB08Cq4t_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 1.5e-05,
+      "local_probability": 1.4965287846280262e-05,
+      "abs_difference": 3.4712153719738506e-08
+    },
+    {
+      "index": 242,
+      "clip": "val/Val_NonFight/EFv961C5RgY_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.975478,
+      "local_probability": 0.9754776954650879,
+      "abs_difference": 3.0453491206561267e-07
+    },
+    {
+      "index": 243,
+      "clip": "val/Val_NonFight/F6kgeh23_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.011924,
+      "local_probability": 0.011920985765755177,
+      "abs_difference": 3.0142342448240267e-06
+    },
+    {
+      "index": 244,
+      "clip": "val/Val_NonFight/Fds7C6sp_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000986,
+      "local_probability": 0.0009860246209427714,
+      "abs_difference": 2.4620942771537424e-08
+    },
+    {
+      "index": 245,
+      "clip": "val/Val_NonFight/FpDZIe2z_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.025195,
+      "local_probability": 0.025180762633681297,
+      "abs_difference": 1.4237366318701344e-05
+    },
+    {
+      "index": 246,
+      "clip": "val/Val_NonFight/Fwhi4UNI_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000487,
+      "local_probability": 0.0004872055724263191,
+      "abs_difference": 2.0557242631910264e-07
+    },
+    {
+      "index": 247,
+      "clip": "val/Val_NonFight/GCgD8AkV_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.002956,
+      "local_probability": 0.0029551575426012278,
+      "abs_difference": 8.424573987721e-07
+    },
+    {
+      "index": 248,
+      "clip": "val/Val_NonFight/GXvqyqYi_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000232,
+      "local_probability": 0.00023181457072496414,
+      "abs_difference": 1.8542927503585951e-07
+    },
+    {
+      "index": 249,
+      "clip": "val/Val_NonFight/GYvqfFzN_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.01313,
+      "local_probability": 0.013127627782523632,
+      "abs_difference": 2.372217476367261e-06
+    },
+    {
+      "index": 250,
+      "clip": "val/Val_NonFight/I-QiUMPTWNE_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.034859,
+      "local_probability": 0.03485875576734543,
+      "abs_difference": 2.442326545726292e-07
+    },
+    {
+      "index": 251,
+      "clip": "val/Val_NonFight/I-QiUMPTWNE_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.008035,
+      "local_probability": 0.00803456362336874,
+      "abs_difference": 4.363766312603934e-07
+    },
+    {
+      "index": 252,
+      "clip": "val/Val_NonFight/I-QiUMPTWNE_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.962371,
+      "local_probability": 0.9623706936836243,
+      "abs_difference": 3.063163757088816e-07
+    },
+    {
+      "index": 253,
+      "clip": "val/Val_NonFight/I3rTHE3L_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.048828,
+      "local_probability": 0.04882654547691345,
+      "abs_difference": 1.454523086551196e-06
+    },
+    {
+      "index": 254,
+      "clip": "val/Val_NonFight/I9OYGpUd_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000215,
+      "local_probability": 0.00021511383238248527,
+      "abs_difference": 1.1383238248527578e-07
+    },
+    {
+      "index": 255,
+      "clip": "val/Val_NonFight/IMA4zYs83Lo_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.548281,
+      "local_probability": 0.5485119819641113,
+      "abs_difference": 0.00023098196411130978
+    },
+    {
+      "index": 256,
+      "clip": "val/Val_NonFight/IvimSdBV_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000131,
+      "local_probability": 0.00013077330368105322,
+      "abs_difference": 2.266963189467917e-07
+    },
+    {
+      "index": 257,
+      "clip": "val/Val_NonFight/JECBfnp2ZXc_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000336,
+      "local_probability": 0.0003360921982675791,
+      "abs_difference": 9.219826757909727e-08
+    },
+    {
+      "index": 258,
+      "clip": "val/Val_NonFight/JECBfnp2ZXc_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.057277,
+      "local_probability": 0.05727650970220566,
+      "abs_difference": 4.902977943435638e-07
+    },
+    {
+      "index": 259,
+      "clip": "val/Val_NonFight/JECBfnp2ZXc_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.033959,
+      "local_probability": 0.0339587926864624,
+      "abs_difference": 2.0731353760072846e-07
+    },
+    {
+      "index": 260,
+      "clip": "val/Val_NonFight/JOMXfA1R_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.032303,
+      "local_probability": 0.032290901988744736,
+      "abs_difference": 1.2098011255262664e-05
+    },
+    {
+      "index": 261,
+      "clip": "val/Val_NonFight/K4qpMWJS_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.037207,
+      "local_probability": 0.037207286804914474,
+      "abs_difference": 2.868049144774676e-07
+    },
+    {
+      "index": 262,
+      "clip": "val/Val_NonFight/LKdiIccO_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.004175,
+      "local_probability": 0.004174609202891588,
+      "abs_difference": 3.907971084116807e-07
+    },
+    {
+      "index": 263,
+      "clip": "val/Val_NonFight/LoQZojhn_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.013845,
+      "local_probability": 0.01385017391294241,
+      "abs_difference": 5.173912942409847e-06
+    },
+    {
+      "index": 264,
+      "clip": "val/Val_NonFight/LruY67tu_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 2e-06,
+      "local_probability": 2.0453621800697874e-06,
+      "abs_difference": 4.536218006978752e-08
+    },
+    {
+      "index": 265,
+      "clip": "val/Val_NonFight/LtfqEsod_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000439,
+      "local_probability": 0.00043887417996302247,
+      "abs_difference": 1.2582003697752088e-07
+    },
+    {
+      "index": 266,
+      "clip": "val/Val_NonFight/MrEU15Ug_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000421,
+      "local_probability": 0.00042067005415447056,
+      "abs_difference": 3.299458455294246e-07
+    },
+    {
+      "index": 267,
+      "clip": "val/Val_NonFight/MxkTo5F-nvU_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.259652,
+      "local_probability": 0.25963062047958374,
+      "abs_difference": 2.1379520416253683e-05
+    },
+    {
+      "index": 268,
+      "clip": "val/Val_NonFight/N8M1mmW9_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000156,
+      "local_probability": 0.00015621543570887297,
+      "abs_difference": 2.1543570887297674e-07
+    },
+    {
+      "index": 269,
+      "clip": "val/Val_NonFight/NQpYodM6_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.004211,
+      "local_probability": 0.004211368504911661,
+      "abs_difference": 3.6850491166081495e-07
+    },
+    {
+      "index": 270,
+      "clip": "val/Val_NonFight/NW4ndzCa_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.239382,
+      "local_probability": 0.23938290774822235,
+      "abs_difference": 9.077482223396327e-07
+    },
+    {
+      "index": 271,
+      "clip": "val/Val_NonFight/NWIc3Yat_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.010434,
+      "local_probability": 0.010433953255414963,
+      "abs_difference": 4.6744585037797326e-08
+    },
+    {
+      "index": 272,
+      "clip": "val/Val_NonFight/NWqRgoGh_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.272805,
+      "local_probability": 0.272798091173172,
+      "abs_difference": 6.9088268280226295e-06
+    },
+    {
+      "index": 273,
+      "clip": "val/Val_NonFight/NYvOWjLU_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000179,
+      "local_probability": 0.0001794027048163116,
+      "abs_difference": 4.027048163116108e-07
+    },
+    {
+      "index": 274,
+      "clip": "val/Val_NonFight/NeyOxUHJ_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.005952,
+      "local_probability": 0.0059509905986487865,
+      "abs_difference": 1.0094013512132807e-06
+    },
+    {
+      "index": 275,
+      "clip": "val/Val_NonFight/Nlopikk0zhE_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.083573,
+      "local_probability": 0.08356986939907074,
+      "abs_difference": 3.1306009292547676e-06
+    },
+    {
+      "index": 276,
+      "clip": "val/Val_NonFight/NnUOjff0_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000812,
+      "local_probability": 0.0008118407567963004,
+      "abs_difference": 1.5924320369959354e-07
+    },
+    {
+      "index": 277,
+      "clip": "val/Val_NonFight/NoUdd8wq_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.116765,
+      "local_probability": 0.11672341078519821,
+      "abs_difference": 4.1589214801782126e-05
+    },
+    {
+      "index": 278,
+      "clip": "val/Val_NonFight/O2rd3LTv_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000156,
+      "local_probability": 0.00015624912339262664,
+      "abs_difference": 2.49123392626646e-07
+    },
+    {
+      "index": 279,
+      "clip": "val/Val_NonFight/Ob0YCDgS_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.035107,
+      "local_probability": 0.03510742634534836,
+      "abs_difference": 4.263453483588364e-07
+    },
+    {
+      "index": 280,
+      "clip": "val/Val_NonFight/PL8idmS7_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.008225,
+      "local_probability": 0.008224389515817165,
+      "abs_difference": 6.104841828342977e-07
+    },
+    {
+      "index": 281,
+      "clip": "val/Val_NonFight/PNgE-OKjhgU_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.642342,
+      "local_probability": 0.6423426270484924,
+      "abs_difference": 6.270484924630892e-07
+    },
+    {
+      "index": 282,
+      "clip": "val/Val_NonFight/PNgE-OKjhgU_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.025447,
+      "local_probability": 0.02544749341905117,
+      "abs_difference": 4.934190511694803e-07
+    },
+    {
+      "index": 283,
+      "clip": "val/Val_NonFight/PaTrwJbs_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.010998,
+      "local_probability": 0.010997218079864979,
+      "abs_difference": 7.819201350220406e-07
+    },
+    {
+      "index": 284,
+      "clip": "val/Val_NonFight/QRJFLxqK_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000887,
+      "local_probability": 0.0008870760211721063,
+      "abs_difference": 7.602117210628138e-08
+    },
+    {
+      "index": 285,
+      "clip": "val/Val_NonFight/Qj3oZsaqNGE_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.013435,
+      "local_probability": 0.013434023596346378,
+      "abs_difference": 9.764036536224346e-07
+    },
+    {
+      "index": 286,
+      "clip": "val/Val_NonFight/RIXaF_TkLlU_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.056301,
+      "local_probability": 0.05630110576748848,
+      "abs_difference": 1.057674884827331e-07
+    },
+    {
+      "index": 287,
+      "clip": "val/Val_NonFight/RIXaF_TkLlU_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.754802,
+      "local_probability": 0.754802942276001,
+      "abs_difference": 9.422760010036058e-07
+    },
+    {
+      "index": 288,
+      "clip": "val/Val_NonFight/RIXaF_TkLlU_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.053309,
+      "local_probability": 0.05331074818968773,
+      "abs_difference": 1.7481896877266645e-06
+    },
+    {
+      "index": 289,
+      "clip": "val/Val_NonFight/RQt37bnC_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.002885,
+      "local_probability": 0.0028854128904640675,
+      "abs_difference": 4.1289046406748145e-07
+    },
+    {
+      "index": 290,
+      "clip": "val/Val_NonFight/Ry5c1PbcIa0_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.994652,
+      "local_probability": 0.9946519136428833,
+      "abs_difference": 8.635711667981383e-08
+    },
+    {
+      "index": 291,
+      "clip": "val/Val_NonFight/S8jXc3sP_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.01078,
+      "local_probability": 0.01077799778431654,
+      "abs_difference": 2.0022156834598875e-06
+    },
+    {
+      "index": 292,
+      "clip": "val/Val_NonFight/SJRnWfHAx_E_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.056436,
+      "local_probability": 0.05643608793616295,
+      "abs_difference": 8.793616294855422e-08
+    },
+    {
+      "index": 293,
+      "clip": "val/Val_NonFight/SJRnWfHAx_E_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.014243,
+      "local_probability": 0.014242528937757015,
+      "abs_difference": 4.710622429852235e-07
+    },
+    {
+      "index": 294,
+      "clip": "val/Val_NonFight/SJRnWfHAx_E_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000697,
+      "local_probability": 0.00069709139643237,
+      "abs_difference": 9.139643236991905e-08
+    },
+    {
+      "index": 295,
+      "clip": "val/Val_NonFight/TP6mtOzL_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.002553,
+      "local_probability": 0.0025526955723762512,
+      "abs_difference": 3.04427623748927e-07
+    },
+    {
+      "index": 296,
+      "clip": "val/Val_NonFight/UoS3KEYq_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000467,
+      "local_probability": 0.0004667145840357989,
+      "abs_difference": 2.8541596420111415e-07
+    },
+    {
+      "index": 297,
+      "clip": "val/Val_NonFight/VF8M3gXp_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000202,
+      "local_probability": 0.00020220634178258479,
+      "abs_difference": 2.0634178258478243e-07
+    },
+    {
+      "index": 298,
+      "clip": "val/Val_NonFight/VGKvz9qZ_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.010778,
+      "local_probability": 0.010777884162962437,
+      "abs_difference": 1.1583703756271047e-07
+    },
+    {
+      "index": 299,
+      "clip": "val/Val_NonFight/VIPpAkyG_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.020039,
+      "local_probability": 0.020037274807691574,
+      "abs_difference": 1.7251923084271592e-06
+    },
+    {
+      "index": 300,
+      "clip": "val/Val_NonFight/VTOPSZvF_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000646,
+      "local_probability": 0.0006461287848651409,
+      "abs_difference": 1.2878486514093356e-07
+    },
+    {
+      "index": 301,
+      "clip": "val/Val_NonFight/VVQBImyG_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.001285,
+      "local_probability": 0.0012849468039348722,
+      "abs_difference": 5.319606512775056e-08
+    },
+    {
+      "index": 302,
+      "clip": "val/Val_NonFight/VtIQbKvy_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.005909,
+      "local_probability": 0.0059088412672281265,
+      "abs_difference": 1.5873277187366391e-07
+    },
+    {
+      "index": 303,
+      "clip": "val/Val_NonFight/VzHfmJeI_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000182,
+      "local_probability": 0.0001819823810365051,
+      "abs_difference": 1.761896349490263e-08
+    },
+    {
+      "index": 304,
+      "clip": "val/Val_NonFight/WPXtCPPS_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.713651,
+      "local_probability": 0.7136472463607788,
+      "abs_difference": 3.7536392212267344e-06
+    },
+    {
+      "index": 305,
+      "clip": "val/Val_NonFight/Wq0BuA8GM84_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.533177,
+      "local_probability": 0.5331701636314392,
+      "abs_difference": 6.836368560803052e-06
+    },
+    {
+      "index": 306,
+      "clip": "val/Val_NonFight/Wq0BuA8GM84_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.880771,
+      "local_probability": 0.8807654976844788,
+      "abs_difference": 5.502315521210832e-06
+    },
+    {
+      "index": 307,
+      "clip": "val/Val_NonFight/Xcd0v-KhKL4_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.058587,
+      "local_probability": 0.05858543515205383,
+      "abs_difference": 1.5648479461671805e-06
+    },
+    {
+      "index": 308,
+      "clip": "val/Val_NonFight/YDOJvzChqSg_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.090731,
+      "local_probability": 0.09073352068662643,
+      "abs_difference": 2.520686626428237e-06
+    },
+    {
+      "index": 309,
+      "clip": "val/Val_NonFight/YL1qlr23_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.853176,
+      "local_probability": 0.8531591296195984,
+      "abs_difference": 1.687038040165678e-05
+    },
+    {
+      "index": 310,
+      "clip": "val/Val_NonFight/YYCGcBuE_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.001115,
+      "local_probability": 0.0011147101176902652,
+      "abs_difference": 2.8988230973492693e-07
+    },
+    {
+      "index": 311,
+      "clip": "val/Val_NonFight/Yf55ftZR_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000698,
+      "local_probability": 0.0006979222525842488,
+      "abs_difference": 7.774741575127149e-08
+    },
+    {
+      "index": 312,
+      "clip": "val/Val_NonFight/Yma07mlW_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.001635,
+      "local_probability": 0.0016347973141819239,
+      "abs_difference": 2.0268581807608536e-07
+    },
+    {
+      "index": 313,
+      "clip": "val/Val_NonFight/YukOkfIj_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.071759,
+      "local_probability": 0.0717611312866211,
+      "abs_difference": 2.1312866210904113e-06
+    },
+    {
+      "index": 314,
+      "clip": "val/Val_NonFight/ZCUy99AN_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000178,
+      "local_probability": 0.00017790909623727202,
+      "abs_difference": 9.090376272796567e-08
+    },
+    {
+      "index": 315,
+      "clip": "val/Val_NonFight/ZwhC7Kyg_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000901,
+      "local_probability": 0.0009011402144096792,
+      "abs_difference": 1.4021440967917475e-07
+    },
+    {
+      "index": 316,
+      "clip": "val/Val_NonFight/bW2vHhYbzHM_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000444,
+      "local_probability": 0.0004438958130776882,
+      "abs_difference": 1.0418692231178731e-07
+    },
+    {
+      "index": 317,
+      "clip": "val/Val_NonFight/bW2vHhYbzHM_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000675,
+      "local_probability": 0.0006745680584572256,
+      "abs_difference": 4.319415427744746e-07
+    },
+    {
+      "index": 318,
+      "clip": "val/Val_NonFight/cpFWuHXF_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.012408,
+      "local_probability": 0.01240827888250351,
+      "abs_difference": 2.7888250350889543e-07
+    },
+    {
+      "index": 319,
+      "clip": "val/Val_NonFight/e8jli13nLaM_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.004403,
+      "local_probability": 0.004403216298669577,
+      "abs_difference": 2.16298669576849e-07
+    },
+    {
+      "index": 320,
+      "clip": "val/Val_NonFight/eb4Oant1_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.100138,
+      "local_probability": 0.10013759881258011,
+      "abs_difference": 4.0118741989614293e-07
+    },
+    {
+      "index": 321,
+      "clip": "val/Val_NonFight/egQvmVL2_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 6.2e-05,
+      "local_probability": 6.183960795169696e-05,
+      "abs_difference": 1.6039204830304058e-07
+    },
+    {
+      "index": 322,
+      "clip": "val/Val_NonFight/etyiEs3j8x8_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.231479,
+      "local_probability": 0.23147886991500854,
+      "abs_difference": 1.3008499144540053e-07
+    },
+    {
+      "index": 323,
+      "clip": "val/Val_NonFight/etyiEs3j8x8_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.998673,
+      "local_probability": 0.9986727237701416,
+      "abs_difference": 2.7622985843134273e-07
+    },
+    {
+      "index": 324,
+      "clip": "val/Val_NonFight/etyiEs3j8x8_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.190234,
+      "local_probability": 0.19024017453193665,
+      "abs_difference": 6.174531936659067e-06
+    },
+    {
+      "index": 325,
+      "clip": "val/Val_NonFight/fGyFpyjd_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 8.5e-05,
+      "local_probability": 8.484193676849827e-05,
+      "abs_difference": 1.580632315017344e-07
+    },
+    {
+      "index": 326,
+      "clip": "val/Val_NonFight/fO2vb61DcUk_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.109546,
+      "local_probability": 0.10954601317644119,
+      "abs_difference": 1.3176441188145205e-08
+    },
+    {
+      "index": 327,
+      "clip": "val/Val_NonFight/fO2vb61DcUk_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.754142,
+      "local_probability": 0.7541380524635315,
+      "abs_difference": 3.947536468484891e-06
+    },
+    {
+      "index": 328,
+      "clip": "val/Val_NonFight/g7fqR4gn_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.217303,
+      "local_probability": 0.21729964017868042,
+      "abs_difference": 3.3598213195762394e-06
+    },
+    {
+      "index": 329,
+      "clip": "val/Val_NonFight/g8SVNUCm_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000875,
+      "local_probability": 0.0008744184742681682,
+      "abs_difference": 5.815257318318072e-07
+    },
+    {
+      "index": 330,
+      "clip": "val/Val_NonFight/gJV3TuKF_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.001119,
+      "local_probability": 0.0011185879120603204,
+      "abs_difference": 4.1208793967960865e-07
+    },
+    {
+      "index": 331,
+      "clip": "val/Val_NonFight/iE9hzgQD_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.003499,
+      "local_probability": 0.003500567749142647,
+      "abs_difference": 1.5677491426468494e-06
+    },
+    {
+      "index": 332,
+      "clip": "val/Val_NonFight/iJ5Q1tar_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.001832,
+      "local_probability": 0.0018317271023988724,
+      "abs_difference": 2.7289760112770255e-07
+    },
+    {
+      "index": 333,
+      "clip": "val/Val_NonFight/jpYrguiW_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.001245,
+      "local_probability": 0.0012445889879018068,
+      "abs_difference": 4.1101209819318155e-07
+    },
+    {
+      "index": 334,
+      "clip": "val/Val_NonFight/kApoSGPK_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000122,
+      "local_probability": 0.00012177866301499307,
+      "abs_difference": 2.213369850069259e-07
+    },
+    {
+      "index": 335,
+      "clip": "val/Val_NonFight/kMgCk8Ku_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.675045,
+      "local_probability": 0.6750468015670776,
+      "abs_difference": 1.8015670776305726e-06
+    },
+    {
+      "index": 336,
+      "clip": "val/Val_NonFight/l82NDOvk_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.018819,
+      "local_probability": 0.018817976117134094,
+      "abs_difference": 1.023882865904685e-06
+    },
+    {
+      "index": 337,
+      "clip": "val/Val_NonFight/mwuiYEBdkJs_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.709304,
+      "local_probability": 0.7093036770820618,
+      "abs_difference": 3.22917938277989e-07
+    },
+    {
+      "index": 338,
+      "clip": "val/Val_NonFight/mwuiYEBdkJs_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.999913,
+      "local_probability": 0.9999133348464966,
+      "abs_difference": 3.348464965302611e-07
+    },
+    {
+      "index": 339,
+      "clip": "val/Val_NonFight/myaBOqJ3_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.814579,
+      "local_probability": 0.8145279288291931,
+      "abs_difference": 5.1071170806937793e-05
+    },
+    {
+      "index": 340,
+      "clip": "val/Val_NonFight/nTsOksk7_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.03748,
+      "local_probability": 0.03748778626322746,
+      "abs_difference": 7.786263227463341e-06
+    },
+    {
+      "index": 341,
+      "clip": "val/Val_NonFight/nVdn1krnTCQ_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.625563,
+      "local_probability": 0.6255613565444946,
+      "abs_difference": 1.6434555053512767e-06
+    },
+    {
+      "index": 342,
+      "clip": "val/Val_NonFight/nVdn1krnTCQ_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.028583,
+      "local_probability": 0.02858254685997963,
+      "abs_difference": 4.53140020371251e-07
+    },
+    {
+      "index": 343,
+      "clip": "val/Val_NonFight/nVdn1krnTCQ_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.086249,
+      "local_probability": 0.0862487256526947,
+      "abs_difference": 2.743473053040679e-07
+    },
+    {
+      "index": 344,
+      "clip": "val/Val_NonFight/ngv36FBY_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.999994,
+      "local_probability": 0.9999943971633911,
+      "abs_difference": 3.9716339106377063e-07
+    },
+    {
+      "index": 345,
+      "clip": "val/Val_NonFight/nuf-d5GugL0_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.670342,
+      "local_probability": 0.6702924370765686,
+      "abs_difference": 4.9562923431389905e-05
+    },
+    {
+      "index": 346,
+      "clip": "val/Val_NonFight/nuf-d5GugL0_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.135086,
+      "local_probability": 0.13503538072109222,
+      "abs_difference": 5.06192789077875e-05
+    },
+    {
+      "index": 347,
+      "clip": "val/Val_NonFight/nuf-d5GugL0_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.999993,
+      "local_probability": 0.9999932050704956,
+      "abs_difference": 2.050704955847138e-07
+    },
+    {
+      "index": 348,
+      "clip": "val/Val_NonFight/oXeSTCLT_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.001355,
+      "local_probability": 0.001355377142317593,
+      "abs_difference": 3.771423175930131e-07
+    },
+    {
+      "index": 349,
+      "clip": "val/Val_NonFight/ojZVUz7i_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000799,
+      "local_probability": 0.0007994137704372406,
+      "abs_difference": 4.1377043724058656e-07
+    },
+    {
+      "index": 350,
+      "clip": "val/Val_NonFight/q4jlVJRb_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 1e-06,
+      "local_probability": 1.2048914186379989e-06,
+      "abs_difference": 2.048914186379989e-07
+    },
+    {
+      "index": 351,
+      "clip": "val/Val_NonFight/qFfqTQm0_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.001821,
+      "local_probability": 0.0018214830197393894,
+      "abs_difference": 4.830197393895005e-07
+    },
+    {
+      "index": 352,
+      "clip": "val/Val_NonFight/qaAclucigpY_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.114331,
+      "local_probability": 0.1143311932682991,
+      "abs_difference": 1.9326829910071286e-07
+    },
+    {
+      "index": 353,
+      "clip": "val/Val_NonFight/qaAclucigpY_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000418,
+      "local_probability": 0.00041794360731728375,
+      "abs_difference": 5.639268271627343e-08
+    },
+    {
+      "index": 354,
+      "clip": "val/Val_NonFight/qaAclucigpY_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.024166,
+      "local_probability": 0.02416365221142769,
+      "abs_difference": 2.3477885723113823e-06
+    },
+    {
+      "index": 355,
+      "clip": "val/Val_NonFight/qyRJeYN5_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.003161,
+      "local_probability": 0.0031603288371115923,
+      "abs_difference": 6.711628884078884e-07
+    },
+    {
+      "index": 356,
+      "clip": "val/Val_NonFight/r0mVR4J6_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.003181,
+      "local_probability": 0.0031813629902899265,
+      "abs_difference": 3.62990289926729e-07
+    },
+    {
+      "index": 357,
+      "clip": "val/Val_NonFight/rJbh1niy_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.014622,
+      "local_probability": 0.014621508307754993,
+      "abs_difference": 4.916922450061423e-07
+    },
+    {
+      "index": 358,
+      "clip": "val/Val_NonFight/rtSWit6k_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 3e-06,
+      "local_probability": 3.04722289001802e-06,
+      "abs_difference": 4.722289001801975e-08
+    },
+    {
+      "index": 359,
+      "clip": "val/Val_NonFight/rwg8hp5X_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.006698,
+      "local_probability": 0.006698965560644865,
+      "abs_difference": 9.655606448650753e-07
+    },
+    {
+      "index": 360,
+      "clip": "val/Val_NonFight/scznszmE_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000325,
+      "local_probability": 0.0003250309091527015,
+      "abs_difference": 3.0909152701511997e-08
+    },
+    {
+      "index": 361,
+      "clip": "val/Val_NonFight/tSk5CEXB_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.063079,
+      "local_probability": 0.06307879835367203,
+      "abs_difference": 2.016463279685965e-07
+    },
+    {
+      "index": 362,
+      "clip": "val/Val_NonFight/tf_X7GtOGyE_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.01545,
+      "local_probability": 0.01545218750834465,
+      "abs_difference": 2.187508344650077e-06
+    },
+    {
+      "index": 363,
+      "clip": "val/Val_NonFight/tf_X7GtOGyE_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.940089,
+      "local_probability": 0.9401004910469055,
+      "abs_difference": 1.1491046905565128e-05
+    },
+    {
+      "index": 364,
+      "clip": "val/Val_NonFight/tf_X7GtOGyE_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.050575,
+      "local_probability": 0.050575047731399536,
+      "abs_difference": 4.773139953423433e-08
+    },
+    {
+      "index": 365,
+      "clip": "val/Val_NonFight/tivF4CAg_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.072562,
+      "local_probability": 0.07256150245666504,
+      "abs_difference": 4.975433349624359e-07
+    },
+    {
+      "index": 366,
+      "clip": "val/Val_NonFight/twBrsDhF_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.001863,
+      "local_probability": 0.0018632836872711778,
+      "abs_difference": 2.836872711776961e-07
+    },
+    {
+      "index": 367,
+      "clip": "val/Val_NonFight/u-VcErKk6Qs_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000194,
+      "local_probability": 0.00019406767387408763,
+      "abs_difference": 6.767387408763243e-08
+    },
+    {
+      "index": 368,
+      "clip": "val/Val_NonFight/uZLLdl2P_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000224,
+      "local_probability": 0.0002235463325632736,
+      "abs_difference": 4.5366743672638796e-07
+    },
+    {
+      "index": 369,
+      "clip": "val/Val_NonFight/utRmPckr_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.035679,
+      "local_probability": 0.03567710518836975,
+      "abs_difference": 1.8948116302514029e-06
+    },
+    {
+      "index": 370,
+      "clip": "val/Val_NonFight/v1Sb6NhU_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000403,
+      "local_probability": 0.0004028921539429575,
+      "abs_difference": 1.0784605704246318e-07
+    },
+    {
+      "index": 371,
+      "clip": "val/Val_NonFight/v4dhdnsxiX4_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.003448,
+      "local_probability": 0.003447974333539605,
+      "abs_difference": 2.5666460394969254e-08
+    },
+    {
+      "index": 372,
+      "clip": "val/Val_NonFight/v4dhdnsxiX4_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.971736,
+      "local_probability": 0.9717355370521545,
+      "abs_difference": 4.629478455031588e-07
+    },
+    {
+      "index": 373,
+      "clip": "val/Val_NonFight/v4dhdnsxiX4_2.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.594371,
+      "local_probability": 0.5943761467933655,
+      "abs_difference": 5.146793365495839e-06
+    },
+    {
+      "index": 374,
+      "clip": "val/Val_NonFight/vAV3vIGr_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000715,
+      "local_probability": 0.0007149346056394279,
+      "abs_difference": 6.539436057213192e-08
+    },
+    {
+      "index": 375,
+      "clip": "val/Val_NonFight/vDeu44Su_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.035895,
+      "local_probability": 0.035894665867090225,
+      "abs_difference": 3.341329097780732e-07
+    },
+    {
+      "index": 376,
+      "clip": "val/Val_NonFight/vKUjLaXO_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 9.9e-05,
+      "local_probability": 9.853441588347778e-05,
+      "abs_difference": 4.655841165222168e-07
+    },
+    {
+      "index": 377,
+      "clip": "val/Val_NonFight/vXGRa5D6_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.007455,
+      "local_probability": 0.007453779224306345,
+      "abs_difference": 1.2207756936548353e-06
+    },
+    {
+      "index": 378,
+      "clip": "val/Val_NonFight/w6VytllR_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000126,
+      "local_probability": 0.00012551284453365952,
+      "abs_difference": 4.87155466340482e-07
+    },
+    {
+      "index": 379,
+      "clip": "val/Val_NonFight/wMcODEtzJIA_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.610329,
+      "local_probability": 0.6103827357292175,
+      "abs_difference": 5.37357292175189e-05
+    },
+    {
+      "index": 380,
+      "clip": "val/Val_NonFight/wMcODEtzJIA_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.017509,
+      "local_probability": 0.017508614808321,
+      "abs_difference": 3.851916790011123e-07
+    },
+    {
+      "index": 381,
+      "clip": "val/Val_NonFight/wyLoweAn_9Q_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 2e-06,
+      "local_probability": 2.29532815865241e-06,
+      "abs_difference": 2.9532815865241e-07
+    },
+    {
+      "index": 382,
+      "clip": "val/Val_NonFight/wyLoweAn_9Q_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.616397,
+      "local_probability": 0.6163917779922485,
+      "abs_difference": 5.222007751437552e-06
+    },
+    {
+      "index": 383,
+      "clip": "val/Val_NonFight/xRbCHA5YTi8_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.099159,
+      "local_probability": 0.0991554781794548,
+      "abs_difference": 3.521820545193677e-06
+    },
+    {
+      "index": 384,
+      "clip": "val/Val_NonFight/y2pGPMqikJg_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.004975,
+      "local_probability": 0.004975487478077412,
+      "abs_difference": 4.874780774113963e-07
+    },
+    {
+      "index": 385,
+      "clip": "val/Val_NonFight/y2pGPMqikJg_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.217102,
+      "local_probability": 0.21710194647312164,
+      "abs_difference": 5.352687834636605e-08
+    },
+    {
+      "index": 386,
+      "clip": "val/Val_NonFight/yFaADLZw_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.040756,
+      "local_probability": 0.0407535694539547,
+      "abs_difference": 2.430546045303905e-06
+    },
+    {
+      "index": 387,
+      "clip": "val/Val_NonFight/yN11pFfP_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000863,
+      "local_probability": 0.0008626886992715299,
+      "abs_difference": 3.1130072847013884e-07
+    },
+    {
+      "index": 388,
+      "clip": "val/Val_NonFight/zGBzk5SeJOw_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.019714,
+      "local_probability": 0.01971355266869068,
+      "abs_difference": 4.4733130931742804e-07
+    },
+    {
+      "index": 389,
+      "clip": "val/Val_NonFight/zGBzk5SeJOw_1.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.21281,
+      "local_probability": 0.21280966699123383,
+      "abs_difference": 3.330087661734815e-07
+    },
+    {
+      "index": 390,
+      "clip": "val/Val_NonFight/zMbmPG71_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.012529,
+      "local_probability": 0.01252935454249382,
+      "abs_difference": 3.5454249381998426e-07
+    },
+    {
+      "index": 391,
+      "clip": "val/Val_NonFight/zOqs7Oh9oDM_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.00951,
+      "local_probability": 0.00950955506414175,
+      "abs_difference": 4.4493585824902093e-07
+    },
+    {
+      "index": 392,
+      "clip": "val/Val_NonFight/zWevuNTR_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 0.000765,
+      "local_probability": 0.0007652981439605355,
+      "abs_difference": 2.9814396053557974e-07
+    },
+    {
+      "index": 393,
+      "clip": "val/Val_NonFight/zsvJyWXp_0.avi",
+      "dataset_label": "NonFight",
+      "recovered_label": "NonFight",
+      "recovered_probability": 4.2e-05,
+      "local_probability": 4.1836548916762695e-05,
+      "abs_difference": 1.6345108323730296e-07
+    }
+  ]
+}

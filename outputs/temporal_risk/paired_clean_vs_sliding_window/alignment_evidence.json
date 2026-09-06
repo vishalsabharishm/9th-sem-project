@@ -1,0 +1,43 @@
+{
+  "tool": "alignment_evidence",
+  "purpose": "quantify how strongly the recovered clip alignment is supported, and prove the paired tables cannot be changed by the ambiguity that remains",
+  "clips": 394,
+  "clean_predictions_sha256": "ee6c26994a29042f630d262754381a28b3d0cc27cc03b42e9a5c818da1a58ce3",
+  "checkpoint_sha256": "a32271bfb5a9c273f84672b16ecd5fa351fdd617d39a2c5c73f5c667255a559a",
+  "agreement_from_alignment_report": {
+    "label_mismatches": 0,
+    "rows_over_tolerance": 0,
+    "exact_matches_at_six_decimals": 284,
+    "max_abs_difference": 0.0003159627571105439,
+    "mean_abs_difference": 4.475560096138673e-06
+  },
+  "permutation_test": {
+    "observed_mean_abs_difference": 4.475560096138672e-06,
+    "permutations": 20000,
+    "seed": 42,
+    "scheme": "clips re-assigned at random within each label block, which is the hard null: the recovered file already fixes the label sequence, so only label-consistent mappings compete",
+    "permuted_min": 0.22066076662886064,
+    "permuted_max": 0.3054413010049956,
+    "permuted_mean": 0.2668563816074695,
+    "permutations_at_least_as_good_as_observed": 0,
+    "p_value": 4.999750012499375e-05,
+    "p_value_note": "add-one estimator; with zero permutations at least as good this is bounded by the number of permutations, not by the data",
+    "times_better_than_a_typical_wrong_mapping": 59625.24820920227
+  },
+  "tie_analysis": {
+    "tolerance": 1e-06,
+    "adjacent_near_tied_pairs": 99,
+    "adjacent_cross_label_inadmissible": 8,
+    "adjacent_same_label_admissible": 91,
+    "adjacent_same_label_and_same_clean_decision": 91,
+    "tie_clusters": 9,
+    "largest_tie_cluster": 78,
+    "clips_in_tie_clusters": 108,
+    "admissible_swaps_within_clusters": 2920,
+    "admissible_swaps_that_would_change_a_cell": 0,
+    "offending_swaps": [],
+    "tables_invariant_to_residual_ambiguity": true,
+    "invariance_argument": "a swap of clips i and j moves clean decision d_i onto clip j and d_j onto clip i while the sliding-window outcome stays with the clip. Admissibility forces label_i == label_j, so a clean decision's correctness is unchanged by the move; therefore if d_i == d_j the contributed cells are identical before and after, and b, c and every McNemar p-value are invariant"
+  },
+  "conclusion": "the hypothesised mapping beats every label-consistent alternative tried, and the residual near-ties provably cannot move a single cell of the paired tables"
+}
