@@ -1,0 +1,83 @@
+{
+  "tool": "contamination finding (hand-recorded, evidence machine-computed)",
+  "artifact_kind": "blocking finding",
+  "protocol_version": "fusion-v1-2026-09",
+  "decision": "FUSION PARKED - fresh carve is R3D training data",
+  "discovered": "after fit-split scoring, before any eval-split result was read",
+  "evidence": {
+    "training_summary_fields": {
+      "holdout_validation": true,
+      "validation_fraction": 0.15,
+      "monitor_set": "train-carved validation"
+    },
+    "implication": "1600 train clips, 15% held out = the 240-clip carve; the 1360-clip remainder is the R3D training set, and the fresh carve was drawn entirely from it",
+    "frozen_rule": "max >= 0.14 (unchanged)",
+    "fresh_carve_fit_split_TRAINING_DATA": {
+      "recall": 0.9583333333333334,
+      "fpr": 0.057692307692307696,
+      "tp": 46,
+      "fp": 3,
+      "tn": 49,
+      "fn": 2,
+      "n": 100
+    },
+    "existing_240_carve_HOLDOUT": {
+      "recall": 0.7142857142857143,
+      "fpr": 0.17355371900826447,
+      "tp": 85,
+      "fp": 21,
+      "tn": 100,
+      "fn": 34
+    },
+    "primary_394_recorded_not_reread": {
+      "recall": 0.8,
+      "fpr": 0.22164948453608246,
+      "tp": 160,
+      "fp": 43,
+      "tn": 151,
+      "fn": 40
+    },
+    "memorization_gap_recall": 0.24404761904761907
+  },
+  "why_invalid": [
+    "no headroom: 2 missed Fight clips of 48 on fit, alarm budget 3 false positives; exact McNemar needs 6-10 net discordant clips, so no significant result was reachable in either direction (stop condition 6)",
+    "structurally unfair: YOLOv8s never trained on RWF-2000, so fusion would pit a memorized temporal branch against a non-memorized spatial one, biasing against fusion and making even a null uninterpretable"
+  ],
+  "action_taken": {
+    "eval_scoring": "halted at 120/240 clips",
+    "eval_split_read": false,
+    "fusion_evaluation_run": false,
+    "fusion_result_claimed": false
+  },
+  "not_invalidated": {
+    "spatial_characterization": "measured on the existing 240-clip carve, which is R3D HOLDOUT data; YOLO trained on none of it",
+    "speed_mean_auc": [
+      0.855,
+      0.803,
+      0.903
+    ],
+    "speed_normalised_auc": [
+      0.806,
+      0.745,
+      0.867
+    ],
+    "complementarity_missed_fights_vs_correctly_rejected": [
+      0.867,
+      0.793,
+      0.926
+    ],
+    "unresolved_confounder": "camera motion is not compensated"
+  },
+  "no_uncontaminated_set_remains": {
+    "train_remainder": "R3D training data (memorized)",
+    "existing_240_carve": "spent three times for selection, but IS genuine R3D holdout",
+    "primary_394": "reserved for confirmatory evaluation; out of scope for this task"
+  },
+  "valid_path_forward": "fit fusion on the existing 240-clip carve (selection-spent but genuine R3D holdout), then evaluate ONCE on primary 394 under a pre-frozen protocol; requires separate authorisation",
+  "primary_data_accessed": false,
+  "run": {
+    "timestamp_utc": "2026-09-06T16:40:26.732559+00:00",
+    "fit_scores_sha256": "5197bdd9f370067c5efdec9ffb34775d9de538928a0532fbfa34d1cb950fad37",
+    "manifest_sha256": "20d862282143fd41d3af31bad69ba697cfac5f0fd87f7f952db53b0dfaf4b071"
+  }
+}

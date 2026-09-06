@@ -63,3 +63,11 @@ mlruns/
 !outputs/temporal_risk/
 !outputs/temporal_risk/paired_clean_vs_sliding_window/
 !outputs/temporal_risk/paired_clean_vs_sliding_window/**
+
+# Exception: the spatial-feasibility and fusion artifacts are research evidence.
+# fresh_carve_fit_scores.json in particular records the memorization gap that
+# blocked the fusion experiment and cannot be regenerated without ~70 minutes of
+# YOLO+R3D inference. Scoped to this one directory; every other path under
+# outputs/ stays ignored. Placed last so it also overrides the *.csv rule above.
+!outputs/fusion/
+!outputs/fusion/**

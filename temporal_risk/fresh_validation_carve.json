@@ -1,0 +1,7127 @@
+{
+  "tool": "build_fresh_validation_carve",
+  "protocol_version": "fresh-carve-v1-2026-09",
+  "artifact_kind": "fresh validation carve manifest",
+  "purpose": "the only split on which spatial/temporal fusion parameters may be fitted; never used for checkpoint selection or aggregation selection",
+  "fitting_occurred": false,
+  "primary_data_accessed": false,
+  "model_scores_consulted": false,
+  "selection_basis": "filenames, class directories and inferred source grouping only",
+  "seed": 20260906,
+  "dataset_root": "C:\\Projects\\9th-sem-project\\data\\rwf2000\\RWF-2000",
+  "existing_carve_csv_sha256": "b35543502f6bf97b9fa44e1c042b5745507f38855a45f9e41302fdecae4d5cb6",
+  "pool": {
+    "pool": [
+      [
+        "train/Train_Fight/-1l5631l3fg_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/-1l5631l3fg_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/-1l5631l3fg_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0H2s9UJcNJ0_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0H2s9UJcNJ0_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0H2s9UJcNJ0_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0H2s9UJcNJ0_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0H2s9UJcNJ0_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0NWz-01A2yk_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0NWz-01A2yk_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0TFi8D8IBg4_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0_DzLlklZa0_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0_DzLlklZa0_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0_DzLlklZa0_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0_DzLlklZa0_6.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0lHQ2f0d_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0lHQ2f0d_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0lHQ2f0d_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0lHQ2f0d_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/0vasozvJYvk_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1DwRGRND_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1DwRGRND_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1O4KGHbRt3M_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1O4KGHbRt3M_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1O4KGHbRt3M_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1O4KGHbRt3M_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1O4KGHbRt3M_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1XFiS6Lt_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1XFiS6Lt_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1dsLuL5Lvbc_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1dsLuL5Lvbc_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1dsLuL5Lvbc_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1dsLuL5Lvbc_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/1r0Wz04q_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/24E0xYYUz44_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/24E0xYYUz44_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/24E0xYYUz44_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/24E0xYYUz44_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/24E0xYYUz44_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/24E0xYYUz44_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/24E0xYYUz44_6.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/24E0xYYUz44_7.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/2hQMRq06NJs_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/2sy_eLpH-PI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/2sy_eLpH-PI_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3OKArbzg1uc_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3OKArbzg1uc_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3OKArbzg1uc_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3OKArbzg1uc_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3OKArbzg1uc_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3SS0E4SmTk8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3SS0E4SmTk8_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3Vw7MoNBgx4_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3kpviz7lAMY_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3kpviz7lAMY_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3kpviz7lAMY_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3kpviz7lAMY_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/3kpviz7lAMY_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4HH7yMU8y9A_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4HH7yMU8y9A_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4RqDG4I4iAk_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4RqDG4I4iAk_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4RqDG4I4iAk_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4RqDG4I4iAk_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4RqDG4I4iAk_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4RqDG4I4iAk_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4RqDG4I4iAk_6.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4RqDG4I4iAk_7.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4RqDG4I4iAk_8.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4yTlGiDoxBo_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4yTlGiDoxBo_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4yTlGiDoxBo_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4yTlGiDoxBo_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4yTlGiDoxBo_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4yTlGiDoxBo_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/4yzwSsis_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/5QqDgtwEQsI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/6Dej3-k3MRE_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/6Dej3-k3MRE_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/6Dej3-k3MRE_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/6Dej3-k3MRE_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/6Dej3-k3MRE_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/6Dej3-k3MRE_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/6TDF_12.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/6TDF_13.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/6TDF_14.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/6TDF_15.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/6TDF_27.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/7LnoFKSl2rs_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/7R1m3V8C30g_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/7R1m3V8C30g_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/7R1m3V8C30g_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/7Xe6eysGKeU_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/88ndrvAZpE8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/88ndrvAZpE8_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/89UQqPuR4Q4_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/8VqTmuq4HcI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/8bEO4LGr_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/8mxsp2RTU6M_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/8pKKdS7rhXo_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/8pKKdS7rhXo_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/8pKKdS7rhXo_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/91TniI0y_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/9ErNHIovPDI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/9U8J4abJGDg_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/API3q8TBGu4_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/AkTZX27QhjE_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/AkTZX27QhjE_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/AkTZX27QhjE_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/AkTZX27QhjE_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Am9mUxPTvK4_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Am9mUxPTvK4_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/AsGAgf8U2rk_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/BCVBVC_263.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/BCVBVC_264.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/BpargJW29Wo_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/BpargJW29Wo_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/BpargJW29Wo_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/BpargJW29Wo_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/BpargJW29Wo_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/C4SQF-UZzkA_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/C8wt47cphU8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/C8wt47cphU8_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/CBfRtxkO1bE_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/CBfRtxkO1bE_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/CBfRtxkO1bE_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/CBfRtxkO1bE_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Cce4ogHp_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Cce4ogHp_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/CqJB8ZWLZ-o_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/CqJB8ZWLZ-o_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DC10fyQgNqo_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DC10fyQgNqo_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DC10fyQgNqo_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DC10fyQgNqo_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DHhyNrXr_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DHhyNrXr_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DHhyNrXr_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DHhyNrXr_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DIsQwAdR8MI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DTq6Gu30-uA_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DTq6Gu30-uA_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DTq6Gu30-uA_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DTq6Gu30-uA_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DTq6Gu30-uA_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DTq6Gu30-uA_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/DTq6Gu30-uA_6.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/E0Huf4Qi0JE_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/E0Huf4Qi0JE_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/E2gqgFNyPL8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Ek0jcAoCRw8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Er-sOPbvRVI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/EtRfZ2KP_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/EtRfZ2KP_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/EtRfZ2KP_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/EtRfZ2KP_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/EtRfZ2KP_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/FZDDNtcaBcw_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/FZDDNtcaBcw_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/FZDDNtcaBcw_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/G3E1YP6agWs_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/G3E1YP6agWs_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/GKsvH_pVNQU_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/GKsvH_pVNQU_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/GhZRf4GIw0w_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/GtGAcKxn_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/H1AzC-GyKto_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/H1AzC-GyKto_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/HVSv9sgz2ZI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/HVSv9sgz2ZI_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/HVSv9sgz2ZI_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/HVSv9sgz2ZI_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/HVSv9sgz2ZI_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/HW48LUZKOL4_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/HW48LUZKOL4_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/HW48LUZKOL4_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/HW48LUZKOL4_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/H_VQJU0Bqpc_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/H_VQJU0Bqpc_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/HgwpC5Xx_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/I-x0G5pAan0_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/JJG0bHPur50_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/JJG0bHPur50_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/JJG0bHPur50_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/JRL5Vvql_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/JRL5Vvql_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Jq8neqBlL2Y_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Jq8neqBlL2Y_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Jq8neqBlL2Y_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Jq8neqBlL2Y_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Jt4WbOZeT7s_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/JwTPruSFTjk_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/JwTPruSFTjk_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/K6WRP2xi_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/K6WRP2xi_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/K6WRP2xi_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/K6WRP2xi_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/K_7hT4N2QCE_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/K_7hT4N2QCE_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/K_7hT4N2QCE_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Kx5lWLPZ0Y0_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Kx5lWLPZ0Y0_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/LLo_TXIz5-g_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Mi4nMB8AHxI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Mi4nMB8AHxI_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/MzcX84QCuE8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/N1Q9v-saJ_g_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/N1Q9v-saJ_g_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/N1Q9v-saJ_g_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/NPeKBgURcxI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/NPeKBgURcxI_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/NPeKBgURcxI_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/NvYo6CS_i_A_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/NvYo6CS_i_A_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/NvYo6CS_i_A_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/NvYo6CS_i_A_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/OAfV0xPIhZw_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/OAfV0xPIhZw_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/OAfV0xPIhZw_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/OAfV0xPIhZw_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/OAfV0xPIhZw_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/OTVE3eLAuUM_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/OTVE3eLAuUM_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/OTVE3eLAuUM_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Ou8ssKOQzI0_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Ou8ssKOQzI0_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Ou8ssKOQzI0_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PFw7SeFOD04_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PFw7SeFOD04_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PFw7SeFOD04_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PFw7SeFOD04_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PJDdPv2b9-s_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/POGFN_429.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/POGFN_430.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/POGFN_432.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PTy2vx8Ejas_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PTy2vx8Ejas_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PTy2vx8Ejas_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PTy2vx8Ejas_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PTy2vx8Ejas_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Pe1uIhp4dAQ_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Pe1uIhp4dAQ_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Pe1uIhp4dAQ_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Pe1uIhp4dAQ_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Pe1uIhp4dAQ_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PlHzsigAFas_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PlHzsigAFas_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PlHzsigAFas_10.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PlHzsigAFas_11.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PlHzsigAFas_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PlHzsigAFas_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PlHzsigAFas_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PlHzsigAFas_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PlHzsigAFas_7.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PlHzsigAFas_8.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/PlHzsigAFas_9.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Q1ycSrzoM2c_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Q1ycSrzoM2c_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/QUGT4a6qcJs_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/QUGT4a6qcJs_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/QUGT4a6qcJs_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/QaIY5Au8yOc_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/QaIY5Au8yOc_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/QaIY5Au8yOc_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/RGIpCpdlzI8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/RTCFGASH_573.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/RTCFGASH_579.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/RTDSFDSA_673.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/RTDSFDSA_674.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/RTDSFDSA_675.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/RTDSFDSA_676.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/RTDSFDSA_677.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Ri_poPbOu-k_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Ri_poPbOu-k_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Ri_poPbOu-k_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/SGntTioECg4_997.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/SGntTioECg4_999.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/SNGRni0hBUM_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/SXd2yu2LHv0_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/SXd2yu2LHv0_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/SXd2yu2LHv0_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/SjJEt0drQZs_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/SmBrtaGJ_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/SmBrtaGJ_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Suv_mMs8J9g_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/T56HlypCEyU_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/T56HlypCEyU_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/T56HlypCEyU_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/TJfoIe801t8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/TKBcD3J9Cc8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/TKBcD3J9Cc8_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/TKBcD3J9Cc8_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/ThiaJUQ8_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/ThiaJUQ8_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/ThiaJUQ8_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/TuWan04E3gQ_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/TuWan04E3gQ_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/U-rD98WfBYs_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/V726w0IKCp4_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/V726w0IKCp4_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/V726w0IKCp4_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/V726w0IKCp4_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/VYWWsld6ibI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/VbwTMJroTbI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Vd27cYFthms_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/VfDyc4ORBSI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/VfDyc4ORBSI_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Wby1vUy8aYI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Wby1vUy8aYI_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Wby1vUy8aYI_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/X6V5o-uCYF4_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/X6V5o-uCYF4_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/X6V5o-uCYF4_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/X6V5o-uCYF4_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/X6V5o-uCYF4_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/XRC_6WgxusI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/Xh6FNqKDMak_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YL-qwpTMjzk_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YL-qwpTMjzk_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YL-qwpTMjzk_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YL-qwpTMjzk_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YUOfgfuh_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YaWxiAtCwxE_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YaWxiAtCwxE_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YaWxiAtCwxE_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YaWxiAtCwxE_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YaWxiAtCwxE_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YaWxiAtCwxE_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YaWxiAtCwxE_6.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YaWxiAtCwxE_7.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/YaWxiAtCwxE_8.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/ZVPU5c95_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/ZVPU5c95_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/ZnRk8nWJ548_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_2RYnSFPD_U_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_6-B11R9FJM_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_6-B11R9FJM_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_6-B11R9FJM_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_6-B11R9FJM_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_6-B11R9FJM_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_RziL1Ds6xU_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_RziL1Ds6xU_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_TwPzPRK7dc_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_10.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_11.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_13.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_14.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_6.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_7.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_8.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/_q5Nwh4Z6ao_9.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/a2qLzOu_n0s_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/a2qLzOu_n0s_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/a2qLzOu_n0s_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/a2qLzOu_n0s_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/a2qLzOu_n0s_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/a7D2i0HTXGM_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/a7D2i0HTXGM_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/a7D2i0HTXGM_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/a7gBQaAFEtw_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/a7gBQaAFEtw_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/aIg9Yb0O7Hg_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/aIg9Yb0O7Hg_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/aIg9Yb0O7Hg_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/aIg9Yb0O7Hg_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/aIg9Yb0O7Hg_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/aIg9Yb0O7Hg_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/aKK0B4kpKZA_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/aKK0B4kpKZA_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/aKgSasWRJ2s_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/aKgSasWRJ2s_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/aKgSasWRJ2s_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/aKgSasWRJ2s_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/as4zD6d86q0_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/as4zD6d86q0_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/as4zD6d86q0_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/asdasda_107.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/asdasda_108.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/asdasda_109.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/asdasda_110.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/asdasda_111.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/asdasda_112.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/asdasda_113.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/b6XfVAZC9Zs_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/b6XfVAZC9Zs_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/b6XfVAZC9Zs_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/b6XfVAZC9Zs_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/b6XfVAZC9Zs_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/b6XfVAZC9Zs_6.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/b6XfVAZC9Zs_7.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/bd48s5BpoGY_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/bdZ7ubago6I_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/bdZ7ubago6I_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cAp5A44HRS8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cAp5A44HRS8_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cBNVcBk3rjg_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cBNVcBk3rjg_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cBNVcBk3rjg_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cBNVcBk3rjg_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cBNVcBk3rjg_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cJvLTWGs-SE_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cJvLTWGs-SE_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cWJ92fkhME4_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cy1gi3ZJb_c_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cy1gi3ZJb_c_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cy1gi3ZJb_c_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cy1gi3ZJb_c_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cy1gi3ZJb_c_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/cy1gi3ZJb_c_6.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/dBkszzm-7mw_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/dHEI4OkhC64_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/dKqbUbuRxB4_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/dOM7frJMFbc_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/dOM7frJMFbc_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/dOM7frJMFbc_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/dP20avzQAf8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/dP20avzQAf8_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/dfsafsghg_325.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/dfsafsghg_326.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/dfsafsghg_327.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/eifiXLWYul8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/erwyrhd_337.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/erwyrhd_338.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/erwyrhd_339.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/erwyrhd_340.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/f50PQz7mXds_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/f50PQz7mXds_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/fK7CSrQ6OpM_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/fK7CSrQ6OpM_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/fK7CSrQ6OpM_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/fRYqXRRcqCs_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/fSE4L50n_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/fsVC-FnnklU_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/fsVC-FnnklU_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/fwEk96k8g_I_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/fwEk96k8g_I_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/fwEk96k8g_I_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/fwEk96k8g_I_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/gHcG_c1i4uE_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/gJDvtfRrM7k_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/gJDvtfRrM7k_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/gR4OsEPl894_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/gR4OsEPl894_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/gnBmOf7v_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/gnBmOf7v_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/gnBmOf7v_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/hEjHnhy2_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/i2sLegg2JPA_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/i2sLegg2JPA_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/i5xJxtv4gXs_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/i5xJxtv4gXs_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/i5xJxtv4gXs_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/i5xJxtv4gXs_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/i5xJxtv4gXs_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/iHUwZBSx_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/iP6yS_OroMk_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/iquSbj5Wqj0_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/iquSbj5Wqj0_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/jCD7lUJQ7Xc_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/jCD7lUJQ7Xc_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/jILBnY3lB2Q_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/jTbvVbkUaPM_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/jTbvVbkUaPM_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/jTbvVbkUaPM_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/jmZqmYnH_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/jmZqmYnH_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/jtzWSah-BZM_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kExp3yhspR0_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kExp3yhspR0_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kExp3yhspR0_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kExp3yhspR0_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kLHNW0uRutY_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kLHNW0uRutY_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kLHNW0uRutY_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kLHNW0uRutY_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kLHNW0uRutY_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kLHNW0uRutY_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kMI2JME3Aag_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kMI2JME3Aag_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/kMI2JME3Aag_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/ksdkojifes_416.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/l4gqDHx9_dI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/l4gqDHx9_dI_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/l4gqDHx9_dI_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/l4gqDHx9_dI_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/lI17Q0j3_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/lL3FQltu_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/lUjx4FXvv34_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/lUjx4FXvv34_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/lmfaDmCCRoY_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/lmfaDmCCRoY_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/lmfaDmCCRoY_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/lmfaDmCCRoY_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/lmfaDmCCRoY_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/lmfaDmCCRoY_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/lmfaDmCCRoY_6.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/lmfaDmCCRoY_7.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/mRqg-WXiR7Q_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/mRqg-WXiR7Q_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/mRqg-WXiR7Q_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/mRqg-WXiR7Q_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/mVTcBPrjh-E_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/mVTcBPrjh-E_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/mX4cQM1xMFc_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/mX4cQM1xMFc_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/mX4cQM1xMFc_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/mbW7VkAf6Yk_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/mbW7VkAf6Yk_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/mbW7VkAf6Yk_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/nBO2Wlr3LhU_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/nBO2Wlr3LhU_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/nNUeqFgG_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/nNUeqFgG_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/nNUeqFgG_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/nNUeqFgG_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/nNUeqFgG_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/o9sRXy5r_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/o9sRXy5r_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/o9sRXy5r_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/o9sRXy5r_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oDGm-DOOyI4_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oDGm-DOOyI4_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oIEZ45OCmAw_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oIEZ45OCmAw_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oIEZ45OCmAw_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oIEZ45OCmAw_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oIEZ45OCmAw_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oM-goKOVjeU_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oM-goKOVjeU_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oVMhWJIpHnc_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oW8ySS0rN4Y_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oW8ySS0rN4Y_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oowA6LToeTE_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/oqCIUYdq_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/p19HiyCX7EQ_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/p19HiyCX7EQ_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/p19HiyCX7EQ_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/p4DwXTNr-xc_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/pKOUG5AqLpY_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/pKOUG5AqLpY_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/qmvilMkD57M_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/qmvilMkD57M_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/qrWTk-2a13o_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/qrWTk-2a13o_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/qrWTk-2a13o_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/rfthfd_534.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/rfthfd_535.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/rfthfd_536.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/rfthfd_537.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/rfthfd_538.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/s-jW4cyavW0_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/s-jW4cyavW0_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/s-jW4cyavW0_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/s3gaPKuW_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/s3gaPKuW_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/sadffg_950.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/sadsa_956.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/sadsa_957.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/sadsa_958.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/sadsa_959.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/sadsa_960.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/sadsa_961.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/t2z75yT2S_M_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/t2z75yT2S_M_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/tILABXoHE7s_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/tILABXoHE7s_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/tILABXoHE7s_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/tILABXoHE7s_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/tILABXoHE7s_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/tILABXoHE7s_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/tIvvuvuJFYc_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/tIvvuvuJFYc_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/tIvvuvuJFYc_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/trhfd_1015.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/trhfd_1016.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/trhfd_1017.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/trhfd_1018.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/trhfd_1019.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/truutrdf_1081.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/truutrdf_1082.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/truutrdf_1083.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/truutrdf_1084.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/truutrdf_1085.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/truutrdf_1086.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/truutrdf_1087.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/tuQyUHkOpdk_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/u-29uYuR2cg_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/u1r8f71c_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/u1r8f71c_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/u1r8f71c_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/u1r8f71c_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/u1r8f71c_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/u2Lkzfb0_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/u2Lkzfb0_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/u2Lkzfb0_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/u2Lkzfb0_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/uGGFPY75IYQ_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/uGGFPY75IYQ_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/uKFI67bUzfg_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/uKFI67bUzfg_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/uKFI67bUzfg_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/ug2tQMG8DC0_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/ug2tQMG8DC0_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/ug2tQMG8DC0_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/umOs1WLBkuo_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/umOs1WLBkuo_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/umOs1WLBkuo_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vBwKQfJYG1Q_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vBwKQfJYG1Q_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vBwKQfJYG1Q_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vBwKQfJYG1Q_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vBwKQfJYG1Q_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vBwKQfJYG1Q_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vBwKQfJYG1Q_6.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vQKHxtrdEHM_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vQKHxtrdEHM_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vQKHxtrdEHM_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vQKHxtrdEHM_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vQKHxtrdEHM_4.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vQKHxtrdEHM_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vQKHxtrdEHM_6.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vQKHxtrdEHM_7.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/vQKHxtrdEHM_9.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/videoplayback (1)_54.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/videoplayback (1)_55.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/videoplayback (2)_66.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/videoplayback (2)_74.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/videoplayback_92.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/videoplayback_93.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/videoplayback_94.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/videoplayback_95.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/wetyh_1204.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/wetyh_1205.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/wetyh_1206.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/wetyh_1207.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/wetyh_1208.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/wetyh_1223.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/wetyh_1224.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/wxdRVAZk_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/wxdRVAZk_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/xKq3hlefCUI_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/xKq3hlefCUI_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/xrlCdUaagHY_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/z19nkHMw_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/z19nkHMw_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/z1WyVUv8_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/z1WyVUv8_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/z1WyVUv8_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/z7dOEJwUpVk_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/zuCTuKvj_0.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/zuCTuKvj_1.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/zuCTuKvj_2.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/zuCTuKvj_3.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_Fight/zuCTuKvj_5.avi",
+        "Fight"
+      ],
+      [
+        "train/Train_NonFight/-1l5631l3fg_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/-1l5631l3fg_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0AvTZRYx_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0GGPb4iO_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0H2s9UJcNJ0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0H2s9UJcNJ0_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0H2s9UJcNJ0_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0NqPsSHdri8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0TFi8D8IBg4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0TP13Nyn_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0_DzLlklZa0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0_DzLlklZa0_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0_DzLlklZa0_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0_DzLlklZa0_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0vasozvJYvk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0vasozvJYvk_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0vasozvJYvk_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/0xoSMgad_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/14YZVngQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/18xQQOv5_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/1A3zEkCHBl8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/1A3zEkCHBl8_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/1A3zEkCHBl8_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/1O4KGHbRt3M_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/1O4KGHbRt3M_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/1OXrIaQK_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/1QixA5m2_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/1ahhhDBQHxg_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/1dsLuL5Lvbc_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/1oEbrZhr_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/1r91ACCe_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/24E0xYYUz44_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/24E0xYYUz44_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/24E0xYYUz44_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/2KMf6p5Q_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/2KvkZ4yo_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/2gkuUVq1_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/36zWWHlldS8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3Edebh8P_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3GUaHts0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3OKArbzg1uc_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3SS0E4SmTk8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3SS0E4SmTk8_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3SS0E4SmTk8_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3TQqO4N8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3Vw7MoNBgx4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3Vw7MoNBgx4_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3ZY4hpms_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3djtKN3k_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3kpviz7lAMY_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3pRrZ9TS_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3qsou7p57Nk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3qsou7p57Nk_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/3z7ncTuu_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/40l8LuP4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4Fqxw7Nl_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4HH7yMU8y9A_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4HH7yMU8y9A_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4HH7yMU8y9A_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4HH7yMU8y9A_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4RqDG4I4iAk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4RqDG4I4iAk_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4RqDG4I4iAk_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4fY0Iv4t_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4jZvTj4j_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4x9VdiCc_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4yTlGiDoxBo_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4yTlGiDoxBo_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/4yTlGiDoxBo_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/551_wlV44GU_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/551_wlV44GU_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/5RayT2Vy0EA_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/5RayT2Vy0EA_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/5RayT2Vy0EA_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/5z1f5blMBdk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/5zVqOS0l_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/6Dej3-k3MRE_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/6Dej3-k3MRE_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/6Dej3-k3MRE_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/6JmCJbug_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/6MSwCc0a_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/6YmBBzyX_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/6b254l7P_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/6hots6jj_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/6n48sGUq_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/7-e3_UW7L7U_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/7KXPekwe_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/7QgVKRHB_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/7R1m3V8C30g_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/7R1m3V8C30g_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/80ySNph9_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/85dkGMed_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/86lUShJD_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/88ndrvAZpE8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/88ndrvAZpE8_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/8MuRpAyP_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/8PuNOqvh_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/8VqTmuq4HcI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/8VqTmuq4HcI_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/8VqTmuq4HcI_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/8pKKdS7rhXo_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/9C_LQa7nnFg_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/9C_LQa7nnFg_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/9C_LQa7nnFg_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/9CeKXVvD_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/9N4HikpX_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/9U8J4abJGDg_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/9haGKtHJ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/9nFtxkJ7ywg_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/9qjOCoE7_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/9uvZbSsy_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/AEGjLggu_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/AF4Rk1I2_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/AG0ofjSP_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/API3q8TBGu4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/API3q8TBGu4_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ATDMY6PzK9U_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/AbD9xwut_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Am9mUxPTvK4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/AsGAgf8U2rk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Assault005_x264_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Assault005_x264_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Assault009_x264_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Assault009_x264_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Assault010_x264_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Assault010_x264_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Assault011_x264_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Assault011_x264_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/AszvEN7z_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/B6DO4tXb_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/BOt8ZMpM_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/BUjGBAPb_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/BpargJW29Wo_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/BpargJW29Wo_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/C3cT1JGv_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/C4SQF-UZzkA_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/C4SQF-UZzkA_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/C4SQF-UZzkA_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/C76VU1PQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/C7Ty4ui5_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/C7sNO3e2_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/CKzrrb7E_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/CPGf41PN_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/CfPgoKqk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/CqJB8ZWLZ-o_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/CqJB8ZWLZ-o_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/CqJB8ZWLZ-o_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/CqJB8ZWLZ-o_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/D6cjNRiP_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/DAMfrqpC_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/DIsQwAdR8MI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/DL2gWMZA_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/DRlOjUNi_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/DTq6Gu30-uA_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/DTq6Gu30-uA_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/DTq6Gu30-uA_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/DWEBHWM9_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/DZdLP0rd_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/DjLWv5mr_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/E0Huf4Qi0JE_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/E0rUpvbX_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/E2gqgFNyPL8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/E2gqgFNyPL8_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/E2gqgFNyPL8_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/EBwt3Thb_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/EDaOod1H_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/EGhykgb4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ELL0jBUP_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/EUgjFWbm_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/EizIwdII_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/FB3eqRE8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/FKl98mfo_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/FPU7QpO4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/FWsNU4WI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/FZDDNtcaBcw_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Fighting014_x264_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Fighting014_x264_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Fk3lg4wG_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/FrwBev61_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/G0rgy9Ts_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/G9uNZGcK_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/GL9jSSxg_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/GVdnjHyU_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/GZWxDB1c_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/GhZRf4GIw0w_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/GodUly2k_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/GqDA8E4j_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/GzPhV725_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/H1AzC-GyKto_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/H1AzC-GyKto_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/H1AzC-GyKto_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/H1AzC-GyKto_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/H68yvSdp_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HAh9eqtO_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HAoCHqFV_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HG8xQFSd_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HUuRelBW_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HVRUChVh_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HVSv9sgz2ZI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HVSv9sgz2ZI_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HVSv9sgz2ZI_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HVSv9sgz2ZI_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HW48LUZKOL4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HW48LUZKOL4_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HW48LUZKOL4_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HW48LUZKOL4_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HYkbCvPj_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/H_VQJU0Bqpc_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/H_VQJU0Bqpc_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/H_VQJU0Bqpc_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/H_VQJU0Bqpc_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HodGUj8s_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Hsvzcq2l_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/HvfhYJ8b_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/I-x0G5pAan0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/I-x0G5pAan0_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/I7u5I8Oa_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/IGCZWiP8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Isob76kh_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/IynvwHe9W3U_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/IynvwHe9W3U_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/IynvwHe9W3U_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/IynvwHe9W3U_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/J2Am3J0z_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/J2rsCgMC_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/JBRqNBaP_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/JD9JJbiJ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/JPMLt2ZH_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/JWFfsHEG_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/JgXAUoyJ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/JsjF2OSJ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/JwTPruSFTjk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/JwTPruSFTjk_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/JxpNuQop_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/K4700BuM_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/KLEwMKTN_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/KOaUqaC8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/KQTiHlA11fM_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/KQTiHlA11fM_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/KQTiHlA11fM_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/KQTiHlA11fM_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/K_7hT4N2QCE_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/KklEipxk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/KxOHVkVQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/L9tYVvJY_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/LLo_TXIz5-g_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/LLo_TXIz5-g_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/LMNJJere_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/LSJPhJTB_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/La60qonu_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/La9lzohO_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/LbYQs9oA_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/LiCakkNH_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/LqW9A21g_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Lui5zaon_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/M4syignQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/MBxCX6pw_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/MOST Shocking CCTV footage (_TwPzPRK7dc)_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/MOST Shocking CCTV footage (_TwPzPRK7dc)_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/MX77f2TD_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Ma1iva6R_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/McDxnU7x_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/MhiGg6f7_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/MmUtpm6Z_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Mv3d3zJy_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/MvYkXHIi_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/MwZvUQRO_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/N1Q9v-saJ_g_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/NEUya2Rr_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/NPeKBgURcxI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/NPeKBgURcxI_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/NPeKBgURcxI_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/NSdXEN1l_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/NmNKzttk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/NvYo6CS_i_A_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/NvYo6CS_i_A_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/OAFsSiyX_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/OAfV0xPIhZw_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/OAfV0xPIhZw_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/OCseFRss_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/OTVE3eLAuUM_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/OTVE3eLAuUM_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/OTVE3eLAuUM_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/OU7AM5fv_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/OakN3f1N_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/OdxnpEnn_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/P8jyDT3M_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/PFw7SeFOD04_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/PFw7SeFOD04_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/PJDdPv2b9-s_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/PJDdPv2b9-s_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/PNoO9WGJ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/PTy2vx8Ejas_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Pe1uIhp4dAQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Pe1uIhp4dAQ_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/PqB7UvdW_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/PxhG17WC_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Q876qiBJYfA_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Q876qiBJYfA_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Q876qiBJYfA_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/QCgEbCBH_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/QUGT4a6qcJs_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Qqfn1urQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/R2x2rOWh_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RFAA8QO7_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RFUr2krY_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RGIpCpdlzI8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RGIpCpdlzI8_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RNOSWjgC_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RPESrVE2_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RQbYptdw_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RR23nrP0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RUwo8c4s_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RVV3lolZ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RbpXgk5M1S0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RbpXgk5M1S0_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RbpXgk5M1S0_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/RfFGwwhG_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Ri_poPbOu-k_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Ri_poPbOu-k_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Ri_poPbOu-k_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/S5dmvVF4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/SJ9WphBI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/SVdz24hD_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/SaIUKN4N_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Suv_mMs8J9g_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Swr7caI0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/TJfoIe801t8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/TSHiCcMS_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/TX2ePcRo_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/TYX5vuHO_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/TYsebroPeGY_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/TYsebroPeGY_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/TuWan04E3gQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/TuWan04E3gQ_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Tzn3HwZD_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/U1Z1bVRt_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/UArjSm2Y_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/UFA7LVk0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/UIAGmwT1_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ULiIpQ6s_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/UQ42UqFJ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/UWmcbEyn_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/UuMYxOYm_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/V3EI1n_7JwU_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/V726w0IKCp4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/V89iCOJ1_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/VYWWsld6ibI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/VbwTMJroTbI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/VbwTMJroTbI_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Vd27cYFthms_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/VjDGXzWt_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/VnDOPZls_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/VpnCjE1l_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/WCbsjDUV_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/WHNtrI7MEUg_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/WHNtrI7MEUg_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/WPK4WLlc_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/WW8zIoiZ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/WXwfibYX_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Wby1vUy8aYI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/WfjOB1Vq_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/X0fP5VQMrbg_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/X0fP5VQMrbg_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/X14e9Fwxa8w_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/XJfaYlr0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/XPG8GqrH_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/XVfkS6rM_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Xhh2ONc7_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Xmmy8LvV_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/XpQkd2Ug_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Xr0T6ylW_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/XwiwESMn_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Y-TiUAODEYw_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Y-TiUAODEYw_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Y-TiUAODEYw_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Y4KiQpCP_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/YC51sSdT_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/YQkE7oOf_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Yxz9WncB_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ZIj9BzT4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ZPhVyVZt_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/Zy04T0RF_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/_fPfNbHM16M_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/_fPfNbHM16M_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/_q5Nwh4Z6ao_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/_q5Nwh4Z6ao_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/_q5Nwh4Z6ao_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/_q5Nwh4Z6ao_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/_q5Nwh4Z6ao_4.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/_q5Nwh4Z6ao_5.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/_q5Nwh4Z6ao_6.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/_q5Nwh4Z6ao_7.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/_wVuRdfDHbE_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/a2kw3cfb_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/a2qLzOu_n0s_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/a7gBQaAFEtw_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/a7gBQaAFEtw_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/a7gBQaAFEtw_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/a7gBQaAFEtw_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/a7gBQaAFEtw_4.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/a7gBQaAFEtw_5.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/aGfwZ3E4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/aKK0B4kpKZA_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/aKgSasWRJ2s_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/aQysMqg0K7M_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/aQysMqg0K7M_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/aQysMqg0K7M_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/aQysMqg0K7M_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ajJRyYZUEtA_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ajJRyYZUEtA_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ajJRyYZUEtA_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/arXD3QM2_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/as4zD6d86q0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/az7WDDFT_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/b6XfVAZC9Zs_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/b6XfVAZC9Zs_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/b6XfVAZC9Zs_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/b9I5dDvH_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/bK1saynI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/bQHNsRpQOIE_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/bQHNsRpQOIE_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/bQHNsRpQOIE_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/bUaC34RU_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/bd48s5BpoGY_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/bpbiA2sr_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/c1PJngmt_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/c1bRFt0x_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/c7j3qEqO_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cAp5A44HRS8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cAp5A44HRS8_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cErr6pCN_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cHsy9xWM_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cJvLTWGs-SE_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cJvLTWGs-SE_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cPeNUm31_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cURNFrn5_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cVYo5yT2_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cWJ92fkhME4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cfOKjx8l_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cfks5NXs_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/cwLtq5Y3_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/d1b2n9qX_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/d3WwO8eM_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/dBllnaSKVfQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/dDNWfVPw_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/dNDOYLTf_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/dOM7frJMFbc_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/dOM7frJMFbc_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/dOM7frJMFbc_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/dOM7frJMFbc_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/dOo2X5wR_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/dP20avzQAf8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/dPV9BZrq_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/dRlBBYvf_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/d_93UNyiVM4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/d_93UNyiVM4_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/e6iHy7V5_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/eF5S8iGLAm4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/eF5S8iGLAm4_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/eNoGYdL1_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/eUtGwBik_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/emGsAcqs_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ep1_I0f-u7g_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ep1_I0f-u7g_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ev8va5uR_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/f50PQz7mXds_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/f50PQz7mXds_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/fBwfFDcgJlk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/fBwfFDcgJlk_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/fHOVzWgX_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/fMmvH1Fa_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/fNy9LoED_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/fvtpgsrF_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/fwEk96k8g_I_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/fwEk96k8g_I_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/g3QdfSDk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/g9nMwbpZ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gAFkygeJ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gBBRxXBI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gDeDWPVe_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gEODOSeI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gHcG_c1i4uE_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gHcG_c1i4uE_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gI4u3PwG_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gJDvtfRrM7k_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gNUhUpxZ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gR4OsEPl894_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gR4OsEPl894_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gR4OsEPl894_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gR4OsEPl894_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gUYfrLHe_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/golJWJCak1k_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/golJWJCak1k_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/grxri53x_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/gzrwD4E5_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/hP8CJJcx_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/hWBjrqFS_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/hbTlgnTw_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/hgMpDK55_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/i2sLegg2JPA_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/i2sLegg2JPA_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/i4OubIZo_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/i5xJxtv4gXs_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/i5xJxtv4gXs_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/i5xJxtv4gXs_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/i7MJRWrW_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/iRnSE1TL_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/iTs901V6_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/iki0PAvq_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/iqAmk7ES_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/iquSbj5Wqj0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/itstEXVr_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/j83up7ni_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/jILBnY3lB2Q_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/jILBnY3lB2Q_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/jILBnY3lB2Q_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/jILBnY3lB2Q_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/jOZLjdSi_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/jR91oXYV_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/jTbvVbkUaPM_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/jTbvVbkUaPM_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/jTbvVbkUaPM_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/jXrwQsZJ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/jbSCSexU_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/jj9SJGft_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/kB9NYpu1_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/kBSHDWaGFyc_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/kExp3yhspR0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/kExp3yhspR0_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/kExp3yhspR0_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/kFbpQrq2_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/kLHNW0uRutY_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/kMI2JME3Aag_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/kMI2JME3Aag_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/kMI2JME3Aag_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/kMI2JME3Aag_3.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/kMI2JME3Aag_4.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/l4gqDHx9_dI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/l4gqDHx9_dI_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/lNAzMZFI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/lQ39ffan_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/lS7tAuv0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/lhxMVtH7_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ljLg4lFbS0Y_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ljLg4lFbS0Y_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/lmfaDmCCRoY_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/lx4TN9dS_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/m3PZvVSL_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/mHY487R6_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/mRqg-WXiR7Q_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/mX4cQM1xMFc_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/muJDFQqbbmA_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/muJDFQqbbmA_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/mx0UXBFc_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ndNHBJbS_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/niXRLeON_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/nj9Rc3lY_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oAeudqZD_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oByKgGBL_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oDGm-DOOyI4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oDGm-DOOyI4_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oDGm-DOOyI4_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oDWNiATJ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oG3Qxvq0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oIEZ45OCmAw_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oLs9ckoV_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oMZpqizQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oUqxGhTe_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oVMhWJIpHnc_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oVMhWJIpHnc_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oVMhWJIpHnc_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oW8ySS0rN4Y_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/oYFVr2kK_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/okA8k7rF_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/on2HIPgB_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/p19HiyCX7EQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/p9d6QmKh_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/pHiqIppg_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/pKOUG5AqLpY_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/pKOUG5AqLpY_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/pLb6Zimq_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/pU9BTy7h_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/pinuwjwm_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/pqvGKGz7_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/pr8yRPMO_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/q2yEYFD5_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/qEeRHumV_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/qIRZ4SMf_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/qmvilMkD57M_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/qmvilMkD57M_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/qnpure5G_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/qrBAhb8K_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/qrWTk-2a13o_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/qrWTk-2a13o_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/qrWTk-2a13o_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/rRbZUKgk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/rSGIFH7n_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/rSumd9HEmrA_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/rYE6iUUF_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/rbByyS4o_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/rjHXmq47_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/rp9hJAQE_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/s-jW4cyavW0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/s-jW4cyavW0_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/s83GiLts_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/sHa6YZW9_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/sIbVwIO0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/sLOqgf6N_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/sPd5Wmkc_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/sYGIUeBX_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/skycjZcE_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/snhUvpXC_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/sq03O3JL_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/sy7BoRGE_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/tILABXoHE7s_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/tILABXoHE7s_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/tILABXoHE7s_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/tIvvuvuJFYc_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/tPpXT9VI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/tXk2yvmq_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/tgkbh2d9_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/tmm7AxKl_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/tzdvtHL7Akk_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/tzdvtHL7Akk_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/uAKRFGFR_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/uLGOlxvv_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/uNtsEcFR_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/uWH7kvNG_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/uWQG2hQT_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ug2tQMG8DC0_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/umOs1WLBkuo_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/umOs1WLBkuo_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/umOs1WLBkuo_2.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/uu3SB2L1_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/uyeWsodv_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/uz4dXoN5_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/v0wUQPs4_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/v8cACThQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/vBwKQfJYG1Q_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/vBwKQfJYG1Q_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/vCO6CZNt_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/vGCZpdPR_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/vJDAaUzYOi8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/vJDAaUzYOi8_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/vQKHxtrdEHM_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/vQKHxtrdEHM_1.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/vXvv1gqd_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/vnUS5WN7_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/vu6lIsQm_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/vwQvNOlX_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/wNTaSOXj_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/wXHEbfck_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/wY7Om5cW_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/wgdTpJTo_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/wk5WCCti_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ww9L6ULb_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/x7iljhbM_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/xKq3hlefCUI_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/xQSbcaZp_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/xTCvMktQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/xW8Esfp9_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/xWBtjX00_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/xYWhwcqL_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/xtA4owfr_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/xxIkl4Ue_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/yDKfgkb2_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/yKxTC4lT_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/yQWmI4e8_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/yWnLtCrM_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ycOdxOJt_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ykI6keNQ_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/yldWawWf_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ypdSZICv_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/ytjGIK9m_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/yvNawsRf_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/zWrAqXFn_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/zZHTBiER_0.avi",
+        "NonFight"
+      ],
+      [
+        "train/Train_NonFight/zbg2jsE4_0.avi",
+        "NonFight"
+      ]
+    ],
+    "exclusion": {
+      "reason": "5 existing-carve clips cannot be mapped from the Kaggle CSV to local filenames; 27 non-ASCII Train_Fight names exist and elimination is ambiguous, so the mapping is UNKNOWN and was not reconstructed. Every non-ASCII Train_Fight clip and its complete source group is removed.",
+      "non_ascii_clips": 27,
+      "excluded_source_groups": 11,
+      "clips_removed_from_remainder": 26
+    },
+    "counts": {
+      "train_clips": 1600,
+      "existing_carve_clips": 240,
+      "raw_remainder": 1365,
+      "pool_clips": 1339,
+      "pool_sources": 638,
+      "pool_labels": {
+        "Fight": 660,
+        "NonFight": 679
+      }
+    },
+    "disjointness": {
+      "pool_sources_overlapping_existing_carve": 0,
+      "pool_sources_overlapping_val_primary": 0
+    }
+  },
+  "splits": {
+    "fit": {
+      "clips": 100,
+      "sources": 51,
+      "labels": {
+        "NonFight": 52,
+        "Fight": 48
+      },
+      "members": [
+        {
+          "clip": "train/Train_Fight/89UQqPuR4Q4_0.avi",
+          "label": "Fight",
+          "source": "89UQqPuR4Q4"
+        },
+        {
+          "clip": "train/Train_Fight/C8wt47cphU8_0.avi",
+          "label": "Fight",
+          "source": "C8wt47cphU8"
+        },
+        {
+          "clip": "train/Train_Fight/C8wt47cphU8_1.avi",
+          "label": "Fight",
+          "source": "C8wt47cphU8"
+        },
+        {
+          "clip": "train/Train_Fight/H_VQJU0Bqpc_1.avi",
+          "label": "Fight",
+          "source": "H_VQJU0Bqpc"
+        },
+        {
+          "clip": "train/Train_Fight/H_VQJU0Bqpc_2.avi",
+          "label": "Fight",
+          "source": "H_VQJU0Bqpc"
+        },
+        {
+          "clip": "train/Train_Fight/Jq8neqBlL2Y_2.avi",
+          "label": "Fight",
+          "source": "Jq8neqBlL2Y"
+        },
+        {
+          "clip": "train/Train_Fight/Jq8neqBlL2Y_3.avi",
+          "label": "Fight",
+          "source": "Jq8neqBlL2Y"
+        },
+        {
+          "clip": "train/Train_Fight/Jq8neqBlL2Y_4.avi",
+          "label": "Fight",
+          "source": "Jq8neqBlL2Y"
+        },
+        {
+          "clip": "train/Train_Fight/Jq8neqBlL2Y_5.avi",
+          "label": "Fight",
+          "source": "Jq8neqBlL2Y"
+        },
+        {
+          "clip": "train/Train_Fight/K6WRP2xi_0.avi",
+          "label": "Fight",
+          "source": "K6WRP2xi"
+        },
+        {
+          "clip": "train/Train_Fight/K6WRP2xi_1.avi",
+          "label": "Fight",
+          "source": "K6WRP2xi"
+        },
+        {
+          "clip": "train/Train_Fight/K6WRP2xi_2.avi",
+          "label": "Fight",
+          "source": "K6WRP2xi"
+        },
+        {
+          "clip": "train/Train_Fight/K6WRP2xi_3.avi",
+          "label": "Fight",
+          "source": "K6WRP2xi"
+        },
+        {
+          "clip": "train/Train_Fight/Pe1uIhp4dAQ_0.avi",
+          "label": "Fight",
+          "source": "Pe1uIhp4dAQ"
+        },
+        {
+          "clip": "train/Train_Fight/Pe1uIhp4dAQ_1.avi",
+          "label": "Fight",
+          "source": "Pe1uIhp4dAQ"
+        },
+        {
+          "clip": "train/Train_Fight/Pe1uIhp4dAQ_2.avi",
+          "label": "Fight",
+          "source": "Pe1uIhp4dAQ"
+        },
+        {
+          "clip": "train/Train_Fight/Pe1uIhp4dAQ_3.avi",
+          "label": "Fight",
+          "source": "Pe1uIhp4dAQ"
+        },
+        {
+          "clip": "train/Train_Fight/Pe1uIhp4dAQ_4.avi",
+          "label": "Fight",
+          "source": "Pe1uIhp4dAQ"
+        },
+        {
+          "clip": "train/Train_Fight/Q1ycSrzoM2c_1.avi",
+          "label": "Fight",
+          "source": "Q1ycSrzoM2c"
+        },
+        {
+          "clip": "train/Train_Fight/Q1ycSrzoM2c_2.avi",
+          "label": "Fight",
+          "source": "Q1ycSrzoM2c"
+        },
+        {
+          "clip": "train/Train_Fight/RTCFGASH_573.avi",
+          "label": "Fight",
+          "source": "RTCFGASH"
+        },
+        {
+          "clip": "train/Train_Fight/RTCFGASH_579.avi",
+          "label": "Fight",
+          "source": "RTCFGASH"
+        },
+        {
+          "clip": "train/Train_Fight/SNGRni0hBUM_0.avi",
+          "label": "Fight",
+          "source": "SNGRni0hBUM"
+        },
+        {
+          "clip": "train/Train_Fight/U-rD98WfBYs_0.avi",
+          "label": "Fight",
+          "source": "U-rD98WfBYs"
+        },
+        {
+          "clip": "train/Train_Fight/dP20avzQAf8_0.avi",
+          "label": "Fight",
+          "source": "dP20avzQAf8"
+        },
+        {
+          "clip": "train/Train_Fight/dP20avzQAf8_1.avi",
+          "label": "Fight",
+          "source": "dP20avzQAf8"
+        },
+        {
+          "clip": "train/Train_Fight/lI17Q0j3_0.avi",
+          "label": "Fight",
+          "source": "lI17Q0j3"
+        },
+        {
+          "clip": "train/Train_Fight/lmfaDmCCRoY_0.avi",
+          "label": "Fight",
+          "source": "lmfaDmCCRoY"
+        },
+        {
+          "clip": "train/Train_Fight/lmfaDmCCRoY_1.avi",
+          "label": "Fight",
+          "source": "lmfaDmCCRoY"
+        },
+        {
+          "clip": "train/Train_Fight/lmfaDmCCRoY_2.avi",
+          "label": "Fight",
+          "source": "lmfaDmCCRoY"
+        },
+        {
+          "clip": "train/Train_Fight/lmfaDmCCRoY_3.avi",
+          "label": "Fight",
+          "source": "lmfaDmCCRoY"
+        },
+        {
+          "clip": "train/Train_Fight/lmfaDmCCRoY_4.avi",
+          "label": "Fight",
+          "source": "lmfaDmCCRoY"
+        },
+        {
+          "clip": "train/Train_Fight/lmfaDmCCRoY_5.avi",
+          "label": "Fight",
+          "source": "lmfaDmCCRoY"
+        },
+        {
+          "clip": "train/Train_Fight/lmfaDmCCRoY_6.avi",
+          "label": "Fight",
+          "source": "lmfaDmCCRoY"
+        },
+        {
+          "clip": "train/Train_Fight/lmfaDmCCRoY_7.avi",
+          "label": "Fight",
+          "source": "lmfaDmCCRoY"
+        },
+        {
+          "clip": "train/Train_Fight/mRqg-WXiR7Q_0.avi",
+          "label": "Fight",
+          "source": "mRqg-WXiR7Q"
+        },
+        {
+          "clip": "train/Train_Fight/mRqg-WXiR7Q_1.avi",
+          "label": "Fight",
+          "source": "mRqg-WXiR7Q"
+        },
+        {
+          "clip": "train/Train_Fight/mRqg-WXiR7Q_2.avi",
+          "label": "Fight",
+          "source": "mRqg-WXiR7Q"
+        },
+        {
+          "clip": "train/Train_Fight/mRqg-WXiR7Q_3.avi",
+          "label": "Fight",
+          "source": "mRqg-WXiR7Q"
+        },
+        {
+          "clip": "train/Train_Fight/oVMhWJIpHnc_0.avi",
+          "label": "Fight",
+          "source": "oVMhWJIpHnc"
+        },
+        {
+          "clip": "train/Train_Fight/uKFI67bUzfg_0.avi",
+          "label": "Fight",
+          "source": "uKFI67bUzfg"
+        },
+        {
+          "clip": "train/Train_Fight/uKFI67bUzfg_1.avi",
+          "label": "Fight",
+          "source": "uKFI67bUzfg"
+        },
+        {
+          "clip": "train/Train_Fight/uKFI67bUzfg_2.avi",
+          "label": "Fight",
+          "source": "uKFI67bUzfg"
+        },
+        {
+          "clip": "train/Train_Fight/zuCTuKvj_0.avi",
+          "label": "Fight",
+          "source": "zuCTuKvj"
+        },
+        {
+          "clip": "train/Train_Fight/zuCTuKvj_1.avi",
+          "label": "Fight",
+          "source": "zuCTuKvj"
+        },
+        {
+          "clip": "train/Train_Fight/zuCTuKvj_2.avi",
+          "label": "Fight",
+          "source": "zuCTuKvj"
+        },
+        {
+          "clip": "train/Train_Fight/zuCTuKvj_3.avi",
+          "label": "Fight",
+          "source": "zuCTuKvj"
+        },
+        {
+          "clip": "train/Train_Fight/zuCTuKvj_5.avi",
+          "label": "Fight",
+          "source": "zuCTuKvj"
+        },
+        {
+          "clip": "train/Train_NonFight/0AvTZRYx_0.avi",
+          "label": "NonFight",
+          "source": "0AvTZRYx"
+        },
+        {
+          "clip": "train/Train_NonFight/0NqPsSHdri8_0.avi",
+          "label": "NonFight",
+          "source": "0NqPsSHdri8"
+        },
+        {
+          "clip": "train/Train_NonFight/2KMf6p5Q_0.avi",
+          "label": "NonFight",
+          "source": "2KMf6p5Q"
+        },
+        {
+          "clip": "train/Train_NonFight/3pRrZ9TS_0.avi",
+          "label": "NonFight",
+          "source": "3pRrZ9TS"
+        },
+        {
+          "clip": "train/Train_NonFight/5RayT2Vy0EA_0.avi",
+          "label": "NonFight",
+          "source": "5RayT2Vy0EA"
+        },
+        {
+          "clip": "train/Train_NonFight/5RayT2Vy0EA_1.avi",
+          "label": "NonFight",
+          "source": "5RayT2Vy0EA"
+        },
+        {
+          "clip": "train/Train_NonFight/5RayT2Vy0EA_2.avi",
+          "label": "NonFight",
+          "source": "5RayT2Vy0EA"
+        },
+        {
+          "clip": "train/Train_NonFight/6MSwCc0a_0.avi",
+          "label": "NonFight",
+          "source": "6MSwCc0a"
+        },
+        {
+          "clip": "train/Train_NonFight/9uvZbSsy_0.avi",
+          "label": "NonFight",
+          "source": "9uvZbSsy"
+        },
+        {
+          "clip": "train/Train_NonFight/Fighting014_x264_0.avi",
+          "label": "NonFight",
+          "source": "Fighting014_x264"
+        },
+        {
+          "clip": "train/Train_NonFight/Fighting014_x264_1.avi",
+          "label": "NonFight",
+          "source": "Fighting014_x264"
+        },
+        {
+          "clip": "train/Train_NonFight/Fk3lg4wG_0.avi",
+          "label": "NonFight",
+          "source": "Fk3lg4wG"
+        },
+        {
+          "clip": "train/Train_NonFight/H_VQJU0Bqpc_0.avi",
+          "label": "NonFight",
+          "source": "H_VQJU0Bqpc"
+        },
+        {
+          "clip": "train/Train_NonFight/H_VQJU0Bqpc_1.avi",
+          "label": "NonFight",
+          "source": "H_VQJU0Bqpc"
+        },
+        {
+          "clip": "train/Train_NonFight/H_VQJU0Bqpc_2.avi",
+          "label": "NonFight",
+          "source": "H_VQJU0Bqpc"
+        },
+        {
+          "clip": "train/Train_NonFight/H_VQJU0Bqpc_3.avi",
+          "label": "NonFight",
+          "source": "H_VQJU0Bqpc"
+        },
+        {
+          "clip": "train/Train_NonFight/K4700BuM_0.avi",
+          "label": "NonFight",
+          "source": "K4700BuM"
+        },
+        {
+          "clip": "train/Train_NonFight/La60qonu_0.avi",
+          "label": "NonFight",
+          "source": "La60qonu"
+        },
+        {
+          "clip": "train/Train_NonFight/McDxnU7x_0.avi",
+          "label": "NonFight",
+          "source": "McDxnU7x"
+        },
+        {
+          "clip": "train/Train_NonFight/MhiGg6f7_0.avi",
+          "label": "NonFight",
+          "source": "MhiGg6f7"
+        },
+        {
+          "clip": "train/Train_NonFight/MvYkXHIi_0.avi",
+          "label": "NonFight",
+          "source": "MvYkXHIi"
+        },
+        {
+          "clip": "train/Train_NonFight/MwZvUQRO_0.avi",
+          "label": "NonFight",
+          "source": "MwZvUQRO"
+        },
+        {
+          "clip": "train/Train_NonFight/NmNKzttk_0.avi",
+          "label": "NonFight",
+          "source": "NmNKzttk"
+        },
+        {
+          "clip": "train/Train_NonFight/Pe1uIhp4dAQ_0.avi",
+          "label": "NonFight",
+          "source": "Pe1uIhp4dAQ"
+        },
+        {
+          "clip": "train/Train_NonFight/Pe1uIhp4dAQ_1.avi",
+          "label": "NonFight",
+          "source": "Pe1uIhp4dAQ"
+        },
+        {
+          "clip": "train/Train_NonFight/PxhG17WC_0.avi",
+          "label": "NonFight",
+          "source": "PxhG17WC"
+        },
+        {
+          "clip": "train/Train_NonFight/Q876qiBJYfA_0.avi",
+          "label": "NonFight",
+          "source": "Q876qiBJYfA"
+        },
+        {
+          "clip": "train/Train_NonFight/Q876qiBJYfA_1.avi",
+          "label": "NonFight",
+          "source": "Q876qiBJYfA"
+        },
+        {
+          "clip": "train/Train_NonFight/Q876qiBJYfA_2.avi",
+          "label": "NonFight",
+          "source": "Q876qiBJYfA"
+        },
+        {
+          "clip": "train/Train_NonFight/RNOSWjgC_0.avi",
+          "label": "NonFight",
+          "source": "RNOSWjgC"
+        },
+        {
+          "clip": "train/Train_NonFight/WW8zIoiZ_0.avi",
+          "label": "NonFight",
+          "source": "WW8zIoiZ"
+        },
+        {
+          "clip": "train/Train_NonFight/Xmmy8LvV_0.avi",
+          "label": "NonFight",
+          "source": "Xmmy8LvV"
+        },
+        {
+          "clip": "train/Train_NonFight/ZPhVyVZt_0.avi",
+          "label": "NonFight",
+          "source": "ZPhVyVZt"
+        },
+        {
+          "clip": "train/Train_NonFight/_wVuRdfDHbE_0.avi",
+          "label": "NonFight",
+          "source": "_wVuRdfDHbE"
+        },
+        {
+          "clip": "train/Train_NonFight/dP20avzQAf8_0.avi",
+          "label": "NonFight",
+          "source": "dP20avzQAf8"
+        },
+        {
+          "clip": "train/Train_NonFight/eUtGwBik_0.avi",
+          "label": "NonFight",
+          "source": "eUtGwBik"
+        },
+        {
+          "clip": "train/Train_NonFight/fNy9LoED_0.avi",
+          "label": "NonFight",
+          "source": "fNy9LoED"
+        },
+        {
+          "clip": "train/Train_NonFight/jOZLjdSi_0.avi",
+          "label": "NonFight",
+          "source": "jOZLjdSi"
+        },
+        {
+          "clip": "train/Train_NonFight/lhxMVtH7_0.avi",
+          "label": "NonFight",
+          "source": "lhxMVtH7"
+        },
+        {
+          "clip": "train/Train_NonFight/lmfaDmCCRoY_0.avi",
+          "label": "NonFight",
+          "source": "lmfaDmCCRoY"
+        },
+        {
+          "clip": "train/Train_NonFight/lx4TN9dS_0.avi",
+          "label": "NonFight",
+          "source": "lx4TN9dS"
+        },
+        {
+          "clip": "train/Train_NonFight/mRqg-WXiR7Q_0.avi",
+          "label": "NonFight",
+          "source": "mRqg-WXiR7Q"
+        },
+        {
+          "clip": "train/Train_NonFight/oVMhWJIpHnc_0.avi",
+          "label": "NonFight",
+          "source": "oVMhWJIpHnc"
+        },
+        {
+          "clip": "train/Train_NonFight/oVMhWJIpHnc_1.avi",
+          "label": "NonFight",
+          "source": "oVMhWJIpHnc"
+        },
+        {
+          "clip": "train/Train_NonFight/oVMhWJIpHnc_2.avi",
+          "label": "NonFight",
+          "source": "oVMhWJIpHnc"
+        },
+        {
+          "clip": "train/Train_NonFight/qnpure5G_0.avi",
+          "label": "NonFight",
+          "source": "qnpure5G"
+        },
+        {
+          "clip": "train/Train_NonFight/tgkbh2d9_0.avi",
+          "label": "NonFight",
+          "source": "tgkbh2d9"
+        },
+        {
+          "clip": "train/Train_NonFight/tmm7AxKl_0.avi",
+          "label": "NonFight",
+          "source": "tmm7AxKl"
+        },
+        {
+          "clip": "train/Train_NonFight/tzdvtHL7Akk_0.avi",
+          "label": "NonFight",
+          "source": "tzdvtHL7Akk"
+        },
+        {
+          "clip": "train/Train_NonFight/tzdvtHL7Akk_1.avi",
+          "label": "NonFight",
+          "source": "tzdvtHL7Akk"
+        },
+        {
+          "clip": "train/Train_NonFight/xYWhwcqL_0.avi",
+          "label": "NonFight",
+          "source": "xYWhwcqL"
+        },
+        {
+          "clip": "train/Train_NonFight/ytjGIK9m_0.avi",
+          "label": "NonFight",
+          "source": "ytjGIK9m"
+        }
+      ]
+    },
+    "eval": {
+      "clips": 240,
+      "sources": 114,
+      "labels": {
+        "NonFight": 123,
+        "Fight": 117
+      },
+      "members": [
+        {
+          "clip": "train/Train_Fight/0NWz-01A2yk_0.avi",
+          "label": "Fight",
+          "source": "0NWz-01A2yk"
+        },
+        {
+          "clip": "train/Train_Fight/0NWz-01A2yk_1.avi",
+          "label": "Fight",
+          "source": "0NWz-01A2yk"
+        },
+        {
+          "clip": "train/Train_Fight/0TFi8D8IBg4_1.avi",
+          "label": "Fight",
+          "source": "0TFi8D8IBg4"
+        },
+        {
+          "clip": "train/Train_Fight/1DwRGRND_0.avi",
+          "label": "Fight",
+          "source": "1DwRGRND"
+        },
+        {
+          "clip": "train/Train_Fight/1DwRGRND_1.avi",
+          "label": "Fight",
+          "source": "1DwRGRND"
+        },
+        {
+          "clip": "train/Train_Fight/4yzwSsis_0.avi",
+          "label": "Fight",
+          "source": "4yzwSsis"
+        },
+        {
+          "clip": "train/Train_Fight/7LnoFKSl2rs_0.avi",
+          "label": "Fight",
+          "source": "7LnoFKSl2rs"
+        },
+        {
+          "clip": "train/Train_Fight/8mxsp2RTU6M_0.avi",
+          "label": "Fight",
+          "source": "8mxsp2RTU6M"
+        },
+        {
+          "clip": "train/Train_Fight/Cce4ogHp_0.avi",
+          "label": "Fight",
+          "source": "Cce4ogHp"
+        },
+        {
+          "clip": "train/Train_Fight/Cce4ogHp_1.avi",
+          "label": "Fight",
+          "source": "Cce4ogHp"
+        },
+        {
+          "clip": "train/Train_Fight/DIsQwAdR8MI_0.avi",
+          "label": "Fight",
+          "source": "DIsQwAdR8MI"
+        },
+        {
+          "clip": "train/Train_Fight/K_7hT4N2QCE_0.avi",
+          "label": "Fight",
+          "source": "K_7hT4N2QCE"
+        },
+        {
+          "clip": "train/Train_Fight/K_7hT4N2QCE_1.avi",
+          "label": "Fight",
+          "source": "K_7hT4N2QCE"
+        },
+        {
+          "clip": "train/Train_Fight/K_7hT4N2QCE_2.avi",
+          "label": "Fight",
+          "source": "K_7hT4N2QCE"
+        },
+        {
+          "clip": "train/Train_Fight/NvYo6CS_i_A_0.avi",
+          "label": "Fight",
+          "source": "NvYo6CS_i_A"
+        },
+        {
+          "clip": "train/Train_Fight/NvYo6CS_i_A_1.avi",
+          "label": "Fight",
+          "source": "NvYo6CS_i_A"
+        },
+        {
+          "clip": "train/Train_Fight/NvYo6CS_i_A_2.avi",
+          "label": "Fight",
+          "source": "NvYo6CS_i_A"
+        },
+        {
+          "clip": "train/Train_Fight/NvYo6CS_i_A_3.avi",
+          "label": "Fight",
+          "source": "NvYo6CS_i_A"
+        },
+        {
+          "clip": "train/Train_Fight/PJDdPv2b9-s_0.avi",
+          "label": "Fight",
+          "source": "PJDdPv2b9-s"
+        },
+        {
+          "clip": "train/Train_Fight/PTy2vx8Ejas_0.avi",
+          "label": "Fight",
+          "source": "PTy2vx8Ejas"
+        },
+        {
+          "clip": "train/Train_Fight/PTy2vx8Ejas_1.avi",
+          "label": "Fight",
+          "source": "PTy2vx8Ejas"
+        },
+        {
+          "clip": "train/Train_Fight/PTy2vx8Ejas_2.avi",
+          "label": "Fight",
+          "source": "PTy2vx8Ejas"
+        },
+        {
+          "clip": "train/Train_Fight/PTy2vx8Ejas_3.avi",
+          "label": "Fight",
+          "source": "PTy2vx8Ejas"
+        },
+        {
+          "clip": "train/Train_Fight/PTy2vx8Ejas_5.avi",
+          "label": "Fight",
+          "source": "PTy2vx8Ejas"
+        },
+        {
+          "clip": "train/Train_Fight/PlHzsigAFas_0.avi",
+          "label": "Fight",
+          "source": "PlHzsigAFas"
+        },
+        {
+          "clip": "train/Train_Fight/PlHzsigAFas_1.avi",
+          "label": "Fight",
+          "source": "PlHzsigAFas"
+        },
+        {
+          "clip": "train/Train_Fight/PlHzsigAFas_10.avi",
+          "label": "Fight",
+          "source": "PlHzsigAFas"
+        },
+        {
+          "clip": "train/Train_Fight/PlHzsigAFas_11.avi",
+          "label": "Fight",
+          "source": "PlHzsigAFas"
+        },
+        {
+          "clip": "train/Train_Fight/PlHzsigAFas_2.avi",
+          "label": "Fight",
+          "source": "PlHzsigAFas"
+        },
+        {
+          "clip": "train/Train_Fight/PlHzsigAFas_3.avi",
+          "label": "Fight",
+          "source": "PlHzsigAFas"
+        },
+        {
+          "clip": "train/Train_Fight/PlHzsigAFas_4.avi",
+          "label": "Fight",
+          "source": "PlHzsigAFas"
+        },
+        {
+          "clip": "train/Train_Fight/PlHzsigAFas_5.avi",
+          "label": "Fight",
+          "source": "PlHzsigAFas"
+        },
+        {
+          "clip": "train/Train_Fight/PlHzsigAFas_7.avi",
+          "label": "Fight",
+          "source": "PlHzsigAFas"
+        },
+        {
+          "clip": "train/Train_Fight/PlHzsigAFas_8.avi",
+          "label": "Fight",
+          "source": "PlHzsigAFas"
+        },
+        {
+          "clip": "train/Train_Fight/PlHzsigAFas_9.avi",
+          "label": "Fight",
+          "source": "PlHzsigAFas"
+        },
+        {
+          "clip": "train/Train_Fight/RGIpCpdlzI8_0.avi",
+          "label": "Fight",
+          "source": "RGIpCpdlzI8"
+        },
+        {
+          "clip": "train/Train_Fight/SXd2yu2LHv0_0.avi",
+          "label": "Fight",
+          "source": "SXd2yu2LHv0"
+        },
+        {
+          "clip": "train/Train_Fight/SXd2yu2LHv0_1.avi",
+          "label": "Fight",
+          "source": "SXd2yu2LHv0"
+        },
+        {
+          "clip": "train/Train_Fight/SXd2yu2LHv0_2.avi",
+          "label": "Fight",
+          "source": "SXd2yu2LHv0"
+        },
+        {
+          "clip": "train/Train_Fight/Suv_mMs8J9g_0.avi",
+          "label": "Fight",
+          "source": "Suv_mMs8J9g"
+        },
+        {
+          "clip": "train/Train_Fight/ThiaJUQ8_1.avi",
+          "label": "Fight",
+          "source": "ThiaJUQ8"
+        },
+        {
+          "clip": "train/Train_Fight/ThiaJUQ8_2.avi",
+          "label": "Fight",
+          "source": "ThiaJUQ8"
+        },
+        {
+          "clip": "train/Train_Fight/ThiaJUQ8_3.avi",
+          "label": "Fight",
+          "source": "ThiaJUQ8"
+        },
+        {
+          "clip": "train/Train_Fight/X6V5o-uCYF4_0.avi",
+          "label": "Fight",
+          "source": "X6V5o-uCYF4"
+        },
+        {
+          "clip": "train/Train_Fight/X6V5o-uCYF4_1.avi",
+          "label": "Fight",
+          "source": "X6V5o-uCYF4"
+        },
+        {
+          "clip": "train/Train_Fight/X6V5o-uCYF4_2.avi",
+          "label": "Fight",
+          "source": "X6V5o-uCYF4"
+        },
+        {
+          "clip": "train/Train_Fight/X6V5o-uCYF4_3.avi",
+          "label": "Fight",
+          "source": "X6V5o-uCYF4"
+        },
+        {
+          "clip": "train/Train_Fight/X6V5o-uCYF4_4.avi",
+          "label": "Fight",
+          "source": "X6V5o-uCYF4"
+        },
+        {
+          "clip": "train/Train_Fight/Xh6FNqKDMak_0.avi",
+          "label": "Fight",
+          "source": "Xh6FNqKDMak"
+        },
+        {
+          "clip": "train/Train_Fight/_6-B11R9FJM_0.avi",
+          "label": "Fight",
+          "source": "_6-B11R9FJM"
+        },
+        {
+          "clip": "train/Train_Fight/_6-B11R9FJM_1.avi",
+          "label": "Fight",
+          "source": "_6-B11R9FJM"
+        },
+        {
+          "clip": "train/Train_Fight/_6-B11R9FJM_2.avi",
+          "label": "Fight",
+          "source": "_6-B11R9FJM"
+        },
+        {
+          "clip": "train/Train_Fight/_6-B11R9FJM_3.avi",
+          "label": "Fight",
+          "source": "_6-B11R9FJM"
+        },
+        {
+          "clip": "train/Train_Fight/_6-B11R9FJM_4.avi",
+          "label": "Fight",
+          "source": "_6-B11R9FJM"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_0.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_1.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_10.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_11.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_13.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_14.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_2.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_3.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_4.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_5.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_6.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_7.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_8.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/_q5Nwh4Z6ao_9.avi",
+          "label": "Fight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_Fight/a7gBQaAFEtw_2.avi",
+          "label": "Fight",
+          "source": "a7gBQaAFEtw"
+        },
+        {
+          "clip": "train/Train_Fight/a7gBQaAFEtw_4.avi",
+          "label": "Fight",
+          "source": "a7gBQaAFEtw"
+        },
+        {
+          "clip": "train/Train_Fight/as4zD6d86q0_0.avi",
+          "label": "Fight",
+          "source": "as4zD6d86q0"
+        },
+        {
+          "clip": "train/Train_Fight/as4zD6d86q0_1.avi",
+          "label": "Fight",
+          "source": "as4zD6d86q0"
+        },
+        {
+          "clip": "train/Train_Fight/as4zD6d86q0_2.avi",
+          "label": "Fight",
+          "source": "as4zD6d86q0"
+        },
+        {
+          "clip": "train/Train_Fight/bd48s5BpoGY_0.avi",
+          "label": "Fight",
+          "source": "bd48s5BpoGY"
+        },
+        {
+          "clip": "train/Train_Fight/cBNVcBk3rjg_0.avi",
+          "label": "Fight",
+          "source": "cBNVcBk3rjg"
+        },
+        {
+          "clip": "train/Train_Fight/cBNVcBk3rjg_1.avi",
+          "label": "Fight",
+          "source": "cBNVcBk3rjg"
+        },
+        {
+          "clip": "train/Train_Fight/cBNVcBk3rjg_2.avi",
+          "label": "Fight",
+          "source": "cBNVcBk3rjg"
+        },
+        {
+          "clip": "train/Train_Fight/cBNVcBk3rjg_3.avi",
+          "label": "Fight",
+          "source": "cBNVcBk3rjg"
+        },
+        {
+          "clip": "train/Train_Fight/cBNVcBk3rjg_4.avi",
+          "label": "Fight",
+          "source": "cBNVcBk3rjg"
+        },
+        {
+          "clip": "train/Train_Fight/cJvLTWGs-SE_0.avi",
+          "label": "Fight",
+          "source": "cJvLTWGs-SE"
+        },
+        {
+          "clip": "train/Train_Fight/cJvLTWGs-SE_1.avi",
+          "label": "Fight",
+          "source": "cJvLTWGs-SE"
+        },
+        {
+          "clip": "train/Train_Fight/cWJ92fkhME4_0.avi",
+          "label": "Fight",
+          "source": "cWJ92fkhME4"
+        },
+        {
+          "clip": "train/Train_Fight/fRYqXRRcqCs_0.avi",
+          "label": "Fight",
+          "source": "fRYqXRRcqCs"
+        },
+        {
+          "clip": "train/Train_Fight/fsVC-FnnklU_0.avi",
+          "label": "Fight",
+          "source": "fsVC-FnnklU"
+        },
+        {
+          "clip": "train/Train_Fight/fsVC-FnnklU_1.avi",
+          "label": "Fight",
+          "source": "fsVC-FnnklU"
+        },
+        {
+          "clip": "train/Train_Fight/hEjHnhy2_0.avi",
+          "label": "Fight",
+          "source": "hEjHnhy2"
+        },
+        {
+          "clip": "train/Train_Fight/i5xJxtv4gXs_0.avi",
+          "label": "Fight",
+          "source": "i5xJxtv4gXs"
+        },
+        {
+          "clip": "train/Train_Fight/i5xJxtv4gXs_1.avi",
+          "label": "Fight",
+          "source": "i5xJxtv4gXs"
+        },
+        {
+          "clip": "train/Train_Fight/i5xJxtv4gXs_2.avi",
+          "label": "Fight",
+          "source": "i5xJxtv4gXs"
+        },
+        {
+          "clip": "train/Train_Fight/i5xJxtv4gXs_3.avi",
+          "label": "Fight",
+          "source": "i5xJxtv4gXs"
+        },
+        {
+          "clip": "train/Train_Fight/i5xJxtv4gXs_4.avi",
+          "label": "Fight",
+          "source": "i5xJxtv4gXs"
+        },
+        {
+          "clip": "train/Train_Fight/iHUwZBSx_0.avi",
+          "label": "Fight",
+          "source": "iHUwZBSx"
+        },
+        {
+          "clip": "train/Train_Fight/jILBnY3lB2Q_0.avi",
+          "label": "Fight",
+          "source": "jILBnY3lB2Q"
+        },
+        {
+          "clip": "train/Train_Fight/kMI2JME3Aag_0.avi",
+          "label": "Fight",
+          "source": "kMI2JME3Aag"
+        },
+        {
+          "clip": "train/Train_Fight/kMI2JME3Aag_1.avi",
+          "label": "Fight",
+          "source": "kMI2JME3Aag"
+        },
+        {
+          "clip": "train/Train_Fight/kMI2JME3Aag_2.avi",
+          "label": "Fight",
+          "source": "kMI2JME3Aag"
+        },
+        {
+          "clip": "train/Train_Fight/lL3FQltu_0.avi",
+          "label": "Fight",
+          "source": "lL3FQltu"
+        },
+        {
+          "clip": "train/Train_Fight/o9sRXy5r_0.avi",
+          "label": "Fight",
+          "source": "o9sRXy5r"
+        },
+        {
+          "clip": "train/Train_Fight/o9sRXy5r_1.avi",
+          "label": "Fight",
+          "source": "o9sRXy5r"
+        },
+        {
+          "clip": "train/Train_Fight/o9sRXy5r_2.avi",
+          "label": "Fight",
+          "source": "o9sRXy5r"
+        },
+        {
+          "clip": "train/Train_Fight/o9sRXy5r_3.avi",
+          "label": "Fight",
+          "source": "o9sRXy5r"
+        },
+        {
+          "clip": "train/Train_Fight/oqCIUYdq_0.avi",
+          "label": "Fight",
+          "source": "oqCIUYdq"
+        },
+        {
+          "clip": "train/Train_Fight/rfthfd_534.avi",
+          "label": "Fight",
+          "source": "rfthfd"
+        },
+        {
+          "clip": "train/Train_Fight/rfthfd_535.avi",
+          "label": "Fight",
+          "source": "rfthfd"
+        },
+        {
+          "clip": "train/Train_Fight/rfthfd_536.avi",
+          "label": "Fight",
+          "source": "rfthfd"
+        },
+        {
+          "clip": "train/Train_Fight/rfthfd_537.avi",
+          "label": "Fight",
+          "source": "rfthfd"
+        },
+        {
+          "clip": "train/Train_Fight/rfthfd_538.avi",
+          "label": "Fight",
+          "source": "rfthfd"
+        },
+        {
+          "clip": "train/Train_Fight/s-jW4cyavW0_0.avi",
+          "label": "Fight",
+          "source": "s-jW4cyavW0"
+        },
+        {
+          "clip": "train/Train_Fight/s-jW4cyavW0_1.avi",
+          "label": "Fight",
+          "source": "s-jW4cyavW0"
+        },
+        {
+          "clip": "train/Train_Fight/s-jW4cyavW0_2.avi",
+          "label": "Fight",
+          "source": "s-jW4cyavW0"
+        },
+        {
+          "clip": "train/Train_Fight/sadffg_950.avi",
+          "label": "Fight",
+          "source": "sadffg"
+        },
+        {
+          "clip": "train/Train_Fight/u-29uYuR2cg_0.avi",
+          "label": "Fight",
+          "source": "u-29uYuR2cg"
+        },
+        {
+          "clip": "train/Train_Fight/videoplayback_92.avi",
+          "label": "Fight",
+          "source": "videoplayback"
+        },
+        {
+          "clip": "train/Train_Fight/videoplayback_93.avi",
+          "label": "Fight",
+          "source": "videoplayback"
+        },
+        {
+          "clip": "train/Train_Fight/videoplayback_94.avi",
+          "label": "Fight",
+          "source": "videoplayback"
+        },
+        {
+          "clip": "train/Train_Fight/videoplayback_95.avi",
+          "label": "Fight",
+          "source": "videoplayback"
+        },
+        {
+          "clip": "train/Train_Fight/xrlCdUaagHY_0.avi",
+          "label": "Fight",
+          "source": "xrlCdUaagHY"
+        },
+        {
+          "clip": "train/Train_NonFight/0TFi8D8IBg4_0.avi",
+          "label": "NonFight",
+          "source": "0TFi8D8IBg4"
+        },
+        {
+          "clip": "train/Train_NonFight/1QixA5m2_0.avi",
+          "label": "NonFight",
+          "source": "1QixA5m2"
+        },
+        {
+          "clip": "train/Train_NonFight/1ahhhDBQHxg_0.avi",
+          "label": "NonFight",
+          "source": "1ahhhDBQHxg"
+        },
+        {
+          "clip": "train/Train_NonFight/3ZY4hpms_0.avi",
+          "label": "NonFight",
+          "source": "3ZY4hpms"
+        },
+        {
+          "clip": "train/Train_NonFight/3djtKN3k_0.avi",
+          "label": "NonFight",
+          "source": "3djtKN3k"
+        },
+        {
+          "clip": "train/Train_NonFight/4x9VdiCc_0.avi",
+          "label": "NonFight",
+          "source": "4x9VdiCc"
+        },
+        {
+          "clip": "train/Train_NonFight/7-e3_UW7L7U_0.avi",
+          "label": "NonFight",
+          "source": "7-e3_UW7L7U"
+        },
+        {
+          "clip": "train/Train_NonFight/7KXPekwe_0.avi",
+          "label": "NonFight",
+          "source": "7KXPekwe"
+        },
+        {
+          "clip": "train/Train_NonFight/80ySNph9_0.avi",
+          "label": "NonFight",
+          "source": "80ySNph9"
+        },
+        {
+          "clip": "train/Train_NonFight/9N4HikpX_0.avi",
+          "label": "NonFight",
+          "source": "9N4HikpX"
+        },
+        {
+          "clip": "train/Train_NonFight/ATDMY6PzK9U_0.avi",
+          "label": "NonFight",
+          "source": "ATDMY6PzK9U"
+        },
+        {
+          "clip": "train/Train_NonFight/Assault005_x264_0.avi",
+          "label": "NonFight",
+          "source": "Assault005_x264"
+        },
+        {
+          "clip": "train/Train_NonFight/Assault005_x264_1.avi",
+          "label": "NonFight",
+          "source": "Assault005_x264"
+        },
+        {
+          "clip": "train/Train_NonFight/DIsQwAdR8MI_0.avi",
+          "label": "NonFight",
+          "source": "DIsQwAdR8MI"
+        },
+        {
+          "clip": "train/Train_NonFight/DZdLP0rd_0.avi",
+          "label": "NonFight",
+          "source": "DZdLP0rd"
+        },
+        {
+          "clip": "train/Train_NonFight/G0rgy9Ts_0.avi",
+          "label": "NonFight",
+          "source": "G0rgy9Ts"
+        },
+        {
+          "clip": "train/Train_NonFight/HUuRelBW_0.avi",
+          "label": "NonFight",
+          "source": "HUuRelBW"
+        },
+        {
+          "clip": "train/Train_NonFight/HodGUj8s_0.avi",
+          "label": "NonFight",
+          "source": "HodGUj8s"
+        },
+        {
+          "clip": "train/Train_NonFight/HvfhYJ8b_0.avi",
+          "label": "NonFight",
+          "source": "HvfhYJ8b"
+        },
+        {
+          "clip": "train/Train_NonFight/IynvwHe9W3U_0.avi",
+          "label": "NonFight",
+          "source": "IynvwHe9W3U"
+        },
+        {
+          "clip": "train/Train_NonFight/IynvwHe9W3U_1.avi",
+          "label": "NonFight",
+          "source": "IynvwHe9W3U"
+        },
+        {
+          "clip": "train/Train_NonFight/IynvwHe9W3U_2.avi",
+          "label": "NonFight",
+          "source": "IynvwHe9W3U"
+        },
+        {
+          "clip": "train/Train_NonFight/IynvwHe9W3U_3.avi",
+          "label": "NonFight",
+          "source": "IynvwHe9W3U"
+        },
+        {
+          "clip": "train/Train_NonFight/JBRqNBaP_0.avi",
+          "label": "NonFight",
+          "source": "JBRqNBaP"
+        },
+        {
+          "clip": "train/Train_NonFight/JPMLt2ZH_0.avi",
+          "label": "NonFight",
+          "source": "JPMLt2ZH"
+        },
+        {
+          "clip": "train/Train_NonFight/K_7hT4N2QCE_0.avi",
+          "label": "NonFight",
+          "source": "K_7hT4N2QCE"
+        },
+        {
+          "clip": "train/Train_NonFight/KxOHVkVQ_0.avi",
+          "label": "NonFight",
+          "source": "KxOHVkVQ"
+        },
+        {
+          "clip": "train/Train_NonFight/LiCakkNH_0.avi",
+          "label": "NonFight",
+          "source": "LiCakkNH"
+        },
+        {
+          "clip": "train/Train_NonFight/Ma1iva6R_0.avi",
+          "label": "NonFight",
+          "source": "Ma1iva6R"
+        },
+        {
+          "clip": "train/Train_NonFight/NvYo6CS_i_A_0.avi",
+          "label": "NonFight",
+          "source": "NvYo6CS_i_A"
+        },
+        {
+          "clip": "train/Train_NonFight/NvYo6CS_i_A_1.avi",
+          "label": "NonFight",
+          "source": "NvYo6CS_i_A"
+        },
+        {
+          "clip": "train/Train_NonFight/PJDdPv2b9-s_0.avi",
+          "label": "NonFight",
+          "source": "PJDdPv2b9-s"
+        },
+        {
+          "clip": "train/Train_NonFight/PJDdPv2b9-s_1.avi",
+          "label": "NonFight",
+          "source": "PJDdPv2b9-s"
+        },
+        {
+          "clip": "train/Train_NonFight/PTy2vx8Ejas_0.avi",
+          "label": "NonFight",
+          "source": "PTy2vx8Ejas"
+        },
+        {
+          "clip": "train/Train_NonFight/Qqfn1urQ_0.avi",
+          "label": "NonFight",
+          "source": "Qqfn1urQ"
+        },
+        {
+          "clip": "train/Train_NonFight/RGIpCpdlzI8_0.avi",
+          "label": "NonFight",
+          "source": "RGIpCpdlzI8"
+        },
+        {
+          "clip": "train/Train_NonFight/RGIpCpdlzI8_1.avi",
+          "label": "NonFight",
+          "source": "RGIpCpdlzI8"
+        },
+        {
+          "clip": "train/Train_NonFight/RQbYptdw_0.avi",
+          "label": "NonFight",
+          "source": "RQbYptdw"
+        },
+        {
+          "clip": "train/Train_NonFight/Suv_mMs8J9g_0.avi",
+          "label": "NonFight",
+          "source": "Suv_mMs8J9g"
+        },
+        {
+          "clip": "train/Train_NonFight/TYX5vuHO_0.avi",
+          "label": "NonFight",
+          "source": "TYX5vuHO"
+        },
+        {
+          "clip": "train/Train_NonFight/UWmcbEyn_0.avi",
+          "label": "NonFight",
+          "source": "UWmcbEyn"
+        },
+        {
+          "clip": "train/Train_NonFight/VnDOPZls_0.avi",
+          "label": "NonFight",
+          "source": "VnDOPZls"
+        },
+        {
+          "clip": "train/Train_NonFight/WHNtrI7MEUg_0.avi",
+          "label": "NonFight",
+          "source": "WHNtrI7MEUg"
+        },
+        {
+          "clip": "train/Train_NonFight/WHNtrI7MEUg_1.avi",
+          "label": "NonFight",
+          "source": "WHNtrI7MEUg"
+        },
+        {
+          "clip": "train/Train_NonFight/XJfaYlr0_0.avi",
+          "label": "NonFight",
+          "source": "XJfaYlr0"
+        },
+        {
+          "clip": "train/Train_NonFight/XVfkS6rM_0.avi",
+          "label": "NonFight",
+          "source": "XVfkS6rM"
+        },
+        {
+          "clip": "train/Train_NonFight/Y-TiUAODEYw_0.avi",
+          "label": "NonFight",
+          "source": "Y-TiUAODEYw"
+        },
+        {
+          "clip": "train/Train_NonFight/Y-TiUAODEYw_1.avi",
+          "label": "NonFight",
+          "source": "Y-TiUAODEYw"
+        },
+        {
+          "clip": "train/Train_NonFight/Y-TiUAODEYw_2.avi",
+          "label": "NonFight",
+          "source": "Y-TiUAODEYw"
+        },
+        {
+          "clip": "train/Train_NonFight/YC51sSdT_0.avi",
+          "label": "NonFight",
+          "source": "YC51sSdT"
+        },
+        {
+          "clip": "train/Train_NonFight/_q5Nwh4Z6ao_0.avi",
+          "label": "NonFight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_NonFight/_q5Nwh4Z6ao_1.avi",
+          "label": "NonFight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_NonFight/_q5Nwh4Z6ao_2.avi",
+          "label": "NonFight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_NonFight/_q5Nwh4Z6ao_3.avi",
+          "label": "NonFight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_NonFight/_q5Nwh4Z6ao_4.avi",
+          "label": "NonFight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_NonFight/_q5Nwh4Z6ao_5.avi",
+          "label": "NonFight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_NonFight/_q5Nwh4Z6ao_6.avi",
+          "label": "NonFight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_NonFight/_q5Nwh4Z6ao_7.avi",
+          "label": "NonFight",
+          "source": "_q5Nwh4Z6ao"
+        },
+        {
+          "clip": "train/Train_NonFight/a2kw3cfb_0.avi",
+          "label": "NonFight",
+          "source": "a2kw3cfb"
+        },
+        {
+          "clip": "train/Train_NonFight/a7gBQaAFEtw_0.avi",
+          "label": "NonFight",
+          "source": "a7gBQaAFEtw"
+        },
+        {
+          "clip": "train/Train_NonFight/a7gBQaAFEtw_1.avi",
+          "label": "NonFight",
+          "source": "a7gBQaAFEtw"
+        },
+        {
+          "clip": "train/Train_NonFight/a7gBQaAFEtw_2.avi",
+          "label": "NonFight",
+          "source": "a7gBQaAFEtw"
+        },
+        {
+          "clip": "train/Train_NonFight/a7gBQaAFEtw_3.avi",
+          "label": "NonFight",
+          "source": "a7gBQaAFEtw"
+        },
+        {
+          "clip": "train/Train_NonFight/a7gBQaAFEtw_4.avi",
+          "label": "NonFight",
+          "source": "a7gBQaAFEtw"
+        },
+        {
+          "clip": "train/Train_NonFight/a7gBQaAFEtw_5.avi",
+          "label": "NonFight",
+          "source": "a7gBQaAFEtw"
+        },
+        {
+          "clip": "train/Train_NonFight/as4zD6d86q0_0.avi",
+          "label": "NonFight",
+          "source": "as4zD6d86q0"
+        },
+        {
+          "clip": "train/Train_NonFight/bd48s5BpoGY_0.avi",
+          "label": "NonFight",
+          "source": "bd48s5BpoGY"
+        },
+        {
+          "clip": "train/Train_NonFight/cHsy9xWM_0.avi",
+          "label": "NonFight",
+          "source": "cHsy9xWM"
+        },
+        {
+          "clip": "train/Train_NonFight/cJvLTWGs-SE_0.avi",
+          "label": "NonFight",
+          "source": "cJvLTWGs-SE"
+        },
+        {
+          "clip": "train/Train_NonFight/cJvLTWGs-SE_1.avi",
+          "label": "NonFight",
+          "source": "cJvLTWGs-SE"
+        },
+        {
+          "clip": "train/Train_NonFight/cPeNUm31_0.avi",
+          "label": "NonFight",
+          "source": "cPeNUm31"
+        },
+        {
+          "clip": "train/Train_NonFight/cVYo5yT2_0.avi",
+          "label": "NonFight",
+          "source": "cVYo5yT2"
+        },
+        {
+          "clip": "train/Train_NonFight/cWJ92fkhME4_0.avi",
+          "label": "NonFight",
+          "source": "cWJ92fkhME4"
+        },
+        {
+          "clip": "train/Train_NonFight/cfOKjx8l_0.avi",
+          "label": "NonFight",
+          "source": "cfOKjx8l"
+        },
+        {
+          "clip": "train/Train_NonFight/d1b2n9qX_0.avi",
+          "label": "NonFight",
+          "source": "d1b2n9qX"
+        },
+        {
+          "clip": "train/Train_NonFight/dOo2X5wR_0.avi",
+          "label": "NonFight",
+          "source": "dOo2X5wR"
+        },
+        {
+          "clip": "train/Train_NonFight/eF5S8iGLAm4_0.avi",
+          "label": "NonFight",
+          "source": "eF5S8iGLAm4"
+        },
+        {
+          "clip": "train/Train_NonFight/eF5S8iGLAm4_1.avi",
+          "label": "NonFight",
+          "source": "eF5S8iGLAm4"
+        },
+        {
+          "clip": "train/Train_NonFight/emGsAcqs_0.avi",
+          "label": "NonFight",
+          "source": "emGsAcqs"
+        },
+        {
+          "clip": "train/Train_NonFight/fHOVzWgX_0.avi",
+          "label": "NonFight",
+          "source": "fHOVzWgX"
+        },
+        {
+          "clip": "train/Train_NonFight/g3QdfSDk_0.avi",
+          "label": "NonFight",
+          "source": "g3QdfSDk"
+        },
+        {
+          "clip": "train/Train_NonFight/gI4u3PwG_0.avi",
+          "label": "NonFight",
+          "source": "gI4u3PwG"
+        },
+        {
+          "clip": "train/Train_NonFight/i5xJxtv4gXs_0.avi",
+          "label": "NonFight",
+          "source": "i5xJxtv4gXs"
+        },
+        {
+          "clip": "train/Train_NonFight/i5xJxtv4gXs_1.avi",
+          "label": "NonFight",
+          "source": "i5xJxtv4gXs"
+        },
+        {
+          "clip": "train/Train_NonFight/i5xJxtv4gXs_2.avi",
+          "label": "NonFight",
+          "source": "i5xJxtv4gXs"
+        },
+        {
+          "clip": "train/Train_NonFight/iRnSE1TL_0.avi",
+          "label": "NonFight",
+          "source": "iRnSE1TL"
+        },
+        {
+          "clip": "train/Train_NonFight/iTs901V6_0.avi",
+          "label": "NonFight",
+          "source": "iTs901V6"
+        },
+        {
+          "clip": "train/Train_NonFight/jILBnY3lB2Q_0.avi",
+          "label": "NonFight",
+          "source": "jILBnY3lB2Q"
+        },
+        {
+          "clip": "train/Train_NonFight/jILBnY3lB2Q_1.avi",
+          "label": "NonFight",
+          "source": "jILBnY3lB2Q"
+        },
+        {
+          "clip": "train/Train_NonFight/jILBnY3lB2Q_2.avi",
+          "label": "NonFight",
+          "source": "jILBnY3lB2Q"
+        },
+        {
+          "clip": "train/Train_NonFight/jILBnY3lB2Q_3.avi",
+          "label": "NonFight",
+          "source": "jILBnY3lB2Q"
+        },
+        {
+          "clip": "train/Train_NonFight/jXrwQsZJ_0.avi",
+          "label": "NonFight",
+          "source": "jXrwQsZJ"
+        },
+        {
+          "clip": "train/Train_NonFight/kB9NYpu1_0.avi",
+          "label": "NonFight",
+          "source": "kB9NYpu1"
+        },
+        {
+          "clip": "train/Train_NonFight/kBSHDWaGFyc_0.avi",
+          "label": "NonFight",
+          "source": "kBSHDWaGFyc"
+        },
+        {
+          "clip": "train/Train_NonFight/kFbpQrq2_0.avi",
+          "label": "NonFight",
+          "source": "kFbpQrq2"
+        },
+        {
+          "clip": "train/Train_NonFight/kMI2JME3Aag_0.avi",
+          "label": "NonFight",
+          "source": "kMI2JME3Aag"
+        },
+        {
+          "clip": "train/Train_NonFight/kMI2JME3Aag_1.avi",
+          "label": "NonFight",
+          "source": "kMI2JME3Aag"
+        },
+        {
+          "clip": "train/Train_NonFight/kMI2JME3Aag_2.avi",
+          "label": "NonFight",
+          "source": "kMI2JME3Aag"
+        },
+        {
+          "clip": "train/Train_NonFight/kMI2JME3Aag_3.avi",
+          "label": "NonFight",
+          "source": "kMI2JME3Aag"
+        },
+        {
+          "clip": "train/Train_NonFight/kMI2JME3Aag_4.avi",
+          "label": "NonFight",
+          "source": "kMI2JME3Aag"
+        },
+        {
+          "clip": "train/Train_NonFight/lQ39ffan_0.avi",
+          "label": "NonFight",
+          "source": "lQ39ffan"
+        },
+        {
+          "clip": "train/Train_NonFight/oAeudqZD_0.avi",
+          "label": "NonFight",
+          "source": "oAeudqZD"
+        },
+        {
+          "clip": "train/Train_NonFight/oG3Qxvq0_0.avi",
+          "label": "NonFight",
+          "source": "oG3Qxvq0"
+        },
+        {
+          "clip": "train/Train_NonFight/oMZpqizQ_0.avi",
+          "label": "NonFight",
+          "source": "oMZpqizQ"
+        },
+        {
+          "clip": "train/Train_NonFight/oUqxGhTe_0.avi",
+          "label": "NonFight",
+          "source": "oUqxGhTe"
+        },
+        {
+          "clip": "train/Train_NonFight/oYFVr2kK_0.avi",
+          "label": "NonFight",
+          "source": "oYFVr2kK"
+        },
+        {
+          "clip": "train/Train_NonFight/okA8k7rF_0.avi",
+          "label": "NonFight",
+          "source": "okA8k7rF"
+        },
+        {
+          "clip": "train/Train_NonFight/on2HIPgB_0.avi",
+          "label": "NonFight",
+          "source": "on2HIPgB"
+        },
+        {
+          "clip": "train/Train_NonFight/pinuwjwm_0.avi",
+          "label": "NonFight",
+          "source": "pinuwjwm"
+        },
+        {
+          "clip": "train/Train_NonFight/qIRZ4SMf_0.avi",
+          "label": "NonFight",
+          "source": "qIRZ4SMf"
+        },
+        {
+          "clip": "train/Train_NonFight/qrBAhb8K_0.avi",
+          "label": "NonFight",
+          "source": "qrBAhb8K"
+        },
+        {
+          "clip": "train/Train_NonFight/rSumd9HEmrA_0.avi",
+          "label": "NonFight",
+          "source": "rSumd9HEmrA"
+        },
+        {
+          "clip": "train/Train_NonFight/s-jW4cyavW0_0.avi",
+          "label": "NonFight",
+          "source": "s-jW4cyavW0"
+        },
+        {
+          "clip": "train/Train_NonFight/s-jW4cyavW0_1.avi",
+          "label": "NonFight",
+          "source": "s-jW4cyavW0"
+        },
+        {
+          "clip": "train/Train_NonFight/sIbVwIO0_0.avi",
+          "label": "NonFight",
+          "source": "sIbVwIO0"
+        },
+        {
+          "clip": "train/Train_NonFight/skycjZcE_0.avi",
+          "label": "NonFight",
+          "source": "skycjZcE"
+        },
+        {
+          "clip": "train/Train_NonFight/uLGOlxvv_0.avi",
+          "label": "NonFight",
+          "source": "uLGOlxvv"
+        },
+        {
+          "clip": "train/Train_NonFight/uWH7kvNG_0.avi",
+          "label": "NonFight",
+          "source": "uWH7kvNG"
+        },
+        {
+          "clip": "train/Train_NonFight/uWQG2hQT_0.avi",
+          "label": "NonFight",
+          "source": "uWQG2hQT"
+        },
+        {
+          "clip": "train/Train_NonFight/uu3SB2L1_0.avi",
+          "label": "NonFight",
+          "source": "uu3SB2L1"
+        },
+        {
+          "clip": "train/Train_NonFight/vCO6CZNt_0.avi",
+          "label": "NonFight",
+          "source": "vCO6CZNt"
+        },
+        {
+          "clip": "train/Train_NonFight/wk5WCCti_0.avi",
+          "label": "NonFight",
+          "source": "wk5WCCti"
+        },
+        {
+          "clip": "train/Train_NonFight/yQWmI4e8_0.avi",
+          "label": "NonFight",
+          "source": "yQWmI4e8"
+        }
+      ]
+    }
+  },
+  "disjointness": {
+    "fit_eval_shared_sources": 0,
+    "duplicate_clips": 0,
+    "all_clips_present_on_disk": true
+  },
+  "run": {
+    "timestamp_utc": "2026-09-06T12:13:13.369989+00:00",
+    "tool_sha256": "3fe03e32b4ab32033b4f490033b9703a5e62dd7381fe6f110cf33a9d1649c8d0",
+    "python": "3.11.2"
+  },
+  "manifest_sha256": "20d862282143fd41d3af31bad69ba697cfac5f0fd87f7f952db53b0dfaf4b071"
+}

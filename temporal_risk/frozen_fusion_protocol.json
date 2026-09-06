@@ -1,0 +1,110 @@
+{
+  "tool": "hand-authored protocol freeze",
+  "protocol_version": "fusion-v1-2026-09",
+  "artifact_kind": "pre-registered fusion protocol",
+  "frozen_before_any_fresh_carve_result_existed": true,
+  "designed_from": "the existing 240-clip carve characterization only (235 analyzable clips); no fresh-carve score existed when this file was written",
+  "primary_data_accessed": false,
+
+  "motivation": {
+    "finding": "On the existing carve, per-track motion is the only spatial family with credible violence discrimination, and it remains discriminative inside the region where the temporal branch is wrong.",
+    "evidence": {
+      "speed_mean_auc_all_235": [0.855, 0.803, 0.903],
+      "speed_normalised_auc_all_235": [0.806, 0.745, 0.867],
+      "speed_mean_auc_high_quality_140": [0.914, 0.863, 0.954],
+      "missed_fights_vs_correctly_rejected_nonfight_auc": [0.867, 0.793, 0.926],
+      "missed_fights_vs_correctly_rejected_high_quality": [0.920, 0.855, 0.970],
+      "source_clustered_bootstrap_ci_speed_mean": [0.773, 0.921],
+      "note": "triples are [AUC, ci_low, ci_high]; all measured on the existing carve, never on primary"
+    },
+    "why_not_the_rule_booleans": "Stationary fires on 93.9% of Fight and 86.0% of NonFight clips, Restricted on 50.0% vs 50.4%. Their clip-level firing is close to class-independent, so OR-fusion over them would be degenerate and AND-fusion near a no-op."
+  },
+
+  "spatial_score": {
+    "definition": "speed_normalised_by_group_diagonal = mean(per-track centroid displacement in pixels) / mean(person-group bounding diagonal)",
+    "chosen_over": "raw speed_pixels",
+    "rationale": "the raw form scored HIGHER on the existing carve (0.855 vs 0.806), so the normalised form is the conservative choice, not the flattering one. Dividing by the group diagonal removes first-order dependence on apparent person size, which differs by class (diagonal AUC 0.615).",
+    "unresolved_confounder": "camera motion is NOT compensated. RWF-2000 Fight clips may be filmed differently from NonFight clips, and this protocol cannot separate subject motion from camera motion.",
+    "undefined_when": "no person is tracked in two consecutive frames, or the group diagonal is zero; such clips are recorded as spatially undefined and handled by the explicit missing-data rule below."
+  },
+
+  "missing_data_rule": {
+    "statement": "A clip whose spatial score is undefined is scored as spatial-negative (the spatial branch abstains and cannot raise an alarm).",
+    "rationale": "the alternative -- imputing a value -- would let a detection failure manufacture or suppress evidence. Abstention makes fusion reduce to the temporal decision on those clips, which is the honest default.",
+    "must_report": "the count of undefined clips per split and per class, since missingness may itself be class-dependent."
+  },
+
+  "candidates": [
+    {
+      "name": "B0_temporal_only",
+      "role": "frozen incumbent comparator",
+      "rule": "max(window_probabilities) >= 0.14",
+      "parameters_fitted": "none",
+      "note": "the deployed rule, unchanged"
+    },
+    {
+      "name": "B1_spatial_only",
+      "role": "baseline",
+      "rule": "spatial_score >= theta_s",
+      "parameters_fitted": "theta_s, on the FIT split only, at the matched false-positive budget"
+    },
+    {
+      "name": "F1_or_gate",
+      "role": "fusion candidate",
+      "rule": "temporal_fires OR (spatial_score >= theta_or)",
+      "parameters_fitted": "theta_or, on the FIT split only, chosen so the COMBINED rule's fit-split false-positive count matches B0's fit-split false-positive count",
+      "intent": "recover Fight clips the temporal branch misses, without spending extra false alarms"
+    },
+    {
+      "name": "F2_rank_sum",
+      "role": "fusion candidate",
+      "rule": "0.5 * pct(temporal_max) + 0.5 * pct(spatial_score) >= theta_f",
+      "parameters_fitted": "theta_f only. The weight is FIXED at 0.5/0.5 and is NOT fitted.",
+      "percentile_reference": "empirical CDF of the FIT split; eval-split values are ranked against the fit-split distribution, never against their own",
+      "intent": "score-level fusion that cannot be tuned by weight search"
+    }
+  ],
+
+  "operating_point": {
+    "method": "every candidate is calibrated on the FIT split to B0's fit-split false-positive count",
+    "rationale": "identical to the aggregation protocol already used and reviewed: it turns each threshold into a calibration constant rather than a fitted parameter, and reduces the comparison to recall at a matched alarm budget",
+    "threshold_grid": "every distinct score value present in the fit split (exhaustive over distinct confusions)",
+    "tie_break": "closest false-positive count, then most true positives, then highest threshold"
+  },
+
+  "primary_endpoint": {
+    "statement": "Fight recall on the EVAL split at the fit-calibrated operating point, F1 or F2 versus B0",
+    "test": "exact McNemar on discordant pairs, two-sided",
+    "support": "p < 0.05 with more Fight clips detected by fusion than by B0",
+    "failure": "p < 0.05 in the opposite direction",
+    "inconclusive": "p >= 0.05"
+  },
+  "secondary_endpoints": [
+    {
+      "statement": "false alarms on EVAL NonFight clips not materially worse than B0",
+      "test": "exact McNemar, plus a pre-set non-inferiority margin of 5 additional false-positive clips",
+      "gatekept_on": "the primary endpoint"
+    },
+    {
+      "statement": "accuracy, precision, specificity, F1, ROC-AUC and PR-AUC for each candidate, with Wilson intervals and clip-level and SOURCE-clustered bootstrap intervals",
+      "test": "descriptive; no hypothesis test"
+    }
+  ],
+
+  "prohibited": [
+    "fitting any parameter on the eval split",
+    "fitting any parameter on the 394-clip primary split",
+    "fitting any parameter on the existing 240-clip carve",
+    "re-tuning the temporal rule or its 0.14 threshold",
+    "adding a candidate after seeing any eval-split result",
+    "changing the weight in F2",
+    "changing the operating point after seeing any eval-split result",
+    "selecting the spatial score after seeing any eval-split result"
+  ],
+
+  "statistical_notes": {
+    "pairing": "every candidate decides the same clips, so comparisons are paired and an independent-samples test would be wrong",
+    "clustering": "eval clips come from 114 source videos, so clip-level intervals overstate precision; source-clustered bootstrap is reported alongside",
+    "power": "with ~117 eval Fight clips and a temporal miss rate near 30%, roughly 35 clips are recoverable. Exact McNemar needs about 6-10 net discordant clips for significance, so a real but modest improvement may land inconclusive. That outcome will be reported as inconclusive, not as a trend."
+  }
+}
