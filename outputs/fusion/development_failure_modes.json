@@ -1,0 +1,121 @@
+{
+  "artifact_kind": "development failure-mode characterization",
+  "scope": "existing 240-clip carve (R3D holdout); 235 locally analyzable clips",
+  "primary_data_used": false,
+  "new_data_collected": false,
+  "tuning_performed": false,
+  "source": "outputs/fusion/carve_spatial_characterization.csv",
+  "source_sha256": "d20eb26d609e912620ab5bef656b3e2ad96b6c446667f8dcc51c3f5a87701865",
+  "sample": {
+    "clips": 235,
+    "fight": 114,
+    "nonfight": 121,
+    "sources": 117
+  },
+  "detection_and_tracking_failures": {
+    "no_person_detected_in_any_frame": {
+      "clips": 13,
+      "pct_all": 5.5,
+      "fight": 1,
+      "pct_fight": 0.9,
+      "nonfight": 12,
+      "pct_nonfight": 9.9,
+      "class_dependent": false
+    },
+    "some_zero_person_frames": {
+      "clips": 124,
+      "pct_all": 52.8,
+      "fight": 74,
+      "pct_fight": 64.9,
+      "nonfight": 50,
+      "pct_nonfight": 41.3,
+      "class_dependent": true
+    },
+    "over_half_frames_without_person": {
+      "clips": 48,
+      "pct_all": 20.4,
+      "fight": 17,
+      "pct_fight": 14.9,
+      "nonfight": 31,
+      "pct_nonfight": 25.6,
+      "class_dependent": true
+    },
+    "undefined_pairwise_distance": {
+      "clips": 30,
+      "pct_all": 12.8,
+      "fight": 8,
+      "pct_fight": 7.0,
+      "nonfight": 22,
+      "pct_nonfight": 18.2,
+      "class_dependent": true
+    },
+    "undefined_spatial_feature": {
+      "clips": 14,
+      "pct_all": 6.0,
+      "fight": 1,
+      "pct_fight": 0.9,
+      "nonfight": 13,
+      "pct_nonfight": 10.7,
+      "class_dependent": false
+    },
+    "crowded_10plus_persons": {
+      "clips": 25,
+      "pct_all": 10.6,
+      "fight": 17,
+      "pct_fight": 14.9,
+      "nonfight": 8,
+      "pct_nonfight": 6.6,
+      "class_dependent": false
+    },
+    "single_person_only": {
+      "clips": 17,
+      "pct_all": 7.2,
+      "fight": 7,
+      "pct_fight": 6.1,
+      "nonfight": 10,
+      "pct_nonfight": 8.3,
+      "class_dependent": false
+    }
+  },
+  "temporal_errors_frozen_rule": {
+    "rule": "max window probability >= 0.14 (frozen, unchanged)",
+    "false_negatives_missed_fights": 34,
+    "false_positives": 21,
+    "missed_fight_median_max_score": 0.0413,
+    "detected_fight_median_max_score": 0.886,
+    "note": "errors are characterised, NOT used to adjust any threshold"
+  },
+  "failure_concentration": {
+    "missed_fights": 34,
+    "distinct_sources": 12,
+    "largest_single_source_contribution": 9,
+    "sources_contributing_3plus": {
+      "F7W6PQ3V3y8": 9,
+      "GafFu4IZtIA": 5,
+      "HtbVjsRA": 3,
+      "QkqaGJ9x": 4
+    },
+    "interpretation": "failures cluster by source video; the largest cluster is the known hard source identified during fold-0 forensics, whose Fight clips have a median max-window score far below the carve-wide median"
+  },
+  "camera_motion_sensitivity": {
+    "status": "UNRESOLVED CONFOUNDER",
+    "evidence": "raw pixel speed separates classes better (AUC 0.855) than the scale-normalised form (0.806), and apparent person size itself separates classes (diagonal AUC 0.615). Neither observation isolates subject motion from camera motion.",
+    "compensated": false,
+    "experiment_required_but_NOT_run": {
+      "what": "global motion compensation (e.g. frame-to-frame homography or optical-flow background estimate) subtracted before computing per-track displacement, then re-characterise on the development carve",
+      "data_required": "none beyond the existing carve; this is compute, not new data",
+      "why_not_run": "outside this phase's scope; it would change the frozen spatial feature definition, which is locked by the closed experiment"
+    }
+  },
+  "computational_bottleneck": {
+    "measured": "YOLOv8s person detection dominates; 34.4 s per 150-frame clip on CPU",
+    "temporal_branch": "R3D-18 sliding window ~9.9 s per clip on CPU",
+    "real_time": "NOT achievable on this hardware; ~7x slower than real time",
+    "no_gpu_measurement_available": true
+  },
+  "early_detection_behaviour": {
+    "source": "previously frozen temporal analysis, not recomputed here",
+    "note": "censoring-aware first-alarm statistics were established on the primary split under the earlier frozen protocol and are NOT recomputed or re-opened here"
+  },
+  "generated_utc": "2026-09-07T12:31:09.827611+00:00"
+}
