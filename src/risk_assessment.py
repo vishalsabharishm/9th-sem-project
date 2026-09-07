@@ -34,6 +34,80 @@ DEFAULT_RISK_MAPPING: Dict[str, str] = {
 }
 DEFAULT_RISK_OUTPUT_PATH = Path(__file__).resolve().parent.parent / "outputs" / "risk_assessment.json"
 
+# ---------------------------------------------------------------------------
+# What this layer is, stated so a consumer cannot mistake it for something else.
+#
+# The four concerns below are deliberately separated. Conflating them is what
+# turns an engineering convenience into an unsupported scientific claim, and the
+# risk level in particular is a CONFIGURED CONSTANT, not a measurement.
+# ---------------------------------------------------------------------------
+
+RISK_LAYER_DECLARATION = {
+    "layers": {
+        "1_event_detection": {
+            "what": "did a rule or the temporal model fire on this frame or clip",
+            "source": "AbnormalEventDetector rules and the frozen temporal aggregation",
+            "empirically_evaluated": True,
+            "note": (
+                "the temporal branch has a measured operating point on held-out data; "
+                "the spatial rules have NO violence ground truth and were never "
+                "evaluated as detectors"
+            ),
+        },
+        "2_evidence": {
+            "what": "the geometric or probabilistic quantities behind the firing",
+            "source": "rule evidence strings and the R3D window probability",
+            "empirically_evaluated": True,
+            "note": "quantities are measured; their sufficiency as evidence is not established",
+        },
+        "3_confidence": {
+            "what": "the number attached to an event",
+            "source": "either a measured model probability or an engineer-declared constant",
+            "empirically_evaluated": "partly",
+            "note": (
+                "confidence_provenance distinguishes the two. Stationary and Restricted "
+                "carry HARDCODED constants (0.9, 0.95); Crowding and Proximity carry no "
+                "confidence at all. Only the temporal value is a model probability."
+            ),
+        },
+        "4_risk_interpretation": {
+            "what": "the Low / Medium / High label",
+            "source": "a fixed dictionary from event type to level",
+            "empirically_evaluated": False,
+            "note": (
+                "this is a configured mapping chosen by an engineer. It is NOT a risk "
+                "model: it is not calibrated, not learned, not validated against any "
+                "outcome, and no risk ground truth exists in RWF-2000."
+            ),
+        },
+    },
+    "is_validated_risk_model": False,
+    "risk_ground_truth_available": False,
+    "what_may_be_claimed": (
+        "the system reports which events fired, the evidence behind them, and a "
+        "configured severity label"
+    ),
+    "what_may_not_be_claimed": (
+        "that the risk level is calibrated, probabilistic, operationally validated, "
+        "or comparable across event types. A 'High' label is a routing convenience, "
+        "not an estimated probability of harm."
+    ),
+    "to_validate_this_layer": (
+        "risk-annotated data with outcome labels would be required. No such data "
+        "exists in this project, so the limitation is structural rather than pending."
+    ),
+}
+
+
+def describe_risk_layer() -> Dict[str, object]:
+    """Return the layer declaration, for reports and UI copy.
+
+    Exposed as a function so that a caller reporting a risk level has a
+    single obvious place to obtain the caveat that must travel with it.
+    """
+    return dict(RISK_LAYER_DECLARATION)
+
+
 
 def _confidence_provenance(event_type: str, confidence: Optional[float]) -> Optional[str]:
     """Tag a confidence value's origin so a report can never confuse a
@@ -74,6 +148,10 @@ class RiskAssessment:
             "reason": self.reason,
             "confidence": self.confidence,
             "confidence_provenance": self.confidence_provenance,
+            # Travels with every record so a consumer cannot render a risk level
+            # without also having the fact that it is a configured constant.
+            "risk_level_is_validated": False,
+            "risk_level_basis": "configured mapping from event type; not calibrated or learned",
             "frame_number": self.frame_number,
             "timestamp_seconds": self.timestamp_seconds,
             "object_id": self.object_id,
