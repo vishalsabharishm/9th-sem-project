@@ -1,0 +1,4086 @@
+{
+  "tool": "run_confirmatory_primary_evaluation.analyse",
+  "artifact_kind": "FINAL CONFIRMATORY PRIMARY EVALUATION",
+  "one_shot": true,
+  "result_scope": "CLIP-LEVEL OFFLINE CONFIRMATORY CLASSIFICATION -- not a causal mid-clip alarm, not real-time, not early warning",
+  "protocol_sha256": "ff2d78c5ae064e16b1144b74193b40eb66d71f63069c8594faf13238fb6384cd",
+  "protocol_version": "confirmatory-fusion-v2-2026-09",
+  "primary_endpoint": "B0_temporal_only versus F2_rank_sum, exact two-sided McNemar, alpha 0.05",
+  "decision": "C_NO_MEANINGFUL_IMPROVEMENT",
+  "sample": {
+    "clips": 394,
+    "fight": 200,
+    "nonfight": 194,
+    "sources": 174,
+    "spatially_undefined": 22,
+    "spatially_undefined_by_class": {
+      "Fight": 1,
+      "NonFight": 21
+    },
+    "processing_failures": 0
+  },
+  "frozen_parameters": {
+    "B0_threshold": 0.14,
+    "B1_theta_s": 0.023439943309201124,
+    "F1_theta_or": 0.44120893993145877,
+    "F2_theta_f": 0.49133532299990373,
+    "F2_weight": 0.5,
+    "temporal_reference_n": 235,
+    "spatial_reference_n": 221,
+    "normalisation_source": "development carve values stored in the frozen protocol; no primary value was added to any reference"
+  },
+  "results": {
+    "B0_temporal_only": {
+      "tp": 160,
+      "fp": 43,
+      "tn": 151,
+      "fn": 40,
+      "accuracy": 0.7893401015228426,
+      "precision": 0.7881773399014779,
+      "recall": 0.8,
+      "specificity": 0.7783505154639175,
+      "fpr": 0.22164948453608246,
+      "f1": 0.794044665012407,
+      "accuracy_wilson_95": [
+        0.7463793265898394,
+        0.826713283405739
+      ],
+      "recall_wilson_95": [
+        0.7391448134346212,
+        0.8495479907390189
+      ],
+      "specificity_wilson_95": [
+        0.7148164367553727,
+        0.8310752112529529
+      ],
+      "precision_wilson_95": [
+        0.7268850757749084,
+        0.8387655470116215
+      ],
+      "roc_auc": 0.8836597938144329,
+      "pr_auc": 0.8942856068250384,
+      "score_used_for_auc": "temporal_max"
+    },
+    "B1_spatial_only": {
+      "tp": 67,
+      "fp": 35,
+      "tn": 159,
+      "fn": 133,
+      "accuracy": 0.5736040609137056,
+      "precision": 0.6568627450980392,
+      "recall": 0.335,
+      "specificity": 0.8195876288659794,
+      "fpr": 0.18041237113402062,
+      "f1": 0.44370860927152317,
+      "accuracy_wilson_95": [
+        0.5242915813200757,
+        0.6214951352577469
+      ],
+      "recall_wilson_95": [
+        0.27324086978416323,
+        0.4029780879203348
+      ],
+      "specificity_wilson_95": [
+        0.7594419448918193,
+        0.8673225398584805
+      ],
+      "precision_wilson_95": [
+        0.5605440584282402,
+        0.7417949338395362
+      ],
+      "roc_auc": 0.7057832515177042,
+      "pr_auc": 0.6499273412096799,
+      "score_used_for_auc": "spatial"
+    },
+    "F1_or_gate": {
+      "tp": 160,
+      "fp": 43,
+      "tn": 151,
+      "fn": 40,
+      "accuracy": 0.7893401015228426,
+      "precision": 0.7881773399014779,
+      "recall": 0.8,
+      "specificity": 0.7783505154639175,
+      "fpr": 0.22164948453608246,
+      "f1": 0.794044665012407,
+      "accuracy_wilson_95": [
+        0.7463793265898394,
+        0.826713283405739
+      ],
+      "recall_wilson_95": [
+        0.7391448134346212,
+        0.8495479907390189
+      ],
+      "specificity_wilson_95": [
+        0.7148164367553727,
+        0.8310752112529529
+      ],
+      "precision_wilson_95": [
+        0.7268850757749084,
+        0.8387655470116215
+      ],
+      "roc_auc": null,
+      "pr_auc": null,
+      "score_used_for_auc": "none; F1 is a boolean gate with no continuous score"
+    },
+    "F2_rank_sum": {
+      "tp": 160,
+      "fp": 46,
+      "tn": 148,
+      "fn": 40,
+      "accuracy": 0.7817258883248731,
+      "precision": 0.7766990291262136,
+      "recall": 0.8,
+      "specificity": 0.7628865979381443,
+      "fpr": 0.23711340206185566,
+      "f1": 0.788177339901478,
+      "accuracy_wilson_95": [
+        0.7383243385059048,
+        0.8196868870161058
+      ],
+      "recall_wilson_95": [
+        0.7391448134346212,
+        0.8495479907390189
+      ],
+      "specificity_wilson_95": [
+        0.6982978634171523,
+        0.8172664708129328
+      ],
+      "precision_wilson_95": [
+        0.715058991461869,
+        0.828208295377816
+      ],
+      "roc_auc": 0.860979381443299,
+      "pr_auc": 0.8329526400571288,
+      "score_used_for_auc": "f2_score (frozen rank sum)"
+    }
+  },
+  "paired_comparisons": {
+    "F2_rank_sum": {
+      "overall": {
+        "b": 25,
+        "c": 22,
+        "discordant": 47,
+        "p_value": 0.7708669945730264,
+        "one_sided_p_value": 0.3854334972865132,
+        "method": "two-sided exact binomial on discordant pairs (McNemar)"
+      },
+      "fight_detection": {
+        "b": 13,
+        "c": 13,
+        "discordant": 26,
+        "p_value": 1.0,
+        "one_sided_p_value": 0.577490508556366,
+        "method": "two-sided exact binomial on discordant pairs (McNemar)",
+        "reading": "b = Fight clips B0 detects and this candidate misses; c = Fight clips this candidate detects and B0 misses"
+      },
+      "nonfight_false_alarms": {
+        "b": 12,
+        "c": 9,
+        "discordant": 21,
+        "p_value": 0.6636238098144531,
+        "one_sided_p_value": 0.33181190490722656,
+        "method": "two-sided exact binomial on discordant pairs (McNemar)",
+        "reading": "b = NonFight clips only this candidate false-alarms on; c = only B0 does"
+      },
+      "accuracy_difference_clip_level": {
+        "difference": -0.0076142131979695105,
+        "ci_low": -0.040609137055837574,
+        "ci_high": 0.025380710659898553,
+        "resamples": 10000,
+        "seed": 42,
+        "level": "clip",
+        "method": "paired percentile bootstrap; clips resampled as pairs"
+      },
+      "accuracy_difference_source_level": {
+        "difference": -0.0076142131979695105,
+        "ci_low": -0.04627357597077528,
+        "ci_high": 0.030927835051546393,
+        "resamples": 10000,
+        "seed": 42,
+        "level": "source video",
+        "method": "paired percentile bootstrap; clips resampled as pairs"
+      },
+      "changed_clips": {
+        "fight_gained": [
+          "val/Val_Fight/JECBfnp2ZXc_0.avi",
+          "val/Val_Fight/JECBfnp2ZXc_5.avi",
+          "val/Val_Fight/JECBfnp2ZXc_6.avi",
+          "val/Val_Fight/MxkTo5F-nvU_0.avi",
+          "val/Val_Fight/MxkTo5F-nvU_4.avi",
+          "val/Val_Fight/Qtcwz_K2Gvo_1.avi",
+          "val/Val_Fight/RIXaF_TkLlU_4.avi",
+          "val/Val_Fight/RIXaF_TkLlU_5.avi",
+          "val/Val_Fight/YDOJvzChqSg_3.avi",
+          "val/Val_Fight/g6jdqkcdgqk_1.avi",
+          "val/Val_Fight/g6jdqkcdgqk_5.avi",
+          "val/Val_Fight/mwuiYEBdkJs_1.avi",
+          "val/Val_Fight/qaAclucigpY_2.avi"
+        ],
+        "fight_lost": [
+          "val/Val_Fight/0Ow4cotKOuw_1.avi",
+          "val/Val_Fight/1Kbw1bUw_0.avi",
+          "val/Val_Fight/1Kbw1bUw_1.avi",
+          "val/Val_Fight/1Kbw1bUw_3.avi",
+          "val/Val_Fight/6Rl7q_kXYbg_0.avi",
+          "val/Val_Fight/6Rl7q_kXYbg_1.avi",
+          "val/Val_Fight/6Rl7q_kXYbg_2.avi",
+          "val/Val_Fight/JECBfnp2ZXc_4.avi",
+          "val/Val_Fight/etyiEs3j8x8_3.avi",
+          "val/Val_Fight/nuf-d5GugL0_0.avi",
+          "val/Val_Fight/nuf-d5GugL0_9.avi",
+          "val/Val_Fight/y_vX9FtjLaQ_3.avi",
+          "val/Val_Fight/y_vX9FtjLaQ_4.avi"
+        ],
+        "nonfight_false_alarm_gained": [
+          "val/Val_NonFight/1MVS2QPWbHc_0.avi",
+          "val/Val_NonFight/GYvqfFzN_0.avi",
+          "val/Val_NonFight/JOMXfA1R_0.avi",
+          "val/Val_NonFight/SJRnWfHAx_E_1.avi",
+          "val/Val_NonFight/bW2vHhYbzHM_0.avi",
+          "val/Val_NonFight/mwuiYEBdkJs_0.avi",
+          "val/Val_NonFight/mwuiYEBdkJs_1.avi",
+          "val/Val_NonFight/nVdn1krnTCQ_2.avi",
+          "val/Val_NonFight/utRmPckr_0.avi",
+          "val/Val_NonFight/wMcODEtzJIA_1.avi",
+          "val/Val_NonFight/y2pGPMqikJg_0.avi",
+          "val/Val_NonFight/zGBzk5SeJOw_1.avi"
+        ],
+        "nonfight_false_alarm_removed": [
+          "val/Val_NonFight/6doZoiaG9PM_1.avi",
+          "val/Val_NonFight/8SmT9rE9_0.avi",
+          "val/Val_NonFight/I-QiUMPTWNE_0.avi",
+          "val/Val_NonFight/WPXtCPPS_0.avi",
+          "val/Val_NonFight/eb4Oant1_0.avi",
+          "val/Val_NonFight/ngv36FBY_0.avi",
+          "val/Val_NonFight/nuf-d5GugL0_0.avi",
+          "val/Val_NonFight/nuf-d5GugL0_1.avi",
+          "val/Val_NonFight/tivF4CAg_0.avi"
+        ]
+      }
+    },
+    "F1_or_gate": {
+      "overall": {
+        "b": 0,
+        "c": 0,
+        "discordant": 0,
+        "p_value": 1.0,
+        "method": "exact binomial; no discordant pairs, reported as p = 1"
+      },
+      "fight_detection": {
+        "b": 0,
+        "c": 0,
+        "discordant": 0,
+        "p_value": 1.0,
+        "method": "exact binomial; no discordant pairs, reported as p = 1",
+        "reading": "b = Fight clips B0 detects and this candidate misses; c = Fight clips this candidate detects and B0 misses"
+      },
+      "nonfight_false_alarms": {
+        "b": 0,
+        "c": 0,
+        "discordant": 0,
+        "p_value": 1.0,
+        "method": "exact binomial; no discordant pairs, reported as p = 1",
+        "reading": "b = NonFight clips only this candidate false-alarms on; c = only B0 does"
+      },
+      "accuracy_difference_clip_level": {
+        "difference": 0.0,
+        "ci_low": 0.0,
+        "ci_high": 0.0,
+        "resamples": 10000,
+        "seed": 42,
+        "level": "clip",
+        "method": "paired percentile bootstrap; clips resampled as pairs"
+      },
+      "accuracy_difference_source_level": {
+        "difference": 0.0,
+        "ci_low": 0.0,
+        "ci_high": 0.0,
+        "resamples": 10000,
+        "seed": 42,
+        "level": "source video",
+        "method": "paired percentile bootstrap; clips resampled as pairs"
+      },
+      "changed_clips": {
+        "fight_gained": [],
+        "fight_lost": [],
+        "nonfight_false_alarm_gained": [],
+        "nonfight_false_alarm_removed": []
+      }
+    },
+    "B1_spatial_only": {
+      "overall": {
+        "b": 118,
+        "c": 33,
+        "discordant": 151,
+        "p_value": 2.04515440913145e-12,
+        "one_sided_p_value": 1.022577204565725e-12,
+        "method": "two-sided exact binomial on discordant pairs (McNemar)"
+      },
+      "fight_detection": {
+        "b": 102,
+        "c": 9,
+        "discordant": 111,
+        "p_value": 4.2608701445754604e-21,
+        "one_sided_p_value": 2.1304350722877302e-21,
+        "method": "two-sided exact binomial on discordant pairs (McNemar)",
+        "reading": "b = Fight clips B0 detects and this candidate misses; c = Fight clips this candidate detects and B0 misses"
+      },
+      "nonfight_false_alarms": {
+        "b": 16,
+        "c": 24,
+        "discordant": 40,
+        "p_value": 0.26818725105476915,
+        "one_sided_p_value": 0.13409362552738457,
+        "method": "two-sided exact binomial on discordant pairs (McNemar)",
+        "reading": "b = NonFight clips only this candidate false-alarms on; c = only B0 does"
+      },
+      "accuracy_difference_clip_level": {
+        "difference": -0.21573604060913698,
+        "ci_low": -0.2741116751269035,
+        "ci_high": -0.15989847715736039,
+        "resamples": 10000,
+        "seed": 42,
+        "level": "clip",
+        "method": "paired percentile bootstrap; clips resampled as pairs"
+      },
+      "accuracy_difference_source_level": {
+        "difference": -0.21573604060913698,
+        "ci_low": -0.2973639549898543,
+        "ci_high": -0.12903013582342956,
+        "resamples": 10000,
+        "seed": 42,
+        "level": "source video",
+        "method": "paired percentile bootstrap; clips resampled as pairs"
+      },
+      "changed_clips": {
+        "fight_gained": [
+          "val/Val_Fight/JECBfnp2ZXc_0.avi",
+          "val/Val_Fight/JECBfnp2ZXc_6.avi",
+          "val/Val_Fight/MxkTo5F-nvU_0.avi",
+          "val/Val_Fight/MxkTo5F-nvU_4.avi",
+          "val/Val_Fight/RIXaF_TkLlU_4.avi",
+          "val/Val_Fight/RIXaF_TkLlU_5.avi",
+          "val/Val_Fight/YDOJvzChqSg_3.avi",
+          "val/Val_Fight/bW2vHhYbzHM_0.avi",
+          "val/Val_Fight/qaAclucigpY_2.avi"
+        ],
+        "fight_lost": [
+          "val/Val_Fight/0Ow4cotKOuw_0.avi",
+          "val/Val_Fight/0Ow4cotKOuw_1.avi",
+          "val/Val_Fight/0Ow4cotKOuw_2.avi",
+          "val/Val_Fight/0Ow4cotKOuw_3.avi",
+          "val/Val_Fight/0Ow4cotKOuw_4.avi",
+          "val/Val_Fight/1Kbw1bUw_0.avi",
+          "val/Val_Fight/1Kbw1bUw_1.avi",
+          "val/Val_Fight/1Kbw1bUw_2.avi",
+          "val/Val_Fight/1Kbw1bUw_3.avi",
+          "val/Val_Fight/1MVS2QPWbHc_0.avi",
+          "val/Val_Fight/39BFeYnbu-I_2.avi",
+          "val/Val_Fight/39BFeYnbu-I_3.avi",
+          "val/Val_Fight/39BFeYnbu-I_4.avi",
+          "val/Val_Fight/39BFeYnbu-I_7.avi",
+          "val/Val_Fight/39BFeYnbu-I_8.avi",
+          "val/Val_Fight/48J5lk4QcpE_0.avi",
+          "val/Val_Fight/48J5lk4QcpE_1.avi",
+          "val/Val_Fight/48J5lk4QcpE_2.avi",
+          "val/Val_Fight/6Rl7q_kXYbg_0.avi",
+          "val/Val_Fight/6Rl7q_kXYbg_1.avi",
+          "val/Val_Fight/6Rl7q_kXYbg_2.avi",
+          "val/Val_Fight/A7FCl8G35Cs_0.avi",
+          "val/Val_Fight/EFv961C5RgY_1.avi",
+          "val/Val_Fight/FXC43fACfPc_1.avi",
+          "val/Val_Fight/I-QiUMPTWNE_0.avi",
+          "val/Val_Fight/I-QiUMPTWNE_1.avi",
+          "val/Val_Fight/JECBfnp2ZXc_2.avi",
+          "val/Val_Fight/JECBfnp2ZXc_3.avi",
+          "val/Val_Fight/JECBfnp2ZXc_4.avi",
+          "val/Val_Fight/Q0v2MB0b_0.avi",
+          "val/Val_Fight/Qj3oZsaqNGE_0.avi",
+          "val/Val_Fight/Qj3oZsaqNGE_1.avi",
+          "val/Val_Fight/RETYTDF_523.avi",
+          "val/Val_Fight/RETYTDF_524.avi",
+          "val/Val_Fight/RTHTRS_697.avi",
+          "val/Val_Fight/RTHTRS_698.avi",
+          "val/Val_Fight/RTHTRS_699.avi",
+          "val/Val_Fight/RTHTRS_705.avi",
+          "val/Val_Fight/RTHTRS_706.avi",
+          "val/Val_Fight/RTHTRS_707.avi",
+          "val/Val_Fight/RTHTRS_717.avi",
+          "val/Val_Fight/RTHTRS_718.avi",
+          "val/Val_Fight/Ry5c1PbcIa0_0.avi",
+          "val/Val_Fight/SDFDSSDF_972.avi",
+          "val/Val_Fight/SDFDSSDF_973.avi",
+          "val/Val_Fight/SDFDSSDF_974.avi",
+          "val/Val_Fight/SDFDSSDF_976.avi",
+          "val/Val_Fight/SDFDSSDF_977.avi",
+          "val/Val_Fight/SDFDSSDF_978.avi",
+          "val/Val_Fight/SJRnWfHAx_E_1.avi",
+          "val/Val_Fight/TYRFDVD_1104.avi",
+          "val/Val_Fight/TYRFDVD_1105.avi",
+          "val/Val_Fight/TYRFDVD_1109.avi",
+          "val/Val_Fight/TYRFDVD_1110.avi",
+          "val/Val_Fight/TYRFDVD_1113.avi",
+          "val/Val_Fight/Xcd0v-KhKL4_0.avi",
+          "val/Val_Fight/e5Dmmply_0.avi",
+          "val/Val_Fight/e5Dmmply_1.avi",
+          "val/Val_Fight/etyiEs3j8x8_0.avi",
+          "val/Val_Fight/etyiEs3j8x8_1.avi",
+          "val/Val_Fight/etyiEs3j8x8_3.avi",
+          "val/Val_Fight/etyiEs3j8x8_4.avi",
+          "val/Val_Fight/etyiEs3j8x8_5.avi",
+          "val/Val_Fight/etyiEs3j8x8_8.avi",
+          "val/Val_Fight/g-qjkePEXQA_0.avi",
+          "val/Val_Fight/g-qjkePEXQA_2.avi",
+          "val/Val_Fight/g-qjkePEXQA_3.avi",
+          "val/Val_Fight/g6jdqkcdgqk_2.avi",
+          "val/Val_Fight/hytjfg_354.avi",
+          "val/Val_Fight/mwuiYEBdkJs_0.avi",
+          "val/Val_Fight/mwuiYEBdkJs_5.avi",
+          "val/Val_Fight/nVdn1krnTCQ_0.avi",
+          "val/Val_Fight/nVdn1krnTCQ_1.avi",
+          "val/Val_Fight/nVdn1krnTCQ_2.avi",
+          "val/Val_Fight/nVdn1krnTCQ_4.avi",
+          "val/Val_Fight/nuf-d5GugL0_0.avi",
+          "val/Val_Fight/nuf-d5GugL0_1.avi",
+          "val/Val_Fight/nuf-d5GugL0_10.avi",
+          "val/Val_Fight/nuf-d5GugL0_2.avi",
+          "val/Val_Fight/nuf-d5GugL0_3.avi",
+          "val/Val_Fight/nuf-d5GugL0_4.avi",
+          "val/Val_Fight/nuf-d5GugL0_5.avi",
+          "val/Val_Fight/nuf-d5GugL0_6.avi",
+          "val/Val_Fight/nuf-d5GugL0_7.avi",
+          "val/Val_Fight/nuf-d5GugL0_9.avi",
+          "val/Val_Fight/tf_X7GtOGyE_0.avi",
+          "val/Val_Fight/tf_X7GtOGyE_1.avi",
+          "val/Val_Fight/trtrhrt_1039.avi",
+          "val/Val_Fight/trtrhrt_1040.avi",
+          "val/Val_Fight/trtrhrt_1048.avi",
+          "val/Val_Fight/trtrhrt_1049.avi",
+          "val/Val_Fight/trtrhrt_1054.avi",
+          "val/Val_Fight/v4dhdnsxiX4_0.avi",
+          "val/Val_Fight/v4dhdnsxiX4_2.avi",
+          "val/Val_Fight/v4dhdnsxiX4_3.avi",
+          "val/Val_Fight/y_vX9FtjLaQ_0.avi",
+          "val/Val_Fight/y_vX9FtjLaQ_1.avi",
+          "val/Val_Fight/y_vX9FtjLaQ_2.avi",
+          "val/Val_Fight/y_vX9FtjLaQ_3.avi",
+          "val/Val_Fight/y_vX9FtjLaQ_4.avi",
+          "val/Val_Fight/y_vX9FtjLaQ_6.avi",
+          "val/Val_Fight/zOqs7Oh9oDM_3.avi"
+        ],
+        "nonfight_false_alarm_gained": [
+          "val/Val_NonFight/66U2c3YMjOI_1.avi",
+          "val/Val_NonFight/9JxNZtUK_0.avi",
+          "val/Val_NonFight/GYvqfFzN_0.avi",
+          "val/Val_NonFight/JOMXfA1R_0.avi",
+          "val/Val_NonFight/SJRnWfHAx_E_1.avi",
+          "val/Val_NonFight/SJRnWfHAx_E_2.avi",
+          "val/Val_NonFight/VtIQbKvy_0.avi",
+          "val/Val_NonFight/ZCUy99AN_0.avi",
+          "val/Val_NonFight/bW2vHhYbzHM_0.avi",
+          "val/Val_NonFight/mwuiYEBdkJs_0.avi",
+          "val/Val_NonFight/mwuiYEBdkJs_1.avi",
+          "val/Val_NonFight/nVdn1krnTCQ_2.avi",
+          "val/Val_NonFight/utRmPckr_0.avi",
+          "val/Val_NonFight/wMcODEtzJIA_1.avi",
+          "val/Val_NonFight/y2pGPMqikJg_0.avi",
+          "val/Val_NonFight/zGBzk5SeJOw_1.avi"
+        ],
+        "nonfight_false_alarm_removed": [
+          "val/Val_NonFight/1MVS2QPWbHc_1.avi",
+          "val/Val_NonFight/1W8hsVvyKt4_1.avi",
+          "val/Val_NonFight/2lrARl7utL4_0.avi",
+          "val/Val_NonFight/2lrARl7utL4_2.avi",
+          "val/Val_NonFight/39BFeYnbu-I_0.avi",
+          "val/Val_NonFight/6doZoiaG9PM_1.avi",
+          "val/Val_NonFight/8SmT9rE9_0.avi",
+          "val/Val_NonFight/A7FCl8G35Cs_1.avi",
+          "val/Val_NonFight/EFv961C5RgY_0.avi",
+          "val/Val_NonFight/I-QiUMPTWNE_0.avi",
+          "val/Val_NonFight/IMA4zYs83Lo_0.avi",
+          "val/Val_NonFight/NWqRgoGh_0.avi",
+          "val/Val_NonFight/NoUdd8wq_0.avi",
+          "val/Val_NonFight/Ry5c1PbcIa0_0.avi",
+          "val/Val_NonFight/WPXtCPPS_0.avi",
+          "val/Val_NonFight/YL1qlr23_0.avi",
+          "val/Val_NonFight/eb4Oant1_0.avi",
+          "val/Val_NonFight/g7fqR4gn_0.avi",
+          "val/Val_NonFight/ngv36FBY_0.avi",
+          "val/Val_NonFight/nuf-d5GugL0_0.avi",
+          "val/Val_NonFight/nuf-d5GugL0_1.avi",
+          "val/Val_NonFight/nuf-d5GugL0_2.avi",
+          "val/Val_NonFight/tivF4CAg_0.avi",
+          "val/Val_NonFight/v4dhdnsxiX4_0.avi"
+        ]
+      }
+    }
+  },
+  "descriptive_only": [
+    "F1_or_gate",
+    "B1_spatial_only"
+  ],
+  "post_hoc_selection_performed": false,
+  "provenance": {
+    "primary_windows_sha256": "4ac143db48f64970dc987f8f469d2f79a71ab4dd0a7310ed13ad9e0f8e64be4d",
+    "temporal_checkpoint_sha256": "a32271bfb5a9c273f84672b16ecd5fa351fdd617d39a2c5c73f5c667255a559a",
+    "yolo_sha256": "1f47a78bf100391c2a140b7ac73a1caae18c32779be7d310658112f7ac9aa78a",
+    "spatial_scores_sha256": "a9fdb665a9866f79f7cf4aac12b51c82488fa5def09a73ec9e7e1e3102726688",
+    "source_grouping": "metric_intervals.source_video_id",
+    "statistical_method": "exact McNemar on discordant pairs; paired percentile bootstrap, 10000 resamples, seed 42",
+    "bootstrap_seed": 42,
+    "bootstrap_resamples": 10000,
+    "significance_level": 0.05,
+    "timestamp_utc": "2026-09-07T11:07:26.183416+00:00",
+    "tool_sha256": "a5b3357a10227d23a54ea1b1bab6d8ca84a674498835ff71f3c241332c57f877",
+    "spatial_wall_seconds": 13539.0727547
+  },
+  "per_clip": [
+    {
+      "clip": "val/Val_Fight/0Ow4cotKOuw_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.564796,
+      "spatial": 0.020221076412090352,
+      "source": "0Ow4cotKOuw",
+      "f2_score": 0.6483585250794262
+    },
+    {
+      "clip": "val/Val_Fight/0Ow4cotKOuw_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.268772,
+      "spatial": 0.011067374596885057,
+      "source": "0Ow4cotKOuw",
+      "f2_score": 0.486165399056513
+    },
+    {
+      "clip": "val/Val_Fight/0Ow4cotKOuw_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.977756,
+      "spatial": 0.015419690212519203,
+      "source": "0Ow4cotKOuw",
+      "f2_score": 0.6554924424761721
+    },
+    {
+      "clip": "val/Val_Fight/0Ow4cotKOuw_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.801849,
+      "spatial": 0.017390117534841397,
+      "source": "0Ow4cotKOuw",
+      "f2_score": 0.6375565610859728
+    },
+    {
+      "clip": "val/Val_Fight/0Ow4cotKOuw_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.678836,
+      "spatial": 0.011302520732466367,
+      "source": "0Ow4cotKOuw",
+      "f2_score": 0.5417541157215751
+    },
+    {
+      "clip": "val/Val_Fight/1Kbw1bUw_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.364522,
+      "spatial": 0.009360860015782138,
+      "source": "1Kbw1bUw",
+      "f2_score": 0.48056224126311736
+    },
+    {
+      "clip": "val/Val_Fight/1Kbw1bUw_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.438856,
+      "spatial": 0.008867667158785697,
+      "source": "1Kbw1bUw",
+      "f2_score": 0.49093097140656594
+    },
+    {
+      "clip": "val/Val_Fight/1Kbw1bUw_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.344399,
+      "spatial": 0.01125696947981496,
+      "source": "1Kbw1bUw",
+      "f2_score": 0.5055839029556176
+    },
+    {
+      "clip": "val/Val_Fight/1Kbw1bUw_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.29343,
+      "spatial": 0.00308731920055112,
+      "source": "1Kbw1bUw",
+      "f2_score": 0.3566669875806296
+    },
+    {
+      "clip": "val/Val_Fight/1MVS2QPWbHc_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.222756,
+      "spatial": 0.022799316482071338,
+      "source": "1MVS2QPWbHc",
+      "f2_score": 0.6135361509579282
+    },
+    {
+      "clip": "val/Val_Fight/1MVS2QPWbHc_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.040166,
+      "spatial": 0.020012517735145598,
+      "source": "1MVS2QPWbHc",
+      "f2_score": 0.47787619139308746
+    },
+    {
+      "clip": "val/Val_Fight/1MVS2QPWbHc_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.459038,
+      "spatial": 0.027258605588679433,
+      "source": "1MVS2QPWbHc",
+      "f2_score": 0.6852315394242804
+    },
+    {
+      "clip": "val/Val_Fight/1MVS2QPWbHc_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.546992,
+      "spatial": 0.026563387687548106,
+      "source": "1MVS2QPWbHc",
+      "f2_score": 0.6893520747087706
+    },
+    {
+      "clip": "val/Val_Fight/1MVS2QPWbHc_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.868143,
+      "spatial": 0.03135557111206674,
+      "source": "1MVS2QPWbHc",
+      "f2_score": 0.7434870511215943
+    },
+    {
+      "clip": "val/Val_Fight/1MVS2QPWbHc_5.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.106919,
+      "spatial": 0.011567207245748622,
+      "source": "1MVS2QPWbHc",
+      "f2_score": 0.43152016944257243
+    },
+    {
+      "clip": "val/Val_Fight/39BFeYnbu-I_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.998932,
+      "spatial": 0.03478179207051083,
+      "source": "39BFeYnbu-I",
+      "f2_score": 0.8452392413593915
+    },
+    {
+      "clip": "val/Val_Fight/39BFeYnbu-I_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.884567,
+      "spatial": 0.027008371508004943,
+      "source": "39BFeYnbu-I",
+      "f2_score": 0.7320400500625782
+    },
+    {
+      "clip": "val/Val_Fight/39BFeYnbu-I_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.894446,
+      "spatial": 0.01314191347469363,
+      "source": "39BFeYnbu-I",
+      "f2_score": 0.6139886396457109
+    },
+    {
+      "clip": "val/Val_Fight/39BFeYnbu-I_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.912706,
+      "spatial": 0.01934353947576134,
+      "source": "39BFeYnbu-I",
+      "f2_score": 0.683720034658708
+    },
+    {
+      "clip": "val/Val_Fight/39BFeYnbu-I_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.997294,
+      "spatial": 0.023426754702549932,
+      "source": "39BFeYnbu-I",
+      "f2_score": 0.7692596514874362
+    },
+    {
+      "clip": "val/Val_Fight/39BFeYnbu-I_5.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.719803,
+      "spatial": 0.029615212678647848,
+      "source": "39BFeYnbu-I",
+      "f2_score": 0.7176855684990854
+    },
+    {
+      "clip": "val/Val_Fight/39BFeYnbu-I_6.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 1.0,
+      "spatial": 0.024034836281001445,
+      "source": "39BFeYnbu-I",
+      "f2_score": 0.8079618754211996
+    },
+    {
+      "clip": "val/Val_Fight/39BFeYnbu-I_7.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999998,
+      "spatial": 0.017203798111204364,
+      "source": "39BFeYnbu-I",
+      "f2_score": 0.7333012419370366
+    },
+    {
+      "clip": "val/Val_Fight/39BFeYnbu-I_8.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.99949,
+      "spatial": 0.017995602524248366,
+      "source": "39BFeYnbu-I",
+      "f2_score": 0.7294502743814383
+    },
+    {
+      "clip": "val/Val_Fight/48J5lk4QcpE_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.27025,
+      "spatial": 0.014879012299327843,
+      "source": "48J5lk4QcpE",
+      "f2_score": 0.5380668142870896
+    },
+    {
+      "clip": "val/Val_Fight/48J5lk4QcpE_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.312148,
+      "spatial": 0.016348114627867606,
+      "source": "48J5lk4QcpE",
+      "f2_score": 0.5666698758062964
+    },
+    {
+      "clip": "val/Val_Fight/48J5lk4QcpE_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.311813,
+      "spatial": 0.01765480865409167,
+      "source": "48J5lk4QcpE",
+      "f2_score": 0.5802445364397805
+    },
+    {
+      "clip": "val/Val_Fight/48J5lk4QcpE_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.076118,
+      "spatial": 0.017157019842126926,
+      "source": "48J5lk4QcpE",
+      "f2_score": 0.4758544334263984
+    },
+    {
+      "clip": "val/Val_Fight/6Rl7q_kXYbg_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.868923,
+      "spatial": 0.005106713836138132,
+      "source": "6Rl7q_kXYbg",
+      "f2_score": 0.471993838451911
+    },
+    {
+      "clip": "val/Val_Fight/6Rl7q_kXYbg_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.672109,
+      "spatial": 0.0018716018924173502,
+      "source": "6Rl7q_kXYbg",
+      "f2_score": 0.3856455184365072
+    },
+    {
+      "clip": "val/Val_Fight/6Rl7q_kXYbg_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.840758,
+      "spatial": 0.0032583439506684722,
+      "source": "6Rl7q_kXYbg",
+      "f2_score": 0.42701453740252243
+    },
+    {
+      "clip": "val/Val_Fight/6Rl7q_kXYbg_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.037177,
+      "spatial": null,
+      "source": "6Rl7q_kXYbg",
+      "f2_score": 0.20425531914893616
+    },
+    {
+      "clip": "val/Val_Fight/6Rl7q_kXYbg_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.012135,
+      "spatial": 0.0020798387593858178,
+      "source": "6Rl7q_kXYbg",
+      "f2_score": 0.14309232694714547
+    },
+    {
+      "clip": "val/Val_Fight/6Rl7q_kXYbg_5.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.036452,
+      "spatial": 0.004738400316288458,
+      "source": "6Rl7q_kXYbg",
+      "f2_score": 0.2632136324251468
+    },
+    {
+      "clip": "val/Val_Fight/7gLKFV5voOg_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.034594,
+      "spatial": 0.009344428278590606,
+      "source": "7gLKFV5voOg",
+      "f2_score": 0.3401367093482237
+    },
+    {
+      "clip": "val/Val_Fight/7gLKFV5voOg_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.077399,
+      "spatial": 0.011116880033053755,
+      "source": "7gLKFV5voOg",
+      "f2_score": 0.40105901607778954
+    },
+    {
+      "clip": "val/Val_Fight/83d-16REC40_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.996095,
+      "spatial": 0.04090184716850737,
+      "source": "83d-16REC40",
+      "f2_score": 0.8736016174063733
+    },
+    {
+      "clip": "val/Val_Fight/83d-16REC40_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.303131,
+      "spatial": 0.02389901268352711,
+      "source": "83d-16REC40",
+      "f2_score": 0.6505150669105613
+    },
+    {
+      "clip": "val/Val_Fight/A7FCl8G35Cs_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.93388,
+      "spatial": 0.014318601376429894,
+      "source": "A7FCl8G35Cs",
+      "f2_score": 0.6421873495715799
+    },
+    {
+      "clip": "val/Val_Fight/A7FCl8G35Cs_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.857353,
+      "spatial": 0.03201814078263455,
+      "source": "A7FCl8G35Cs",
+      "f2_score": 0.7481467218638682
+    },
+    {
+      "clip": "val/Val_Fight/ASGGSDG_183.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.627802,
+      "spatial": 0.03293645688861502,
+      "source": "ASGGSDG",
+      "f2_score": 0.7340618080292673
+    },
+    {
+      "clip": "val/Val_Fight/EFv961C5RgY_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999983,
+      "spatial": 0.029760079101119306,
+      "source": "EFv961C5RgY",
+      "f2_score": 0.8305863098103399
+    },
+    {
+      "clip": "val/Val_Fight/EFv961C5RgY_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.99776,
+      "spatial": 0.01593999661427834,
+      "source": "EFv961C5RgY",
+      "f2_score": 0.6941946664099355
+    },
+    {
+      "clip": "val/Val_Fight/FXC43fACfPc_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.967397,
+      "spatial": 0.02898508562815518,
+      "source": "FXC43fACfPc",
+      "f2_score": 0.7687493982863194
+    },
+    {
+      "clip": "val/Val_Fight/FXC43fACfPc_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.907093,
+      "spatial": 0.019443352676821776,
+      "source": "FXC43fACfPc",
+      "f2_score": 0.685982478097622
+    },
+    {
+      "clip": "val/Val_Fight/FXC43fACfPc_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999946,
+      "spatial": 0.04833455943740105,
+      "source": "FXC43fACfPc",
+      "f2_score": 0.9213536150957928
+    },
+    {
+      "clip": "val/Val_Fight/FXC43fACfPc_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.953954,
+      "spatial": 0.025762934570942742,
+      "source": "FXC43fACfPc",
+      "f2_score": 0.7553095215172813
+    },
+    {
+      "clip": "val/Val_Fight/I-QiUMPTWNE_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.718655,
+      "spatial": 0.008098713017512157,
+      "source": "I-QiUMPTWNE",
+      "f2_score": 0.5072783286800808
+    },
+    {
+      "clip": "val/Val_Fight/I-QiUMPTWNE_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.301437,
+      "spatial": 0.01535831361630401,
+      "source": "I-QiUMPTWNE",
+      "f2_score": 0.5554924424761721
+    },
+    {
+      "clip": "val/Val_Fight/I-QiUMPTWNE_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.002844,
+      "spatial": 0.010120610582238695,
+      "source": "I-QiUMPTWNE",
+      "f2_score": 0.22618657937806874
+    },
+    {
+      "clip": "val/Val_Fight/I-QiUMPTWNE_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.118858,
+      "spatial": 0.008736446034250823,
+      "source": "I-QiUMPTWNE",
+      "f2_score": 0.4100799075767787
+    },
+    {
+      "clip": "val/Val_Fight/I-QiUMPTWNE_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.07557,
+      "spatial": 0.012755467847951998,
+      "source": "I-QiUMPTWNE",
+      "f2_score": 0.4260806777702898
+    },
+    {
+      "clip": "val/Val_Fight/I-QiUMPTWNE_5.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.029683,
+      "spatial": 0.007758056353913972,
+      "source": "I-QiUMPTWNE",
+      "f2_score": 0.3112640801001252
+    },
+    {
+      "clip": "val/Val_Fight/I-QiUMPTWNE_6.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.006109,
+      "spatial": 0.010113252602236718,
+      "source": "I-QiUMPTWNE",
+      "f2_score": 0.2517184942716858
+    },
+    {
+      "clip": "val/Val_Fight/I-QiUMPTWNE_7.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.052922,
+      "spatial": 0.012908489664466399,
+      "source": "I-QiUMPTWNE",
+      "f2_score": 0.4113218446134591
+    },
+    {
+      "clip": "val/Val_Fight/I-QiUMPTWNE_8.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.016103,
+      "spatial": 0.0067401642207609545,
+      "source": "I-QiUMPTWNE",
+      "f2_score": 0.2595263309906614
+    },
+    {
+      "clip": "val/Val_Fight/JECBfnp2ZXc_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.024536,
+      "spatial": 0.026049850154604117,
+      "source": "JECBfnp2ZXc",
+      "f2_score": 0.499990372581111
+    },
+    {
+      "clip": "val/Val_Fight/JECBfnp2ZXc_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.836554,
+      "spatial": 0.02774511123001863,
+      "source": "JECBfnp2ZXc",
+      "f2_score": 0.730181958217002
+    },
+    {
+      "clip": "val/Val_Fight/JECBfnp2ZXc_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.941282,
+      "spatial": 0.02339491623671178,
+      "source": "JECBfnp2ZXc",
+      "f2_score": 0.739472417444883
+    },
+    {
+      "clip": "val/Val_Fight/JECBfnp2ZXc_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.980868,
+      "spatial": 0.013804280100546752,
+      "source": "JECBfnp2ZXc",
+      "f2_score": 0.641917781842688
+    },
+    {
+      "clip": "val/Val_Fight/JECBfnp2ZXc_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.291589,
+      "spatial": 0.010129348052486567,
+      "source": "JECBfnp2ZXc",
+      "f2_score": 0.4878887070376432
+    },
+    {
+      "clip": "val/Val_Fight/JECBfnp2ZXc_5.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.117809,
+      "spatial": 0.016773627671073016,
+      "source": "JECBfnp2ZXc",
+      "f2_score": 0.5118898623279099
+    },
+    {
+      "clip": "val/Val_Fight/JECBfnp2ZXc_6.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.027377,
+      "spatial": 0.02360408033389891,
+      "source": "JECBfnp2ZXc",
+      "f2_score": 0.5014441128333493
+    },
+    {
+      "clip": "val/Val_Fight/MxkTo5F-nvU_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.038953,
+      "spatial": 0.03124232360117275,
+      "source": "MxkTo5F-nvU",
+      "f2_score": 0.5434870511215943
+    },
+    {
+      "clip": "val/Val_Fight/MxkTo5F-nvU_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.015094,
+      "spatial": 0.019597690655550053,
+      "source": "MxkTo5F-nvU",
+      "f2_score": 0.411649176855685
+    },
+    {
+      "clip": "val/Val_Fight/MxkTo5F-nvU_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.158381,
+      "spatial": 0.030924029428260735,
+      "source": "MxkTo5F-nvU",
+      "f2_score": 0.634976412823722
+    },
+    {
+      "clip": "val/Val_Fight/MxkTo5F-nvU_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.901759,
+      "spatial": 0.043933623938575715,
+      "source": "MxkTo5F-nvU",
+      "f2_score": 0.8378357562337537
+    },
+    {
+      "clip": "val/Val_Fight/MxkTo5F-nvU_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.073393,
+      "spatial": 0.033881471553333306,
+      "source": "MxkTo5F-nvU",
+      "f2_score": 0.5958987195532878
+    },
+    {
+      "clip": "val/Val_Fight/OvDMIkTb4XU_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999958,
+      "spatial": 0.03183317132118171,
+      "source": "OvDMIkTb4XU",
+      "f2_score": 0.8353807644170598
+    },
+    {
+      "clip": "val/Val_Fight/OvDMIkTb4XU_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999741,
+      "spatial": 0.32682058301698647,
+      "source": "OvDMIkTb4XU",
+      "f2_score": 0.9828439395398094
+    },
+    {
+      "clip": "val/Val_Fight/OvDMIkTb4XU_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999988,
+      "spatial": 0.052541202965866264,
+      "source": "OvDMIkTb4XU",
+      "f2_score": 0.9414460383171273
+    },
+    {
+      "clip": "val/Val_Fight/OvDMIkTb4XU_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999865,
+      "spatial": 0.054414509702244276,
+      "source": "OvDMIkTb4XU",
+      "f2_score": 0.939587946471551
+    },
+    {
+      "clip": "val/Val_Fight/OvDMIkTb4XU_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999848,
+      "spatial": 0.02511482777902121,
+      "source": "OvDMIkTb4XU",
+      "f2_score": 0.8039761240011553
+    },
+    {
+      "clip": "val/Val_Fight/Q0v2MB0b_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 1.0,
+      "spatial": 0.021299487181341788,
+      "source": "Q0v2MB0b",
+      "f2_score": 0.7830749975931453
+    },
+    {
+      "clip": "val/Val_Fight/Qj3oZsaqNGE_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.507062,
+      "spatial": 0.02129740209513036,
+      "source": "Qj3oZsaqNGE",
+      "f2_score": 0.653287763550592
+    },
+    {
+      "clip": "val/Val_Fight/Qj3oZsaqNGE_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.307031,
+      "spatial": 0.010950767751120518,
+      "source": "Qj3oZsaqNGE",
+      "f2_score": 0.4966689130644074
+    },
+    {
+      "clip": "val/Val_Fight/Qtcwz_K2Gvo_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.998105,
+      "spatial": 0.04171163759958913,
+      "source": "Qtcwz_K2Gvo",
+      "f2_score": 0.8863675748531818
+    },
+    {
+      "clip": "val/Val_Fight/Qtcwz_K2Gvo_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.090287,
+      "spatial": 0.018963704078396437,
+      "source": "Qtcwz_K2Gvo",
+      "f2_score": 0.5091171656878791
+    },
+    {
+      "clip": "val/Val_Fight/RETYTDF_523.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999868,
+      "spatial": 0.014875976605785641,
+      "source": "RETYTDF",
+      "f2_score": 0.6997689419466641
+    },
+    {
+      "clip": "val/Val_Fight/RETYTDF_524.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.937313,
+      "spatial": 0.013161529137668144,
+      "source": "RETYTDF",
+      "f2_score": 0.6331375758159238
+    },
+    {
+      "clip": "val/Val_Fight/RIXaF_TkLlU_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.607252,
+      "spatial": 0.04607153602693699,
+      "source": "RIXaF_TkLlU",
+      "f2_score": 0.79980745162222
+    },
+    {
+      "clip": "val/Val_Fight/RIXaF_TkLlU_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.809426,
+      "spatial": 0.02441838785451975,
+      "source": "RIXaF_TkLlU",
+      "f2_score": 0.7144796380090498
+    },
+    {
+      "clip": "val/Val_Fight/RIXaF_TkLlU_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.99726,
+      "spatial": 0.039068476121726946,
+      "source": "RIXaF_TkLlU",
+      "f2_score": 0.8688071627996534
+    },
+    {
+      "clip": "val/Val_Fight/RIXaF_TkLlU_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.343934,
+      "spatial": 0.035578368732649614,
+      "source": "RIXaF_TkLlU",
+      "f2_score": 0.7137286993357081
+    },
+    {
+      "clip": "val/Val_Fight/RIXaF_TkLlU_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.102445,
+      "spatial": 0.028628761309900465,
+      "source": "RIXaF_TkLlU",
+      "f2_score": 0.5856358910176181
+    },
+    {
+      "clip": "val/Val_Fight/RIXaF_TkLlU_5.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.136589,
+      "spatial": 0.024876816552371808,
+      "source": "RIXaF_TkLlU",
+      "f2_score": 0.6018484644266873
+    },
+    {
+      "clip": "val/Val_Fight/RTHTRS_697.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.963938,
+      "spatial": 0.01529501079667149,
+      "source": "RTHTRS",
+      "f2_score": 0.6533647829017041
+    },
+    {
+      "clip": "val/Val_Fight/RTHTRS_698.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.998694,
+      "spatial": 0.022009777976184523,
+      "source": "RTHTRS",
+      "f2_score": 0.7729758351785887
+    },
+    {
+      "clip": "val/Val_Fight/RTHTRS_699.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.998942,
+      "spatial": 0.019869079169382225,
+      "source": "RTHTRS",
+      "f2_score": 0.7479541734860884
+    },
+    {
+      "clip": "val/Val_Fight/RTHTRS_705.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.869804,
+      "spatial": 0.011268315885077112,
+      "source": "RTHTRS",
+      "f2_score": 0.5715413497641282
+    },
+    {
+      "clip": "val/Val_Fight/RTHTRS_706.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.997539,
+      "spatial": 0.01915259995844231,
+      "source": "RTHTRS",
+      "f2_score": 0.7284008857225378
+    },
+    {
+      "clip": "val/Val_Fight/RTHTRS_707.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.971575,
+      "spatial": 0.015008721605107198,
+      "source": "RTHTRS",
+      "f2_score": 0.64870511215943
+    },
+    {
+      "clip": "val/Val_Fight/RTHTRS_717.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.599304,
+      "spatial": 0.023385266875867797,
+      "source": "RTHTRS",
+      "f2_score": 0.6777702897853086
+    },
+    {
+      "clip": "val/Val_Fight/RTHTRS_718.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.992676,
+      "spatial": 0.018720595691753963,
+      "source": "RTHTRS",
+      "f2_score": 0.7131029171079233
+    },
+    {
+      "clip": "val/Val_Fight/RTHTRS_719.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999991,
+      "spatial": 0.02821857484718081,
+      "source": "RTHTRS",
+      "f2_score": 0.8237989794935978
+    },
+    {
+      "clip": "val/Val_Fight/RTHTRS_720.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.876598,
+      "spatial": 0.02587583454888285,
+      "source": "RTHTRS",
+      "f2_score": 0.7276499470491962
+    },
+    {
+      "clip": "val/Val_Fight/Ry5c1PbcIa0_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.996809,
+      "spatial": 0.019885322259101536,
+      "source": "Ry5c1PbcIa0",
+      "f2_score": 0.7309328968903437
+    },
+    {
+      "clip": "val/Val_Fight/SDFDSSDF_972.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.315974,
+      "spatial": 0.013617076687843838,
+      "source": "SDFDSSDF",
+      "f2_score": 0.541782997978242
+    },
+    {
+      "clip": "val/Val_Fight/SDFDSSDF_973.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.996528,
+      "spatial": 0.01722213678490742,
+      "source": "SDFDSSDF",
+      "f2_score": 0.6971310291710793
+    },
+    {
+      "clip": "val/Val_Fight/SDFDSSDF_974.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.998135,
+      "spatial": 0.010922925774216044,
+      "source": "SDFDSSDF",
+      "f2_score": 0.6307114662558968
+    },
+    {
+      "clip": "val/Val_Fight/SDFDSSDF_976.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.234526,
+      "spatial": 0.015863702166735955,
+      "source": "SDFDSSDF",
+      "f2_score": 0.5429960527582556
+    },
+    {
+      "clip": "val/Val_Fight/SDFDSSDF_977.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.99961,
+      "spatial": 0.016024441737988636,
+      "source": "SDFDSSDF",
+      "f2_score": 0.7090882834312121
+    },
+    {
+      "clip": "val/Val_Fight/SDFDSSDF_978.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999927,
+      "spatial": 0.009943309884465627,
+      "source": "SDFDSSDF",
+      "f2_score": 0.6409454125348993
+    },
+    {
+      "clip": "val/Val_Fight/SJRnWfHAx_E_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.897453,
+      "spatial": 0.029097005741527317,
+      "source": "SJRnWfHAx_E",
+      "f2_score": 0.7474728025416386
+    },
+    {
+      "clip": "val/Val_Fight/SJRnWfHAx_E_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.928961,
+      "spatial": 0.017789344543447175,
+      "source": "SJRnWfHAx_E",
+      "f2_score": 0.6720034658708001
+    },
+    {
+      "clip": "val/Val_Fight/SJRnWfHAx_E_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.683785,
+      "spatial": 0.028950926003130505,
+      "source": "SJRnWfHAx_E",
+      "f2_score": 0.7113025897756811
+    },
+    {
+      "clip": "val/Val_Fight/SJRnWfHAx_E_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.779914,
+      "spatial": 0.029841932603880673,
+      "source": "SJRnWfHAx_E",
+      "f2_score": 0.7348416289592761
+    },
+    {
+      "clip": "val/Val_Fight/TYRFDVD_1104.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.172514,
+      "spatial": 0.01996359932380387,
+      "source": "TYRFDVD",
+      "f2_score": 0.5714932126696832
+    },
+    {
+      "clip": "val/Val_Fight/TYRFDVD_1105.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999856,
+      "spatial": 0.018249316750570305,
+      "source": "TYRFDVD",
+      "f2_score": 0.7404929238471165
+    },
+    {
+      "clip": "val/Val_Fight/TYRFDVD_1106.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999992,
+      "spatial": 0.03046353333435866,
+      "source": "TYRFDVD",
+      "f2_score": 0.8305863098103399
+    },
+    {
+      "clip": "val/Val_Fight/TYRFDVD_1109.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.998335,
+      "spatial": 0.013445409541368514,
+      "source": "TYRFDVD",
+      "f2_score": 0.6758255511697314
+    },
+    {
+      "clip": "val/Val_Fight/TYRFDVD_1110.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.92216,
+      "spatial": 0.01605569649642514,
+      "source": "TYRFDVD",
+      "f2_score": 0.6473861557716376
+    },
+    {
+      "clip": "val/Val_Fight/TYRFDVD_1112.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.189796,
+      "spatial": 0.02797449566373107,
+      "source": "TYRFDVD",
+      "f2_score": 0.6365649369404063
+    },
+    {
+      "clip": "val/Val_Fight/TYRFDVD_1113.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.998874,
+      "spatial": 0.011567607559411575,
+      "source": "TYRFDVD",
+      "f2_score": 0.6506691056127852
+    },
+    {
+      "clip": "val/Val_Fight/Wq0BuA8GM84_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999562,
+      "spatial": 0.048746751026163916,
+      "source": "Wq0BuA8GM84",
+      "f2_score": 0.9149706363723886
+    },
+    {
+      "clip": "val/Val_Fight/XM0NI7ZmwWM_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.032593,
+      "spatial": 0.011653043460763828,
+      "source": "XM0NI7ZmwWM",
+      "f2_score": 0.3719457013574661
+    },
+    {
+      "clip": "val/Val_Fight/XM0NI7ZmwWM_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.127649,
+      "spatial": 0.012348640189689942,
+      "source": "XM0NI7ZmwWM",
+      "f2_score": 0.4663714258207375
+    },
+    {
+      "clip": "val/Val_Fight/XM0NI7ZmwWM_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.006179,
+      "spatial": 0.008634741952004567,
+      "source": "XM0NI7ZmwWM",
+      "f2_score": 0.22683161644363148
+    },
+    {
+      "clip": "val/Val_Fight/XM0NI7ZmwWM_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.007607,
+      "spatial": 0.005421445118730358,
+      "source": "XM0NI7ZmwWM",
+      "f2_score": 0.17425628189082507
+    },
+    {
+      "clip": "val/Val_Fight/Xcd0v-KhKL4_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999995,
+      "spatial": 0.015434309258270424,
+      "source": "Xcd0v-KhKL4",
+      "f2_score": 0.7129392509868104
+    },
+    {
+      "clip": "val/Val_Fight/YDOJvzChqSg_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.165164,
+      "spatial": 0.05607903356866012,
+      "source": "YDOJvzChqSg",
+      "f2_score": 0.7548859150861653
+    },
+    {
+      "clip": "val/Val_Fight/YDOJvzChqSg_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.230504,
+      "spatial": 0.04002746261017864,
+      "source": "YDOJvzChqSg",
+      "f2_score": 0.7286511986136517
+    },
+    {
+      "clip": "val/Val_Fight/YDOJvzChqSg_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.184551,
+      "spatial": 0.07784962024999684,
+      "source": "YDOJvzChqSg",
+      "f2_score": 0.7950707615288342
+    },
+    {
+      "clip": "val/Val_Fight/YDOJvzChqSg_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.075897,
+      "spatial": 0.038856360357004155,
+      "source": "YDOJvzChqSg",
+      "f2_score": 0.6432752479060364
+    },
+    {
+      "clip": "val/Val_Fight/YDOJvzChqSg_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.211137,
+      "spatial": 0.050976012300543404,
+      "source": "YDOJvzChqSg",
+      "f2_score": 0.7496871088861077
+    },
+    {
+      "clip": "val/Val_Fight/bW2vHhYbzHM_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.001125,
+      "spatial": 0.028363435043677544,
+      "source": "bW2vHhYbzHM",
+      "f2_score": 0.3769904688552999
+    },
+    {
+      "clip": "val/Val_Fight/e5Dmmply_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.988181,
+      "spatial": 0.013869813605955026,
+      "source": "e5Dmmply",
+      "f2_score": 0.6546837392894964
+    },
+    {
+      "clip": "val/Val_Fight/e5Dmmply_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.982941,
+      "spatial": 0.015424922753403894,
+      "source": "e5Dmmply",
+      "f2_score": 0.6597477616251083
+    },
+    {
+      "clip": "val/Val_Fight/e5Dmmply_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.93628,
+      "spatial": 0.025831231846808064,
+      "source": "e5Dmmply",
+      "f2_score": 0.7553095215172813
+    },
+    {
+      "clip": "val/Val_Fight/etyiEs3j8x8_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.893658,
+      "spatial": 0.008626917860087315,
+      "source": "etyiEs3j8x8",
+      "f2_score": 0.5438528930393761
+    },
+    {
+      "clip": "val/Val_Fight/etyiEs3j8x8_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.998419,
+      "spatial": 0.015136285039096246,
+      "source": "etyiEs3j8x8",
+      "f2_score": 0.6871377683643015
+    },
+    {
+      "clip": "val/Val_Fight/etyiEs3j8x8_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.090803,
+      "spatial": 0.010215704692391754,
+      "source": "etyiEs3j8x8",
+      "f2_score": 0.4050447674978338
+    },
+    {
+      "clip": "val/Val_Fight/etyiEs3j8x8_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.59094,
+      "spatial": 0.0059405255770371215,
+      "source": "etyiEs3j8x8",
+      "f2_score": 0.45378838933281984
+    },
+    {
+      "clip": "val/Val_Fight/etyiEs3j8x8_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999947,
+      "spatial": 0.013015152320557326,
+      "source": "etyiEs3j8x8",
+      "f2_score": 0.6815346105709059
+    },
+    {
+      "clip": "val/Val_Fight/etyiEs3j8x8_5.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.961703,
+      "spatial": 0.010760007988738248,
+      "source": "etyiEs3j8x8",
+      "f2_score": 0.5922788100510253
+    },
+    {
+      "clip": "val/Val_Fight/etyiEs3j8x8_8.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.64849,
+      "spatial": 0.014687356183283309,
+      "source": "etyiEs3j8x8",
+      "f2_score": 0.5847405410609415
+    },
+    {
+      "clip": "val/Val_Fight/fbtEhNq5a6E_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.992435,
+      "spatial": 0.036343724836268805,
+      "source": "fbtEhNq5a6E",
+      "f2_score": 0.8375373062481948
+    },
+    {
+      "clip": "val/Val_Fight/g-qjkePEXQA_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.978791,
+      "spatial": 0.011579445525536282,
+      "source": "g-qjkePEXQA",
+      "f2_score": 0.6102435736978916
+    },
+    {
+      "clip": "val/Val_Fight/g-qjkePEXQA_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.054514,
+      "spatial": 0.01668130090046105,
+      "source": "g-qjkePEXQA",
+      "f2_score": 0.45430826995282564
+    },
+    {
+      "clip": "val/Val_Fight/g-qjkePEXQA_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.455343,
+      "spatial": 0.011326522246531988,
+      "source": "g-qjkePEXQA",
+      "f2_score": 0.5268604987002985
+    },
+    {
+      "clip": "val/Val_Fight/g-qjkePEXQA_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.397448,
+      "spatial": 0.010420770321503311,
+      "source": "g-qjkePEXQA",
+      "f2_score": 0.5050447674978338
+    },
+    {
+      "clip": "val/Val_Fight/g6jdqkcdgqk_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.064727,
+      "spatial": 0.02233874746030713,
+      "source": "g6jdqkcdgqk",
+      "f2_score": 0.5261673245402907
+    },
+    {
+      "clip": "val/Val_Fight/g6jdqkcdgqk_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.317172,
+      "spatial": 0.01764951990807913,
+      "source": "g6jdqkcdgqk",
+      "f2_score": 0.5802445364397805
+    },
+    {
+      "clip": "val/Val_Fight/g6jdqkcdgqk_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.10188,
+      "spatial": 0.013188403597495601,
+      "source": "g6jdqkcdgqk",
+      "f2_score": 0.45228651198613645
+    },
+    {
+      "clip": "val/Val_Fight/g6jdqkcdgqk_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.012469,
+      "spatial": 0.011673009947196597,
+      "source": "g6jdqkcdgqk",
+      "f2_score": 0.3125060171368056
+    },
+    {
+      "clip": "val/Val_Fight/g6jdqkcdgqk_5.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.122621,
+      "spatial": 0.020126601181043167,
+      "source": "g6jdqkcdgqk",
+      "f2_score": 0.5480889573505343
+    },
+    {
+      "clip": "val/Val_Fight/hytjfg_354.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.913478,
+      "spatial": 0.014977733984511772,
+      "source": "hytjfg",
+      "f2_score": 0.6316838355636853
+    },
+    {
+      "clip": "val/Val_Fight/mwuiYEBdkJs_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.206973,
+      "spatial": 0.020696752160385155,
+      "source": "mwuiYEBdkJs",
+      "f2_score": 0.5845287378453836
+    },
+    {
+      "clip": "val/Val_Fight/mwuiYEBdkJs_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.0701,
+      "spatial": 0.019028398863385153,
+      "source": "mwuiYEBdkJs",
+      "f2_score": 0.4942235486666025
+    },
+    {
+      "clip": "val/Val_Fight/mwuiYEBdkJs_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.294393,
+      "spatial": 0.023537701658994648,
+      "source": "mwuiYEBdkJs",
+      "f2_score": 0.6439973043227111
+    },
+    {
+      "clip": "val/Val_Fight/mwuiYEBdkJs_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.955914,
+      "spatial": 0.0325443476684892,
+      "source": "mwuiYEBdkJs",
+      "f2_score": 0.7936362761143738
+    },
+    {
+      "clip": "val/Val_Fight/mwuiYEBdkJs_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.490534,
+      "spatial": 0.03359487412519981,
+      "source": "mwuiYEBdkJs",
+      "f2_score": 0.7256859535958409
+    },
+    {
+      "clip": "val/Val_Fight/mwuiYEBdkJs_5.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.841508,
+      "spatial": 0.019999765735595504,
+      "source": "mwuiYEBdkJs",
+      "f2_score": 0.6736208722441513
+    },
+    {
+      "clip": "val/Val_Fight/nVdn1krnTCQ_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999609,
+      "spatial": 0.019149296141327238,
+      "source": "nVdn1krnTCQ",
+      "f2_score": 0.7475498218927505
+    },
+    {
+      "clip": "val/Val_Fight/nVdn1krnTCQ_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999994,
+      "spatial": 0.0184120162920893,
+      "source": "nVdn1krnTCQ",
+      "f2_score": 0.7491383460094349
+    },
+    {
+      "clip": "val/Val_Fight/nVdn1krnTCQ_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.99625,
+      "spatial": 0.01567008978623042,
+      "source": "nVdn1krnTCQ",
+      "f2_score": 0.679031481659767
+    },
+    {
+      "clip": "val/Val_Fight/nVdn1krnTCQ_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.571348,
+      "spatial": 0.02415764171988444,
+      "source": "nVdn1krnTCQ",
+      "f2_score": 0.6868200635409647
+    },
+    {
+      "clip": "val/Val_Fight/nVdn1krnTCQ_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.242802,
+      "spatial": 0.019573607086928096,
+      "source": "nVdn1krnTCQ",
+      "f2_score": 0.5903725811110041
+    },
+    {
+      "clip": "val/Val_Fight/nVdn1krnTCQ_6.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.247408,
+      "spatial": 0.03290462778982681,
+      "source": "nVdn1krnTCQ",
+      "f2_score": 0.6829979782420333
+    },
+    {
+      "clip": "val/Val_Fight/nuf-d5GugL0_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.941109,
+      "spatial": 0.004393706860317766,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.486078752286512
+    },
+    {
+      "clip": "val/Val_Fight/nuf-d5GugL0_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.971238,
+      "spatial": 0.010479609575206548,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.5944064696254934
+    },
+    {
+      "clip": "val/Val_Fight/nuf-d5GugL0_10.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.998809,
+      "spatial": 0.009926335833886956,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.630307114662559
+    },
+    {
+      "clip": "val/Val_Fight/nuf-d5GugL0_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.983007,
+      "spatial": 0.011896294416434352,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.6235486666024839
+    },
+    {
+      "clip": "val/Val_Fight/nuf-d5GugL0_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.991379,
+      "spatial": 0.01310147067706317,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.6498892846827765
+    },
+    {
+      "clip": "val/Val_Fight/nuf-d5GugL0_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.987336,
+      "spatial": 0.012481442729097361,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.6344565322037161
+    },
+    {
+      "clip": "val/Val_Fight/nuf-d5GugL0_5.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.967803,
+      "spatial": 0.013571544836675246,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.6375276788293058
+    },
+    {
+      "clip": "val/Val_Fight/nuf-d5GugL0_6.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.981471,
+      "spatial": 0.011879404415743514,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.6214210070280158
+    },
+    {
+      "clip": "val/Val_Fight/nuf-d5GugL0_7.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.997665,
+      "spatial": 0.00651096914617137,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.5631077308173679
+    },
+    {
+      "clip": "val/Val_Fight/nuf-d5GugL0_9.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.603522,
+      "spatial": 0.005097623329289763,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.43795128526042165
+    },
+    {
+      "clip": "val/Val_Fight/qaAclucigpY_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.149677,
+      "spatial": 0.040777226047231115,
+      "source": "qaAclucigpY",
+      "f2_score": 0.7032540675844805
+    },
+    {
+      "clip": "val/Val_Fight/qaAclucigpY_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.243947,
+      "spatial": 0.03894398503825513,
+      "source": "qaAclucigpY",
+      "f2_score": 0.7283816308847598
+    },
+    {
+      "clip": "val/Val_Fight/qaAclucigpY_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.038159,
+      "spatial": 0.027692661802954956,
+      "source": "qaAclucigpY",
+      "f2_score": 0.5323096177914701
+    },
+    {
+      "clip": "val/Val_Fight/qaAclucigpY_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.003902,
+      "spatial": 0.02009199770174575,
+      "source": "qaAclucigpY",
+      "f2_score": 0.3480889573505343
+    },
+    {
+      "clip": "val/Val_Fight/tf_X7GtOGyE_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.669577,
+      "spatial": 0.014128977860091598,
+      "source": "tf_X7GtOGyE",
+      "f2_score": 0.5824780976220275
+    },
+    {
+      "clip": "val/Val_Fight/tf_X7GtOGyE_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.302761,
+      "spatial": 0.016808789787118913,
+      "source": "tf_X7GtOGyE",
+      "f2_score": 0.5735919899874844
+    },
+    {
+      "clip": "val/Val_Fight/tf_X7GtOGyE_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.567356,
+      "spatial": 0.024876552798455843,
+      "source": "tf_X7GtOGyE",
+      "f2_score": 0.6890825069798787
+    },
+    {
+      "clip": "val/Val_Fight/tf_X7GtOGyE_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.6808,
+      "spatial": 0.03428080832998467,
+      "source": "tf_X7GtOGyE",
+      "f2_score": 0.7385866949070954
+    },
+    {
+      "clip": "val/Val_Fight/trtrhrt_1039.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.984263,
+      "spatial": 0.011298424633865345,
+      "source": "trtrhrt",
+      "f2_score": 0.6119668816790218
+    },
+    {
+      "clip": "val/Val_Fight/trtrhrt_1040.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999615,
+      "spatial": 0.02141075579706524,
+      "source": "trtrhrt",
+      "f2_score": 0.7746991431597189
+    },
+    {
+      "clip": "val/Val_Fight/trtrhrt_1048.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.994971,
+      "spatial": 0.017134773159915594,
+      "source": "trtrhrt",
+      "f2_score": 0.6971310291710793
+    },
+    {
+      "clip": "val/Val_Fight/trtrhrt_1049.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999999,
+      "spatial": 0.020663925608410138,
+      "source": "trtrhrt",
+      "f2_score": 0.7717627803985752
+    },
+    {
+      "clip": "val/Val_Fight/trtrhrt_1050.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.995741,
+      "spatial": 0.0346381868716862,
+      "source": "trtrhrt",
+      "f2_score": 0.8215654183113508
+    },
+    {
+      "clip": "val/Val_Fight/trtrhrt_1053.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.989321,
+      "spatial": 0.02373743771765663,
+      "source": "trtrhrt",
+      "f2_score": 0.7610185809184558
+    },
+    {
+      "clip": "val/Val_Fight/trtrhrt_1054.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999942,
+      "spatial": 0.01416668656534873,
+      "source": "trtrhrt",
+      "f2_score": 0.695244055068836
+    },
+    {
+      "clip": "val/Val_Fight/v4dhdnsxiX4_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.873663,
+      "spatial": 0.017336760889706038,
+      "source": "v4dhdnsxiX4",
+      "f2_score": 0.643939539809377
+    },
+    {
+      "clip": "val/Val_Fight/v4dhdnsxiX4_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999263,
+      "spatial": 0.03029670280690137,
+      "source": "v4dhdnsxiX4",
+      "f2_score": 0.8135650332145952
+    },
+    {
+      "clip": "val/Val_Fight/v4dhdnsxiX4_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999498,
+      "spatial": 0.01202071422150294,
+      "source": "v4dhdnsxiX4",
+      "f2_score": 0.6661018580918455
+    },
+    {
+      "clip": "val/Val_Fight/v4dhdnsxiX4_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.941794,
+      "spatial": 0.007708406068510447,
+      "source": "v4dhdnsxiX4",
+      "f2_score": 0.5516896120150188
+    },
+    {
+      "clip": "val/Val_Fight/xDjgfhGt-YA_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.692591,
+      "spatial": 0.023558788586346326,
+      "source": "xDjgfhGt-YA",
+      "f2_score": 0.690805814961009
+    },
+    {
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.763104,
+      "spatial": 0.016897031448001754,
+      "source": "y_vX9FtjLaQ",
+      "f2_score": 0.6289111389236546
+    },
+    {
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.38015,
+      "spatial": 0.01250081191511682,
+      "source": "y_vX9FtjLaQ",
+      "f2_score": 0.5323288726292481
+    },
+    {
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.9555,
+      "spatial": 0.015241907461581201,
+      "source": "y_vX9FtjLaQ",
+      "f2_score": 0.6511023394627901
+    },
+    {
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.174805,
+      "spatial": 0.009145233725899824,
+      "source": "y_vX9FtjLaQ",
+      "f2_score": 0.43787426590930967
+    },
+    {
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_4.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.14011,
+      "spatial": 0.011106717332213134,
+      "source": "y_vX9FtjLaQ",
+      "f2_score": 0.4457398671416194
+    },
+    {
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_5.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.03473,
+      "spatial": 0.011410838475803336,
+      "source": "y_vX9FtjLaQ",
+      "f2_score": 0.36954847405410607
+    },
+    {
+      "clip": "val/Val_Fight/y_vX9FtjLaQ_6.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.725009,
+      "spatial": 0.016537500979219383,
+      "source": "y_vX9FtjLaQ",
+      "f2_score": 0.6136131703090402
+    },
+    {
+      "clip": "val/Val_Fight/zOqs7Oh9oDM_0.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.718378,
+      "spatial": 0.03289030641526711,
+      "source": "zOqs7Oh9oDM",
+      "f2_score": 0.7425724463271397
+    },
+    {
+      "clip": "val/Val_Fight/zOqs7Oh9oDM_1.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.997764,
+      "spatial": 0.03107566662500447,
+      "source": "zOqs7Oh9oDM",
+      "f2_score": 0.8073168383556368
+    },
+    {
+      "clip": "val/Val_Fight/zOqs7Oh9oDM_2.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.993147,
+      "spatial": 0.02455496525818245,
+      "source": "zOqs7Oh9oDM",
+      "f2_score": 0.771926446519688
+    },
+    {
+      "clip": "val/Val_Fight/zOqs7Oh9oDM_3.avi",
+      "label": "Fight",
+      "truth": 1,
+      "temporal_max": 0.999904,
+      "spatial": 0.022249058487465997,
+      "source": "zOqs7Oh9oDM",
+      "f2_score": 0.7857417926253971
+    },
+    {
+      "clip": "val/Val_NonFight/10uSOcwS_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000386,
+      "spatial": null,
+      "source": "10uSOcwS",
+      "f2_score": 0.02127659574468085
+    },
+    {
+      "clip": "val/Val_NonFight/1AURh0Wj_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.009721,
+      "spatial": 0.002640668824549533,
+      "source": "1AURh0Wj",
+      "f2_score": 0.13738326754597094
+    },
+    {
+      "clip": "val/Val_NonFight/1MVS2QPWbHc_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.086024,
+      "spatial": 0.01915595432809706,
+      "source": "1MVS2QPWbHc",
+      "f2_score": 0.5049966304033888
+    },
+    {
+      "clip": "val/Val_NonFight/1MVS2QPWbHc_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.359136,
+      "spatial": 0.021104009896873586,
+      "source": "1MVS2QPWbHc",
+      "f2_score": 0.6276210647925291
+    },
+    {
+      "clip": "val/Val_NonFight/1W8hsVvyKt4_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.037172,
+      "spatial": 0.004494046815889786,
+      "source": "1W8hsVvyKt4",
+      "f2_score": 0.2562915182439588
+    },
+    {
+      "clip": "val/Val_NonFight/1W8hsVvyKt4_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.488722,
+      "spatial": 0.02150587208734715,
+      "source": "1W8hsVvyKt4",
+      "f2_score": 0.6555502069895061
+    },
+    {
+      "clip": "val/Val_NonFight/1W8hsVvyKt4_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.004551,
+      "spatial": 0.017034576035928773,
+      "source": "1W8hsVvyKt4",
+      "f2_score": 0.32479060363916434
+    },
+    {
+      "clip": "val/Val_NonFight/1W8hsVvyKt4_3.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001266,
+      "spatial": 0.0032327659455796635,
+      "source": "1W8hsVvyKt4",
+      "f2_score": 0.07595070761528834
+    },
+    {
+      "clip": "val/Val_NonFight/2lrARl7utL4_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.696355,
+      "spatial": 0.017259628438427564,
+      "source": "2lrARl7utL4",
+      "f2_score": 0.6205352844902281
+    },
+    {
+      "clip": "val/Val_NonFight/2lrARl7utL4_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.976801,
+      "spatial": 0.0259297930602742,
+      "source": "2lrARl7utL4",
+      "f2_score": 0.7595648406662174
+    },
+    {
+      "clip": "val/Val_NonFight/2lrARl7utL4_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.840683,
+      "spatial": 0.01286517795566964,
+      "source": "2lrARl7utL4",
+      "f2_score": 0.5921729084432463
+    },
+    {
+      "clip": "val/Val_NonFight/2qFnVnnZ_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.004789,
+      "spatial": 0.002234468147385482,
+      "source": "2qFnVnnZ",
+      "f2_score": 0.10307114662558968
+    },
+    {
+      "clip": "val/Val_NonFight/32wXo9Dt_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.01648,
+      "spatial": 0.0034023871936211285,
+      "source": "32wXo9Dt",
+      "f2_score": 0.18034081062867047
+    },
+    {
+      "clip": "val/Val_NonFight/39BFeYnbu-I_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.990532,
+      "spatial": 0.014606829665068714,
+      "source": "39BFeYnbu-I",
+      "f2_score": 0.6634639453162607
+    },
+    {
+      "clip": "val/Val_NonFight/4I1DGWsh_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.628614,
+      "spatial": 0.06279861457452164,
+      "source": "4I1DGWsh",
+      "f2_score": 0.8562337537306248
+    },
+    {
+      "clip": "val/Val_NonFight/4p2iGvo8_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.123639,
+      "spatial": null,
+      "source": "4p2iGvo8",
+      "f2_score": 0.2765957446808511
+    },
+    {
+      "clip": "val/Val_NonFight/66U2c3YMjOI_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.213037,
+      "spatial": 0.03350459204015815,
+      "source": "66U2c3YMjOI",
+      "f2_score": 0.6682391450852027
+    },
+    {
+      "clip": "val/Val_NonFight/66U2c3YMjOI_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.005357,
+      "spatial": 0.03432807094071971,
+      "source": "66U2c3YMjOI",
+      "f2_score": 0.4577356310773082
+    },
+    {
+      "clip": "val/Val_NonFight/6Rl7q_kXYbg_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.075492,
+      "spatial": 0.013423400681724111,
+      "source": "6Rl7q_kXYbg",
+      "f2_score": 0.43965533840377397
+    },
+    {
+      "clip": "val/Val_NonFight/6doZoiaG9PM_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.714621,
+      "spatial": 0.041536002022098555,
+      "source": "6doZoiaG9PM",
+      "f2_score": 0.7991335322999904
+    },
+    {
+      "clip": "val/Val_NonFight/6doZoiaG9PM_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.211834,
+      "spatial": 0.004559010098730791,
+      "source": "6doZoiaG9PM",
+      "f2_score": 0.36054683739289495
+    },
+    {
+      "clip": "val/Val_NonFight/6doZoiaG9PM_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.091605,
+      "spatial": 0.011901098142969713,
+      "source": "6doZoiaG9PM",
+      "f2_score": 0.4299316453258881
+    },
+    {
+      "clip": "val/Val_NonFight/6doZoiaG9PM_3.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.048065,
+      "spatial": 0.001761093966188722,
+      "source": "6doZoiaG9PM",
+      "f2_score": 0.2239433907769327
+    },
+    {
+      "clip": "val/Val_NonFight/7gLKFV5voOg_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.004348,
+      "spatial": 0.009605525771696686,
+      "source": "7gLKFV5voOg",
+      "f2_score": 0.223250216616925
+    },
+    {
+      "clip": "val/Val_NonFight/8SmT9rE9_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.432373,
+      "spatial": null,
+      "source": "8SmT9rE9",
+      "f2_score": 0.3574468085106383
+    },
+    {
+      "clip": "val/Val_NonFight/8m3onRfr_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.024539,
+      "spatial": 0.002365272680775227,
+      "source": "8m3onRfr",
+      "f2_score": 0.19682295176663137
+    },
+    {
+      "clip": "val/Val_NonFight/8s3rES1a_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.007805,
+      "spatial": 0.015510617502006553,
+      "source": "8s3rES1a",
+      "f2_score": 0.32796765187253296
+    },
+    {
+      "clip": "val/Val_NonFight/8tWVjrUW_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.278041,
+      "spatial": 0.031589499953529034,
+      "source": "8tWVjrUW",
+      "f2_score": 0.6668913064407432
+    },
+    {
+      "clip": "val/Val_NonFight/9JxNZtUK_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000436,
+      "spatial": 0.0361978952854633,
+      "source": "9JxNZtUK",
+      "f2_score": 0.40562241263117355
+    },
+    {
+      "clip": "val/Val_NonFight/9kly-mpQczg_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.086877,
+      "spatial": 0.0031803045774684577,
+      "source": "9kly-mpQczg",
+      "f2_score": 0.267440069317416
+    },
+    {
+      "clip": "val/Val_NonFight/9kly-mpQczg_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.157508,
+      "spatial": 0.02871346583655726,
+      "source": "9kly-mpQczg",
+      "f2_score": 0.6281890825069798
+    },
+    {
+      "clip": "val/Val_NonFight/A7FCl8G35Cs_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.047861,
+      "spatial": 0.0028998715493240143,
+      "source": "A7FCl8G35Cs",
+      "f2_score": 0.23751805141041687
+    },
+    {
+      "clip": "val/Val_NonFight/A7FCl8G35Cs_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.472803,
+      "spatial": 0.019059148031738207,
+      "source": "A7FCl8G35Cs",
+      "f2_score": 0.6240107827091557
+    },
+    {
+      "clip": "val/Val_NonFight/Assault006_x264_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.381055,
+      "spatial": 0.02598868974471734,
+      "source": "Assault006_x264",
+      "f2_score": 0.6680754789640897
+    },
+    {
+      "clip": "val/Val_NonFight/Assault006_x264_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.528219,
+      "spatial": 0.023691847795513542,
+      "source": "Assault006_x264",
+      "f2_score": 0.6759121979397323
+    },
+    {
+      "clip": "val/Val_NonFight/BOnEkkm1_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000342,
+      "spatial": 0.010668826859620983,
+      "source": "BOnEkkm1",
+      "f2_score": 0.17738519302974873
+    },
+    {
+      "clip": "val/Val_NonFight/Bp3wCVsS_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000274,
+      "spatial": 0.0025389713474788652,
+      "source": "Bp3wCVsS",
+      "f2_score": 0.03724848368152499
+    },
+    {
+      "clip": "val/Val_NonFight/BySljls4_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000175,
+      "spatial": 0.009854067963663917,
+      "source": "BySljls4",
+      "f2_score": 0.17073264657745257
+    },
+    {
+      "clip": "val/Val_NonFight/CrBTbDcb_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.005603,
+      "spatial": null,
+      "source": "CrBTbDcb",
+      "f2_score": 0.09574468085106383
+    },
+    {
+      "clip": "val/Val_NonFight/Cw0HuNI5_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.003313,
+      "spatial": 0.0011246572336440187,
+      "source": "Cw0HuNI5",
+      "f2_score": 0.07899297198421103
+    },
+    {
+      "clip": "val/Val_NonFight/DeCoZoey_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000346,
+      "spatial": 0.0021176667972803696,
+      "source": "DeCoZoey",
+      "f2_score": 0.030326369500336958
+    },
+    {
+      "clip": "val/Val_NonFight/EB08Cq4t_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 3.4e-05,
+      "spatial": 0.004806297387268983,
+      "source": "EB08Cq4t",
+      "f2_score": 0.07199383845191104
+    },
+    {
+      "clip": "val/Val_NonFight/EFv961C5RgY_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.730447,
+      "spatial": 0.008726553212197797,
+      "source": "EFv961C5RgY",
+      "f2_score": 0.516328102435737
+    },
+    {
+      "clip": "val/Val_NonFight/F6kgeh23_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.012447,
+      "spatial": 0.01957972552279038,
+      "source": "F6kgeh23",
+      "f2_score": 0.4052661981322807
+    },
+    {
+      "clip": "val/Val_NonFight/Fds7C6sp_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000336,
+      "spatial": 0.003987394773991122,
+      "source": "Fds7C6sp",
+      "f2_score": 0.06426302108404737
+    },
+    {
+      "clip": "val/Val_NonFight/FpDZIe2z_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.002057,
+      "spatial": 0.010812214200239461,
+      "source": "FpDZIe2z",
+      "f2_score": 0.2220660440935785
+    },
+    {
+      "clip": "val/Val_NonFight/Fwhi4UNI_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001263,
+      "spatial": 0.0024714300830091383,
+      "source": "Fwhi4UNI",
+      "f2_score": 0.06916337729854626
+    },
+    {
+      "clip": "val/Val_NonFight/GCgD8AkV_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.004307,
+      "spatial": 0.002398054394204468,
+      "source": "GCgD8AkV",
+      "f2_score": 0.10107827091556754
+    },
+    {
+      "clip": "val/Val_NonFight/GXvqyqYi_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000791,
+      "spatial": 0.00969990937839151,
+      "source": "GXvqyqYi",
+      "f2_score": 0.1853566958698373
+    },
+    {
+      "clip": "val/Val_NonFight/GYvqfFzN_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.007266,
+      "spatial": 0.17996384611182323,
+      "source": "GYvqfFzN",
+      "f2_score": 0.5997304322711081
+    },
+    {
+      "clip": "val/Val_NonFight/I-QiUMPTWNE_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.157509,
+      "spatial": 0.002226135383427465,
+      "source": "I-QiUMPTWNE",
+      "f2_score": 0.3137094444979301
+    },
+    {
+      "clip": "val/Val_NonFight/I-QiUMPTWNE_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.046904,
+      "spatial": 0.0018737994606359532,
+      "source": "I-QiUMPTWNE",
+      "f2_score": 0.22181573120246462
+    },
+    {
+      "clip": "val/Val_NonFight/I-QiUMPTWNE_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.100731,
+      "spatial": 0.0053750177292271805,
+      "source": "I-QiUMPTWNE",
+      "f2_score": 0.3188023490902089
+    },
+    {
+      "clip": "val/Val_NonFight/I3rTHE3L_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.032976,
+      "spatial": 0.0034830146445833485,
+      "source": "I3rTHE3L",
+      "f2_score": 0.22941176470588237
+    },
+    {
+      "clip": "val/Val_NonFight/I9OYGpUd_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.003535,
+      "spatial": 0.0017189371352699379,
+      "source": "I9OYGpUd",
+      "f2_score": 0.08351785886203908
+    },
+    {
+      "clip": "val/Val_NonFight/IMA4zYs83Lo_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.503377,
+      "spatial": 0.009452806588326134,
+      "source": "IMA4zYs83Lo",
+      "f2_score": 0.5062289400211804
+    },
+    {
+      "clip": "val/Val_NonFight/IvimSdBV_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001458,
+      "spatial": 0.0023947488821019817,
+      "source": "IvimSdBV",
+      "f2_score": 0.07129103687301434
+    },
+    {
+      "clip": "val/Val_NonFight/JECBfnp2ZXc_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001786,
+      "spatial": 0.0011429926774892771,
+      "source": "JECBfnp2ZXc",
+      "f2_score": 0.06848945797631655
+    },
+    {
+      "clip": "val/Val_NonFight/JECBfnp2ZXc_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.013193,
+      "spatial": 0.009047146906559202,
+      "source": "JECBfnp2ZXc",
+      "f2_score": 0.27829979782420333
+    },
+    {
+      "clip": "val/Val_NonFight/JECBfnp2ZXc_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.012018,
+      "spatial": 0.012185515842256443,
+      "source": "JECBfnp2ZXc",
+      "f2_score": 0.31730047174352555
+    },
+    {
+      "clip": "val/Val_NonFight/JOMXfA1R_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.048452,
+      "spatial": 0.03947278944297798,
+      "source": "JOMXfA1R",
+      "f2_score": 0.6219986521613555
+    },
+    {
+      "clip": "val/Val_NonFight/K4qpMWJS_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.362794,
+      "spatial": 0.048808701296099474,
+      "source": "K4qpMWJS",
+      "f2_score": 0.7724174448830269
+    },
+    {
+      "clip": "val/Val_NonFight/LKdiIccO_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.032756,
+      "spatial": 0.0015808455945237696,
+      "source": "LKdiIccO",
+      "f2_score": 0.20904977375565612
+    },
+    {
+      "clip": "val/Val_NonFight/LoQZojhn_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.015905,
+      "spatial": null,
+      "source": "LoQZojhn",
+      "f2_score": 0.15319148936170213
+    },
+    {
+      "clip": "val/Val_NonFight/LruY67tu_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 5.8e-05,
+      "spatial": 0.012082584409971498,
+      "source": "LruY67tu",
+      "f2_score": 0.18737845383652643
+    },
+    {
+      "clip": "val/Val_NonFight/LtfqEsod_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000163,
+      "spatial": 0.0063959427094668776,
+      "source": "LtfqEsod",
+      "f2_score": 0.11190911716568788
+    },
+    {
+      "clip": "val/Val_NonFight/MrEU15Ug_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.00027,
+      "spatial": 0.007652883039623639,
+      "source": "MrEU15Ug",
+      "f2_score": 0.13679599499374218
+    },
+    {
+      "clip": "val/Val_NonFight/MxkTo5F-nvU_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.222675,
+      "spatial": 0.03982389912697378,
+      "source": "MxkTo5F-nvU",
+      "f2_score": 0.7221334360258015
+    },
+    {
+      "clip": "val/Val_NonFight/N8M1mmW9_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000405,
+      "spatial": null,
+      "source": "N8M1mmW9",
+      "f2_score": 0.023404255319148935
+    },
+    {
+      "clip": "val/Val_NonFight/NQpYodM6_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.003701,
+      "spatial": 0.017949196269646528,
+      "source": "NQpYodM6",
+      "f2_score": 0.320939636083566
+    },
+    {
+      "clip": "val/Val_NonFight/NW4ndzCa_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.25075,
+      "spatial": 0.030351899145215116,
+      "source": "NW4ndzCa",
+      "f2_score": 0.660373543852893
+    },
+    {
+      "clip": "val/Val_NonFight/NWIc3Yat_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.01816,
+      "spatial": null,
+      "source": "NWIc3Yat",
+      "f2_score": 0.1595744680851064
+    },
+    {
+      "clip": "val/Val_NonFight/NWqRgoGh_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.350199,
+      "spatial": 0.01132136673523667,
+      "source": "NWqRgoGh",
+      "f2_score": 0.5077115625300856
+    },
+    {
+      "clip": "val/Val_NonFight/NYvOWjLU_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 8.7e-05,
+      "spatial": 0.009934057322646479,
+      "source": "NYvOWjLU",
+      "f2_score": 0.16009434870511216
+    },
+    {
+      "clip": "val/Val_NonFight/NeyOxUHJ_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.026959,
+      "spatial": 0.0026942279712814823,
+      "source": "NeyOxUHJ",
+      "f2_score": 0.20972369307788583
+    },
+    {
+      "clip": "val/Val_NonFight/Nlopikk0zhE_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.155692,
+      "spatial": 0.024801440054809058,
+      "source": "Nlopikk0zhE",
+      "f2_score": 0.6103591027245595
+    },
+    {
+      "clip": "val/Val_NonFight/NnUOjff0_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.02457,
+      "spatial": 0.003910729285901785,
+      "source": "NnUOjff0",
+      "f2_score": 0.22170982959468566
+    },
+    {
+      "clip": "val/Val_NonFight/NoUdd8wq_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.170042,
+      "spatial": 0.02202115985869198,
+      "source": "NoUdd8wq",
+      "f2_score": 0.5963800904977375
+    },
+    {
+      "clip": "val/Val_NonFight/O2rd3LTv_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000139,
+      "spatial": 0.005007600334687017,
+      "source": "O2rd3LTv",
+      "f2_score": 0.08263213632425147
+    },
+    {
+      "clip": "val/Val_NonFight/Ob0YCDgS_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.093307,
+      "spatial": 0.011005796253296294,
+      "source": "Ob0YCDgS",
+      "f2_score": 0.4094348705112159
+    },
+    {
+      "clip": "val/Val_NonFight/PL8idmS7_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 4.8e-05,
+      "spatial": 0.014157302312770582,
+      "source": "PL8idmS7",
+      "f2_score": 0.21226533166458073
+    },
+    {
+      "clip": "val/Val_NonFight/PNgE-OKjhgU_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.051905,
+      "spatial": 0.003689073065552363,
+      "source": "PNgE-OKjhgU",
+      "f2_score": 0.25761047463175124
+    },
+    {
+      "clip": "val/Val_NonFight/PNgE-OKjhgU_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.058241,
+      "spatial": 0.0019591549537182544,
+      "source": "PNgE-OKjhgU",
+      "f2_score": 0.23458168864927312
+    },
+    {
+      "clip": "val/Val_NonFight/PaTrwJbs_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.025511,
+      "spatial": 0.0070864989639310375,
+      "source": "PaTrwJbs",
+      "f2_score": 0.29383845191104263
+    },
+    {
+      "clip": "val/Val_NonFight/QRJFLxqK_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000333,
+      "spatial": 0.005137580424394116,
+      "source": "QRJFLxqK",
+      "f2_score": 0.08688745547318764
+    },
+    {
+      "clip": "val/Val_NonFight/Qj3oZsaqNGE_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.067816,
+      "spatial": 0.011551095344442345,
+      "source": "Qj3oZsaqNGE",
+      "f2_score": 0.40386059497448734
+    },
+    {
+      "clip": "val/Val_NonFight/RIXaF_TkLlU_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.033103,
+      "spatial": 0.005596150592683328,
+      "source": "RIXaF_TkLlU",
+      "f2_score": 0.27918552036199096
+    },
+    {
+      "clip": "val/Val_NonFight/RIXaF_TkLlU_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.050229,
+      "spatial": 0.01310668778399696,
+      "source": "RIXaF_TkLlU",
+      "f2_score": 0.41598151535573313
+    },
+    {
+      "clip": "val/Val_NonFight/RIXaF_TkLlU_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.016556,
+      "spatial": 0.008353821048730236,
+      "source": "RIXaF_TkLlU",
+      "f2_score": 0.28215076537980166
+    },
+    {
+      "clip": "val/Val_NonFight/RQt37bnC_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.0337,
+      "spatial": 0.009526605688761278,
+      "source": "RQt37bnC",
+      "f2_score": 0.3402714932126697
+    },
+    {
+      "clip": "val/Val_NonFight/Ry5c1PbcIa0_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.669274,
+      "spatial": 0.01280432351488357,
+      "source": "Ry5c1PbcIa0",
+      "f2_score": 0.5666409935496293
+    },
+    {
+      "clip": "val/Val_NonFight/S8jXc3sP_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.00171,
+      "spatial": 0.0056573229585059285,
+      "source": "S8jXc3sP",
+      "f2_score": 0.14315009146047944
+    },
+    {
+      "clip": "val/Val_NonFight/SJRnWfHAx_E_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.06685,
+      "spatial": null,
+      "source": "SJRnWfHAx_E",
+      "f2_score": 0.23191489361702128
+    },
+    {
+      "clip": "val/Val_NonFight/SJRnWfHAx_E_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.04047,
+      "spatial": 0.02484744807322143,
+      "source": "SJRnWfHAx_E",
+      "f2_score": 0.5231250601713681
+    },
+    {
+      "clip": "val/Val_NonFight/SJRnWfHAx_E_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000974,
+      "spatial": 0.04346608974962755,
+      "source": "SJRnWfHAx_E",
+      "f2_score": 0.46323288726292483
+    },
+    {
+      "clip": "val/Val_NonFight/TP6mtOzL_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000798,
+      "spatial": 0.006386699057449508,
+      "source": "TP6mtOzL",
+      "f2_score": 0.13105805333590065
+    },
+    {
+      "clip": "val/Val_NonFight/UoS3KEYq_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 8.1e-05,
+      "spatial": 0.004992644127843813,
+      "source": "UoS3KEYq",
+      "f2_score": 0.07412149802637913
+    },
+    {
+      "clip": "val/Val_NonFight/VF8M3gXp_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000999,
+      "spatial": 0.006860813112272719,
+      "source": "VF8M3gXp",
+      "f2_score": 0.15101569269278906
+    },
+    {
+      "clip": "val/Val_NonFight/VGKvz9qZ_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.034992,
+      "spatial": 0.003201570805665389,
+      "source": "VGKvz9qZ",
+      "f2_score": 0.22701453740252237
+    },
+    {
+      "clip": "val/Val_NonFight/VIPpAkyG_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.024938,
+      "spatial": null,
+      "source": "VIPpAkyG",
+      "f2_score": 0.18085106382978725
+    },
+    {
+      "clip": "val/Val_NonFight/VTOPSZvF_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 7e-06,
+      "spatial": 0.014515775877251155,
+      "source": "VTOPSZvF",
+      "f2_score": 0.2102724559545586
+    },
+    {
+      "clip": "val/Val_NonFight/VVQBImyG_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000162,
+      "spatial": 0.0037145831336597326,
+      "source": "VVQBImyG",
+      "f2_score": 0.05761047463175123
+    },
+    {
+      "clip": "val/Val_NonFight/VtIQbKvy_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.009382,
+      "spatial": 0.026351981307315885,
+      "source": "VtIQbKvy",
+      "f2_score": 0.4361605853470685
+    },
+    {
+      "clip": "val/Val_NonFight/VzHfmJeI_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000682,
+      "spatial": 0.001984706499378781,
+      "source": "VzHfmJeI",
+      "f2_score": 0.04734764609608164
+    },
+    {
+      "clip": "val/Val_NonFight/WPXtCPPS_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.243215,
+      "spatial": null,
+      "source": "WPXtCPPS",
+      "f2_score": 0.32340425531914896
+    },
+    {
+      "clip": "val/Val_NonFight/Wq0BuA8GM84_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.69916,
+      "spatial": 0.027830348840400983,
+      "source": "Wq0BuA8GM84",
+      "f2_score": 0.7131606816212573
+    },
+    {
+      "clip": "val/Val_NonFight/Wq0BuA8GM84_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.129625,
+      "spatial": 0.013810895040965731,
+      "source": "Wq0BuA8GM84",
+      "f2_score": 0.4844709733320497
+    },
+    {
+      "clip": "val/Val_NonFight/Xcd0v-KhKL4_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.007613,
+      "spatial": 0.004138057532801658,
+      "source": "Xcd0v-KhKL4",
+      "f2_score": 0.1516318475016848
+    },
+    {
+      "clip": "val/Val_NonFight/YDOJvzChqSg_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.147248,
+      "spatial": 0.03405422224350453,
+      "source": "YDOJvzChqSg",
+      "f2_score": 0.6513526523539039
+    },
+    {
+      "clip": "val/Val_NonFight/YL1qlr23_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.963544,
+      "spatial": 0.006983155921404261,
+      "source": "YL1qlr23",
+      "f2_score": 0.5447674978338308
+    },
+    {
+      "clip": "val/Val_NonFight/YYCGcBuE_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001601,
+      "spatial": null,
+      "source": "YYCGcBuE",
+      "f2_score": 0.059574468085106386
+    },
+    {
+      "clip": "val/Val_NonFight/Yf55ftZR_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001247,
+      "spatial": null,
+      "source": "Yf55ftZR",
+      "f2_score": 0.05106382978723404
+    },
+    {
+      "clip": "val/Val_NonFight/Yma07mlW_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.002669,
+      "spatial": 0.021855698252377025,
+      "source": "Yma07mlW",
+      "f2_score": 0.36872051602965245
+    },
+    {
+      "clip": "val/Val_NonFight/YukOkfIj_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.011657,
+      "spatial": 0.007490600219873429,
+      "source": "YukOkfIj",
+      "f2_score": 0.24729950900163666
+    },
+    {
+      "clip": "val/Val_NonFight/ZCUy99AN_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 1e-06,
+      "spatial": 0.030744695712630204,
+      "source": "ZCUy99AN",
+      "f2_score": 0.334841628959276
+    },
+    {
+      "clip": "val/Val_NonFight/ZwhC7Kyg_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000779,
+      "spatial": null,
+      "source": "ZwhC7Kyg",
+      "f2_score": 0.03829787234042553
+    },
+    {
+      "clip": "val/Val_NonFight/bW2vHhYbzHM_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001068,
+      "spatial": 0.05566085822274203,
+      "source": "bW2vHhYbzHM",
+      "f2_score": 0.49943198228554925
+    },
+    {
+      "clip": "val/Val_NonFight/bW2vHhYbzHM_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.002102,
+      "spatial": 0.023424244906984353,
+      "source": "bW2vHhYbzHM",
+      "f2_score": 0.3713873110619043
+    },
+    {
+      "clip": "val/Val_NonFight/cpFWuHXF_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.006898,
+      "spatial": 0.013339990301534758,
+      "source": "cpFWuHXF",
+      "f2_score": 0.2969673630499663
+    },
+    {
+      "clip": "val/Val_NonFight/e8jli13nLaM_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.074528,
+      "spatial": 0.00707410175503462,
+      "source": "e8jli13nLaM",
+      "f2_score": 0.34915760084721287
+    },
+    {
+      "clip": "val/Val_NonFight/eb4Oant1_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.180847,
+      "spatial": 0.007520486697133993,
+      "source": "eb4Oant1",
+      "f2_score": 0.4175122749590835
+    },
+    {
+      "clip": "val/Val_NonFight/egQvmVL2_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000854,
+      "spatial": 0.011171777679990568,
+      "source": "egQvmVL2",
+      "f2_score": 0.20105901607778956
+    },
+    {
+      "clip": "val/Val_NonFight/etyiEs3j8x8_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.126365,
+      "spatial": 0.005711974395004314,
+      "source": "etyiEs3j8x8",
+      "f2_score": 0.36017136805622413
+    },
+    {
+      "clip": "val/Val_NonFight/etyiEs3j8x8_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.054334,
+      "spatial": 0.0062503556647046715,
+      "source": "etyiEs3j8x8",
+      "f2_score": 0.3095118898623279
+    },
+    {
+      "clip": "val/Val_NonFight/etyiEs3j8x8_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.070278,
+      "spatial": 0.007355708315908717,
+      "source": "etyiEs3j8x8",
+      "f2_score": 0.3471647251371907
+    },
+    {
+      "clip": "val/Val_NonFight/fGyFpyjd_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001114,
+      "spatial": 0.0023463317593416804,
+      "source": "fGyFpyjd",
+      "f2_score": 0.06490805814961009
+    },
+    {
+      "clip": "val/Val_NonFight/fO2vb61DcUk_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.015629,
+      "spatial": 0.0041464535699532986,
+      "source": "fO2vb61DcUk",
+      "f2_score": 0.1963126985655146
+    },
+    {
+      "clip": "val/Val_NonFight/fO2vb61DcUk_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.009458,
+      "spatial": 0.004991197357173208,
+      "source": "fO2vb61DcUk",
+      "f2_score": 0.18050447674978337
+    },
+    {
+      "clip": "val/Val_NonFight/g7fqR4gn_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.652085,
+      "spatial": 0.01828222574440881,
+      "source": "g7fqR4gn",
+      "f2_score": 0.627726966400308
+    },
+    {
+      "clip": "val/Val_NonFight/g8SVNUCm_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.002895,
+      "spatial": 0.009337552765648868,
+      "source": "g8SVNUCm",
+      "f2_score": 0.21034947530567055
+    },
+    {
+      "clip": "val/Val_NonFight/gJV3TuKF_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001232,
+      "spatial": null,
+      "source": "gJV3TuKF",
+      "f2_score": 0.05106382978723404
+    },
+    {
+      "clip": "val/Val_NonFight/iE9hzgQD_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.007255,
+      "spatial": null,
+      "source": "iE9hzgQD",
+      "f2_score": 0.10425531914893617
+    },
+    {
+      "clip": "val/Val_NonFight/iJ5Q1tar_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.003071,
+      "spatial": 0.014028531821749197,
+      "source": "iJ5Q1tar",
+      "f2_score": 0.27596033503417733
+    },
+    {
+      "clip": "val/Val_NonFight/jpYrguiW_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.008787,
+      "spatial": 0.0034945805112412487,
+      "source": "jpYrguiW",
+      "f2_score": 0.14005006257822278
+    },
+    {
+      "clip": "val/Val_NonFight/kApoSGPK_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 2.4e-05,
+      "spatial": 0.0032917309280018196,
+      "source": "kApoSGPK",
+      "f2_score": 0.03126985655145855
+    },
+    {
+      "clip": "val/Val_NonFight/kMgCk8Ku_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.053327,
+      "spatial": 0.006120121788605307,
+      "source": "kMgCk8Ku",
+      "f2_score": 0.3049870029844998
+    },
+    {
+      "clip": "val/Val_NonFight/l82NDOvk_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.026631,
+      "spatial": 0.0018082155791075488,
+      "source": "l82NDOvk",
+      "f2_score": 0.1962838163088476
+    },
+    {
+      "clip": "val/Val_NonFight/mwuiYEBdkJs_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.020451,
+      "spatial": 0.03073369085233624,
+      "source": "mwuiYEBdkJs",
+      "f2_score": 0.5007990757677866
+    },
+    {
+      "clip": "val/Val_NonFight/mwuiYEBdkJs_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.027219,
+      "spatial": 0.02648194775119597,
+      "source": "mwuiYEBdkJs",
+      "f2_score": 0.5127563300279195
+    },
+    {
+      "clip": "val/Val_NonFight/myaBOqJ3_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.00278,
+      "spatial": 0.006687569689061131,
+      "source": "myaBOqJ3",
+      "f2_score": 0.17641282372196015
+    },
+    {
+      "clip": "val/Val_NonFight/nTsOksk7_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.036381,
+      "spatial": 0.011237652670264674,
+      "source": "nTsOksk7",
+      "f2_score": 0.36728603061519205
+    },
+    {
+      "clip": "val/Val_NonFight/nVdn1krnTCQ_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.041148,
+      "spatial": 0.011931465209049237,
+      "source": "nVdn1krnTCQ",
+      "f2_score": 0.3873784538365264
+    },
+    {
+      "clip": "val/Val_NonFight/nVdn1krnTCQ_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.00917,
+      "spatial": 0.02074935256365716,
+      "source": "nVdn1krnTCQ",
+      "f2_score": 0.38878405699431984
+    },
+    {
+      "clip": "val/Val_NonFight/nVdn1krnTCQ_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.064639,
+      "spatial": 0.03580154352475927,
+      "source": "nVdn1krnTCQ",
+      "f2_score": 0.6053528449022817
+    },
+    {
+      "clip": "val/Val_NonFight/ngv36FBY_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.161618,
+      "spatial": 0.010410671424226858,
+      "source": "ngv36FBY",
+      "f2_score": 0.4539809377105998
+    },
+    {
+      "clip": "val/Val_NonFight/nuf-d5GugL0_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.302447,
+      "spatial": 0.004136982967617242,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.38354674111870607
+    },
+    {
+      "clip": "val/Val_NonFight/nuf-d5GugL0_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.631424,
+      "spatial": 0.005439799418912971,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.44446904784827185
+    },
+    {
+      "clip": "val/Val_NonFight/nuf-d5GugL0_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.77924,
+      "spatial": 0.010284446404376249,
+      "source": "nuf-d5GugL0",
+      "f2_score": 0.5561085972850679
+    },
+    {
+      "clip": "val/Val_NonFight/oXeSTCLT_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.006685,
+      "spatial": 0.013535310689290012,
+      "source": "oXeSTCLT",
+      "f2_score": 0.2992298064888803
+    },
+    {
+      "clip": "val/Val_NonFight/ojZVUz7i_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001144,
+      "spatial": null,
+      "source": "ojZVUz7i",
+      "f2_score": 0.04893617021276596
+    },
+    {
+      "clip": "val/Val_NonFight/q4jlVJRb_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 5.6e-05,
+      "spatial": 0.0035460729801364086,
+      "source": "q4jlVJRb",
+      "f2_score": 0.04031963030711466
+    },
+    {
+      "clip": "val/Val_NonFight/qFfqTQm0_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.002048,
+      "spatial": 0.007284955630416455,
+      "source": "qFfqTQm0",
+      "f2_score": 0.17681717531529795
+    },
+    {
+      "clip": "val/Val_NonFight/qaAclucigpY_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.177382,
+      "spatial": 0.2599211083557868,
+      "source": "qaAclucigpY",
+      "f2_score": 0.7998652161355541
+    },
+    {
+      "clip": "val/Val_NonFight/qaAclucigpY_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.009487,
+      "spatial": 0.004640314630888895,
+      "source": "qaAclucigpY",
+      "f2_score": 0.17371714643304131
+    },
+    {
+      "clip": "val/Val_NonFight/qaAclucigpY_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.326423,
+      "spatial": 0.1677324745208843,
+      "source": "qaAclucigpY",
+      "f2_score": 0.8359006450370656
+    },
+    {
+      "clip": "val/Val_NonFight/qyRJeYN5_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001543,
+      "spatial": 0.0012130986420113563,
+      "source": "qyRJeYN5",
+      "f2_score": 0.0664965822662944
+    },
+    {
+      "clip": "val/Val_NonFight/r0mVR4J6_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.006187,
+      "spatial": 0.013815089364090014,
+      "source": "r0mVR4J6",
+      "f2_score": 0.30149224992779433
+    },
+    {
+      "clip": "val/Val_NonFight/rJbh1niy_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.025437,
+      "spatial": null,
+      "source": "rJbh1niy",
+      "f2_score": 0.1829787234042553
+    },
+    {
+      "clip": "val/Val_NonFight/rtSWit6k_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 3e-06,
+      "spatial": 0.0027457225062957422,
+      "source": "rtSWit6k",
+      "f2_score": 0.02248965052469433
+    },
+    {
+      "clip": "val/Val_NonFight/rwg8hp5X_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.002958,
+      "spatial": 0.003722582734438049,
+      "source": "rwg8hp5X",
+      "f2_score": 0.11080196399345335
+    },
+    {
+      "clip": "val/Val_NonFight/scznszmE_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001583,
+      "spatial": 0.0038896107678877832,
+      "source": "scznszmE",
+      "f2_score": 0.1025608934244729
+    },
+    {
+      "clip": "val/Val_NonFight/tSk5CEXB_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.057199,
+      "spatial": 0.018424255043704534,
+      "source": "tSk5CEXB",
+      "f2_score": 0.47679792047751995
+    },
+    {
+      "clip": "val/Val_NonFight/tf_X7GtOGyE_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.011166,
+      "spatial": 0.008164313968991213,
+      "source": "tf_X7GtOGyE",
+      "f2_score": 0.25209396360835656
+    },
+    {
+      "clip": "val/Val_NonFight/tf_X7GtOGyE_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.008255,
+      "spatial": 0.012934598627713286,
+      "source": "tf_X7GtOGyE",
+      "f2_score": 0.3006835467411187
+    },
+    {
+      "clip": "val/Val_NonFight/tf_X7GtOGyE_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.005387,
+      "spatial": 0.00546426227722664,
+      "source": "tf_X7GtOGyE",
+      "f2_score": 0.16588042745739867
+    },
+    {
+      "clip": "val/Val_NonFight/tivF4CAg_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.146919,
+      "spatial": 0.00902411887904642,
+      "source": "tivF4CAg",
+      "f2_score": 0.42510830846250114
+    },
+    {
+      "clip": "val/Val_NonFight/twBrsDhF_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.044042,
+      "spatial": null,
+      "source": "twBrsDhF",
+      "f2_score": 0.21063829787234042
+    },
+    {
+      "clip": "val/Val_NonFight/u-VcErKk6Qs_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.0097,
+      "spatial": 0.002539131856162436,
+      "source": "u-VcErKk6Qs",
+      "f2_score": 0.1351208241070569
+    },
+    {
+      "clip": "val/Val_NonFight/uZLLdl2P_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.003079,
+      "spatial": 0.017872269918132733,
+      "source": "uZLLdl2P",
+      "f2_score": 0.31668431693462984
+    },
+    {
+      "clip": "val/Val_NonFight/utRmPckr_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.030173,
+      "spatial": 0.039537186441252946,
+      "source": "utRmPckr",
+      "f2_score": 0.5985943968422066
+    },
+    {
+      "clip": "val/Val_NonFight/v1Sb6NhU_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000212,
+      "spatial": 0.001693722260748132,
+      "source": "v1Sb6NhU",
+      "f2_score": 0.028198709925868877
+    },
+    {
+      "clip": "val/Val_NonFight/v4dhdnsxiX4_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.565383,
+      "spatial": 0.015232886285352052,
+      "source": "v4dhdnsxiX4",
+      "f2_score": 0.5872725522287474
+    },
+    {
+      "clip": "val/Val_NonFight/v4dhdnsxiX4_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.054321,
+      "spatial": 0.013861893057584526,
+      "source": "v4dhdnsxiX4",
+      "f2_score": 0.4248965052469433
+    },
+    {
+      "clip": "val/Val_NonFight/v4dhdnsxiX4_2.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.030726,
+      "spatial": 0.007155558117961914,
+      "source": "v4dhdnsxiX4",
+      "f2_score": 0.30873206893231925
+    },
+    {
+      "clip": "val/Val_NonFight/vAV3vIGr_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.003011,
+      "spatial": 0.010460745674797736,
+      "source": "vAV3vIGr",
+      "f2_score": 0.22844902281698276
+    },
+    {
+      "clip": "val/Val_NonFight/vDeu44Su_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.057104,
+      "spatial": null,
+      "source": "vDeu44Su",
+      "f2_score": 0.22340425531914893
+    },
+    {
+      "clip": "val/Val_NonFight/vKUjLaXO_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000519,
+      "spatial": 0.02248015315392783,
+      "source": "vKUjLaXO",
+      "f2_score": 0.33055742755367284
+    },
+    {
+      "clip": "val/Val_NonFight/vXGRa5D6_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.040567,
+      "spatial": null,
+      "source": "vXGRa5D6",
+      "f2_score": 0.20638297872340425
+    },
+    {
+      "clip": "val/Val_NonFight/w6VytllR_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.00095,
+      "spatial": 0.005047387982366435,
+      "source": "w6VytllR",
+      "f2_score": 0.10816405121786848
+    },
+    {
+      "clip": "val/Val_NonFight/wMcODEtzJIA_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.316212,
+      "spatial": 0.031180043711033768,
+      "source": "wMcODEtzJIA",
+      "f2_score": 0.6775296043130836
+    },
+    {
+      "clip": "val/Val_NonFight/wMcODEtzJIA_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.012027,
+      "spatial": 0.041169001010757385,
+      "source": "wMcODEtzJIA",
+      "f2_score": 0.5480697025127563
+    },
+    {
+      "clip": "val/Val_NonFight/wyLoweAn_9Q_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001196,
+      "spatial": 0.008832765638725823,
+      "source": "wyLoweAn_9Q",
+      "f2_score": 0.18454799268316163
+    },
+    {
+      "clip": "val/Val_NonFight/wyLoweAn_9Q_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.091848,
+      "spatial": 0.013498880323186135,
+      "source": "wyLoweAn_9Q",
+      "f2_score": 0.4502936362761144
+    },
+    {
+      "clip": "val/Val_NonFight/xRbCHA5YTi8_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.48389,
+      "spatial": 0.030360671771202736,
+      "source": "xRbCHA5YTi8",
+      "f2_score": 0.6986714161933185
+    },
+    {
+      "clip": "val/Val_NonFight/y2pGPMqikJg_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.014976,
+      "spatial": 0.033514491604711726,
+      "source": "y2pGPMqikJg",
+      "f2_score": 0.502281698276692
+    },
+    {
+      "clip": "val/Val_NonFight/y2pGPMqikJg_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.06325,
+      "spatial": 0.009351607461830478,
+      "source": "y2pGPMqikJg",
+      "f2_score": 0.36779628381630886
+    },
+    {
+      "clip": "val/Val_NonFight/yFaADLZw_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.07999,
+      "spatial": null,
+      "source": "yFaADLZw",
+      "f2_score": 0.2404255319148936
+    },
+    {
+      "clip": "val/Val_NonFight/yN11pFfP_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.000754,
+      "spatial": 0.004290791682976077,
+      "source": "yN11pFfP",
+      "f2_score": 0.08807162799653412
+    },
+    {
+      "clip": "val/Val_NonFight/zGBzk5SeJOw_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.172974,
+      "spatial": 0.03211289187839331,
+      "source": "zGBzk5SeJOw",
+      "f2_score": 0.6482815057283142
+    },
+    {
+      "clip": "val/Val_NonFight/zGBzk5SeJOw_1.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.038,
+      "spatial": 0.03615104830111589,
+      "source": "zGBzk5SeJOw",
+      "f2_score": 0.5843458168864927
+    },
+    {
+      "clip": "val/Val_NonFight/zMbmPG71_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.012445,
+      "spatial": 0.005324070522733976,
+      "source": "zMbmPG71",
+      "f2_score": 0.20390873206893234
+    },
+    {
+      "clip": "val/Val_NonFight/zOqs7Oh9oDM_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.139018,
+      "spatial": 0.010378463331463604,
+      "source": "zOqs7Oh9oDM",
+      "f2_score": 0.4412149802637913
+    },
+    {
+      "clip": "val/Val_NonFight/zWevuNTR_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001342,
+      "spatial": 0.004897548125404629,
+      "source": "zWevuNTR",
+      "f2_score": 0.11667468951574084
+    },
+    {
+      "clip": "val/Val_NonFight/zsvJyWXp_0.avi",
+      "label": "NonFight",
+      "truth": 0,
+      "temporal_max": 0.001033,
+      "spatial": 0.00266644523763615,
+      "source": "zsvJyWXp",
+      "f2_score": 0.06504284201405604
+    }
+  ]
+}

@@ -244,12 +244,40 @@ class PrimaryProtectionTests(unittest.TestCase):
                 for artifact in PRIMARY_ARTIFACTS:
                     self.assertNotIn(artifact, text, f"{attribute} points at {artifact}")
 
-    def test_no_primary_derived_artifact_was_generated(self):
+    # The two artifacts the AUTHORISED one-shot confirmatory run is permitted to
+    # create. Anything else carrying "primary" in its name would mean a
+    # development or calibration tool had reached the protected split.
+    AUTHORISED_PRIMARY_ARTIFACTS = frozenset({
+        "FINAL_primary_spatial_scores.json",
+        "FINAL_confirmatory_primary_evaluation.json",
+    })
+
+    def test_only_the_authorised_primary_artifacts_exist(self):
+        """Development tools must still generate nothing primary-derived.
+
+        Before authorisation this asserted that NO primary-named artifact
+        existed. The one-shot confirmatory run has since been authorised and
+        legitimately writes exactly two, so the guard now names them instead of
+        being deleted: any third primary-named file still fails, which is the
+        property that actually matters.
+        """
         fusion_dir = REPO_ROOT / "outputs" / "fusion"
         if not fusion_dir.is_dir():
             return
-        for path in fusion_dir.iterdir():
-            self.assertNotIn("primary", path.name.lower(), f"{path.name} looks primary-derived")
+        unexpected = [
+            path.name for path in fusion_dir.iterdir()
+            if "primary" in path.name.lower()
+            and path.name not in self.AUTHORISED_PRIMARY_ARTIFACTS
+        ]
+        self.assertEqual(unexpected, [], f"unauthorised primary-derived artifacts: {unexpected}")
+
+    def test_calibration_tools_produced_no_primary_artifact(self):
+        """The authorised outputs must come from the confirmatory tool alone."""
+        for name in ("calibrate_fusion_protocol.py", "build_fresh_validation_carve.py",
+                     "score_fresh_carve.py"):
+            source = (REPO_ROOT / "tools" / name).read_text(encoding="utf-8")
+            for artifact in self.AUTHORISED_PRIMARY_ARTIFACTS:
+                self.assertNotIn(artifact, source, f"{name} writes {artifact}")
 
 
 class InvalidCarveStaysInvalidTests(unittest.TestCase):
