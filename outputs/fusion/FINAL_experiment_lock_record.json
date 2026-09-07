@@ -1,0 +1,127 @@
+{
+  "artifact_kind": "FINAL EXPERIMENT LOCK RECORD",
+  "status": "LOCKED -- CLOSED",
+  "primary_split_status": "PERMANENTLY SPENT",
+  "further_primary_experiments_permitted": false,
+  "statement": "The 394-clip primary split has been used for its single authorised confirmatory evaluation. It is now permanently spent and must never be used again for development, tuning, model selection, threshold search, feature design, or any further experiment. Any future confirmatory claim requires a new dataset and a newly frozen protocol.",
+  "final_decision": "C_NO_MEANINGFUL_IMPROVEMENT",
+  "decision_meaning": "C -- the frozen fusion rule did not meaningfully improve clip-level classification over the temporal-only incumbent",
+  "result_scope": "CLIP-LEVEL OFFLINE CONFIRMATORY CLASSIFICATION -- not a causal mid-clip alarm, not real-time, not early warning",
+  "confusion_matrices": {
+    "B0_temporal_only": {
+      "tp": 160,
+      "fp": 43,
+      "tn": 151,
+      "fn": 40
+    },
+    "F2_rank_sum": {
+      "tp": 160,
+      "fp": 46,
+      "tn": 148,
+      "fn": 40
+    },
+    "F1_or_gate": {
+      "tp": 160,
+      "fp": 43,
+      "tn": 151,
+      "fn": 40
+    },
+    "B1_spatial_only": {
+      "tp": 67,
+      "fp": 35,
+      "tn": 159,
+      "fn": 133
+    }
+  },
+  "primary_endpoint": {
+    "comparison": "B0_temporal_only vs F2_rank_sum",
+    "test": "exact two-sided McNemar on discordant pairs",
+    "alpha": 0.05,
+    "b": 25,
+    "c": 22,
+    "p_value": 0.7708669945730264,
+    "significant": false,
+    "direction": "slightly favours B0 (b > c); not significant"
+  },
+  "effect_size": {
+    "accuracy_difference_F2_minus_B0": -0.0076142131979695105,
+    "clip_level_ci95": [
+      -0.040609137055837574,
+      0.025380710659898553
+    ],
+    "source_clustered_ci95": [
+      -0.04627357597077528,
+      0.030927835051546393
+    ],
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 42,
+    "note": "both intervals contain zero; non-significance is not equivalence"
+  },
+  "b1_spatial_roc_auc": 0.7057832515177042,
+  "b1_note": "spatial evidence is NOT uninformative on primary (ROC-AUC well above chance), but it did not yield complementary benefit under the frozen fusion rule at a matched operating point",
+  "sample": {
+    "clips": 394,
+    "fight": 200,
+    "nonfight": 194,
+    "sources": 174,
+    "spatially_undefined": 22,
+    "spatially_undefined_by_class": {
+      "Fight": 1,
+      "NonFight": 21
+    },
+    "processing_failures": 0
+  },
+  "hashes": {
+    "protocol_sha256_internal": "ff2d78c5ae064e16b1144b74193b40eb66d71f63069c8594faf13238fb6384cd",
+    "protocol_file_sha256": "e443325a0bcb6b8177c8a24b0da7cce8b40be5ac3a11b5ad21ba3c422f2f7b72",
+    "final_result_sha256": "7d53b487c31ef700b1fce91fdbccac5b3ad050cc6579316be2cc7e4693084670",
+    "final_spatial_scores_sha256": "a9fdb665a9866f79f7cf4aac12b51c82488fa5def09a73ec9e7e1e3102726688",
+    "primary_window_scores_sha256": "4ac143db48f64970dc987f8f469d2f79a71ab4dd0a7310ed13ad9e0f8e64be4d",
+    "r3d_checkpoint_sha256": "a32271bfb5a9c273f84672b16ecd5fa351fdd617d39a2c5c73f5c667255a559a",
+    "yolo_sha256": "1f47a78bf100391c2a140b7ac73a1caae18c32779be7d310658112f7ac9aa78a"
+  },
+  "normalisation_purity": {
+    "temporal_reference_n": 235,
+    "spatial_reference_n": 221,
+    "primary_values_added_to_references": false,
+    "source": "development carve values stored in the frozen protocol; no primary value was added to any reference"
+  },
+  "independent_verification": {
+    "performed": true,
+    "result": "ALL CHECKS PASSED",
+    "recomputed": [
+      "sample counts",
+      "all four confusion matrices",
+      "every reported metric",
+      "McNemar b and c",
+      "exact p-value",
+      "every F2 score from frozen references"
+    ]
+  },
+  "test_status": {
+    "passed": 652,
+    "failed": 1,
+    "skipped": 17,
+    "subtests_passed": 111,
+    "known_pre_existing_failure": "tests/test_kaggle_cell.py::GeneratedCellTests::test_committed_cell_is_up_to_date",
+    "failure_cause": "zlib encoding difference only; the 8 embedded module sources are byte-identical and all generator inputs are unchanged. Unrelated to this experiment and deliberately not regenerated."
+  },
+  "git": {
+    "commit": "604e8cc2a76fc567631145c3fb9fad6dbf9a5e0a",
+    "confirmatory_commit": "604e8cc2a76fc567631145c3fb9fad6dbf9a5e0a",
+    "branch": "step5-sliding-window-uncertainty",
+    "master": "a2422f189eea95daac9dcba98e9129ba276ff99d",
+    "master_unchanged": true
+  },
+  "integrity": {
+    "primary_accessed_only_after_authorisation": true,
+    "tuning_after_primary_access": false,
+    "primary_derived_normalisation": false,
+    "threshold_modified": false,
+    "weight_modified": false,
+    "candidate_modified": false,
+    "sample_deleted": false,
+    "primary_input_modified": false
+  },
+  "locked_at_utc": "2026-09-07T11:26:20.278381+00:00"
+}
