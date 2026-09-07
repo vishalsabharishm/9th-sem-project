@@ -36,6 +36,19 @@ from flask import Flask, jsonify, render_template, request, send_from_directory 
 
 from config import OUTPUTS_DIR  # noqa: E402
 from detection import DEFAULT_MODEL_PATH  # noqa: E402
+import base64
+import time
+
+import numpy as np
+
+from temporal_explanation import (  # noqa: E402
+    describe_provenance_legend,
+    explain_frame_window,
+    risk_presentation,
+    unavailable as explanation_unavailable,
+)
+from temporal_runtime import RUNTIME_CLIP_LENGTH, build_violence_engine  # noqa: E402
+
 from temporal_event_adapter import (  # noqa: E402
     TEMPORAL_EVENT_TYPE,
     PrecomputedWindowScoreSource,
@@ -63,6 +76,10 @@ _analyze_lock = threading.Lock()
 # real, precomputed temporal score (temporal_risk/primary_window_scores.csv).
 # See docs/demo_instructions.md, "Running on a different clip".
 _score_source = PrecomputedWindowScoreSource(PRIMARY_CSV)
+
+# The frozen decision threshold, passed to the explainer rather than redefined
+# there, so this file cannot become a second place an operating point lives.
+FROZEN_TEMPORAL_THRESHOLD = 0.14
 
 
 def _resolve_video_path(clip_key: str) -> Path:
@@ -140,6 +157,105 @@ def api_clips():
             for clip_key in _score_source.clips()
         ]
     )
+
+
+@app.route("/api/explain", methods=["POST"])
+def api_explain():
+    """Gradient-based temporal saliency for ONE completed window, on demand.
+
+    Deliberately a separate endpoint rather than part of /api/analyze. Grad-CAM
+    needs a forward AND a backward pass (~1.8 s per window on this CPU), so
+    computing it for all 17 windows of every analysis would roughly double the
+    demo's cost for output nobody asked to see. It is also impossible in the
+    default replay path: CSV replay has a recorded probability but no weights
+    and no tensor, so there is nothing to differentiate. Both facts are returned
+    as explicit reasons rather than an empty panel.
+    """
+    payload = request.get_json(silent=True) or {}
+    clip_key = (payload.get("clip_key") or "").strip()
+    try:
+        first_frame = int(payload.get("first_frame"))
+    except (TypeError, ValueError):
+        return jsonify(explanation_unavailable(
+            "bad_request", "first_frame must be an integer.")), 400
+    if not clip_key:
+        return jsonify(explanation_unavailable(
+            "bad_request", "clip_key is required.")), 400
+
+    checkpoint = REPO_ROOT / "models" / "temporal_violence" / "best.pt"
+    if not checkpoint.is_file():
+        return jsonify(explanation_unavailable(
+            "checkpoint_unavailable",
+            f"The R3D-18 checkpoint is not present at {checkpoint}. Saliency "
+            "requires the model itself; the replayed per-window probabilities "
+            "cannot be differentiated.",
+        ))
+
+    video_path = _resolve_video_path(clip_key)
+    if not video_path.exists():
+        return jsonify(explanation_unavailable(
+            "video_unavailable", f"Video not found locally: {video_path}"))
+
+    import cv2
+    capture = cv2.VideoCapture(str(video_path))
+    frames, numbers = [], []
+    index = 0
+    while len(frames) < RUNTIME_CLIP_LENGTH:
+        ok, frame = capture.read()
+        if not ok:
+            break
+        if index >= first_frame:
+            frames.append(frame)
+            numbers.append(index)
+        index += 1
+    capture.release()
+    if len(frames) < RUNTIME_CLIP_LENGTH:
+        return jsonify(explanation_unavailable(
+            "window_incomplete",
+            f"Only {len(frames)} frames available from frame {first_frame}; a "
+            f"window needs {RUNTIME_CLIP_LENGTH}.",
+        ))
+
+    try:
+        with _analyze_lock:
+            engine, _ = build_violence_engine(checkpoint, device="cpu")
+            started = time.perf_counter()
+            result = explain_frame_window(
+                engine, frames, numbers, FROZEN_TEMPORAL_THRESHOLD,
+                source_height=frames[0].shape[0], source_width=frames[0].shape[1],
+            )
+            elapsed = time.perf_counter() - started
+    except Exception as exc:  # surfaced, never swallowed
+        traceback.print_exc()
+        return jsonify(explanation_unavailable(
+            "explanation_failed", f"{type(exc).__name__}: {exc}")), 500
+
+    if not result.get("available"):
+        return jsonify(result)
+
+    # The heatmap array is not JSON; send a compact per-slice summary plus a
+    # base64 PNG of the peak slice, so the UI can render without the client
+    # ever reconstructing a tensor.
+    heatmaps = result.pop("heatmaps")
+    peak_index = int(np.argmax(heatmaps.sum(axis=(1, 2))))
+    peak_map = (heatmaps[peak_index] * 255).astype("uint8")
+    coloured = cv2.applyColorMap(peak_map, cv2.COLORMAP_JET)
+    ok, buffer = cv2.imencode(".png", coloured)
+    result["saliency"]["peak_slice_png_base64"] = (
+        base64.b64encode(buffer.tobytes()).decode("ascii") if ok else None
+    )
+    result["saliency"]["per_slice_mass"] = [
+        float(value) for value in heatmaps.sum(axis=(1, 2))
+    ]
+    result["risk_presentation"] = risk_presentation("--")
+    result["provenance_legend"] = describe_provenance_legend()
+    result["compute_seconds"] = elapsed
+    result["computed_on_demand"] = True
+    result["not_real_time"] = (
+        f"Saliency took {elapsed:.1f} s for one window on CPU. This is an "
+        "on-demand diagnostic, not real-time inference."
+    )
+    return jsonify(result)
 
 
 @app.route("/api/analyze", methods=["POST"])

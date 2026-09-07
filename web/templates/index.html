@@ -95,6 +95,32 @@
       <h3>Per-window fight probability (17 sliding windows)</h3>
       <div id="windowChart" class="window-chart"></div>
 
+      <h3>Gradient-based temporal saliency</h3>
+      <div class="saliency-panel" id="saliencyPanel">
+        <p class="muted">
+          Saliency is computed <strong>on demand for one completed 16-frame
+          window</strong>, not for every frame: it needs a backward pass as well
+          as a forward one (about 1.8 s per window on this CPU). It is
+          unavailable in the default replay path, which has a recorded
+          probability but no model weights to differentiate.
+        </p>
+        <div class="saliency-controls">
+          <label>Window first frame
+            <input type="number" id="saliencyFrame" value="0" min="0" step="8">
+          </label>
+          <button id="explainBtn" type="button">Explain this window</button>
+        </div>
+        <div id="saliencyResult"></div>
+        <p class="caveat" id="saliencyCaveat">
+          Highlighted regions indicate input areas contributing to the R3D
+          task-logit gradient for this temporal window. This is a saliency
+          visualization, not a causal or ground-truth explanation.
+          <br>
+          <em>Not proof of causality, not a faithfulness-tested explanation, not
+          attention, and not ground-truth localization.</em>
+        </p>
+      </div>
+
       <h3>Explanation report</h3>
       <div id="explanation" class="explanation"></div>
 

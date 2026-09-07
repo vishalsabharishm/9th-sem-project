@@ -155,6 +155,11 @@ async function runAnalyze() {
 function renderResult(data) {
   els.resultsPanel.classList.remove("hidden");
 
+  // Remember which clip was analysed so the on-demand saliency request knows
+  // what to explain. Set here rather than at submit time so it always reflects
+  // the clip the displayed results actually came from.
+  window.__lastClipKey = data.summary.clip_key;
+
   els.resultVideo.src = data.video_url + "?t=" + Date.now();
   els.videoCaption.textContent = `${data.summary.clip_key} -- ${data.summary.frames_processed} frames processed`;
 
@@ -298,3 +303,70 @@ function inline(s) {
 
 loadPresets();
 loadClips();
+
+// ---------------------------------------------------------------------------
+// Gradient-based temporal saliency, requested explicitly for ONE window.
+// Never wired into the analyze path: Grad-CAM needs a backward pass and would
+// roughly double demo cost if run for all 17 windows of every clip.
+// ---------------------------------------------------------------------------
+(function () {
+  const button = document.getElementById("explainBtn");
+  if (!button) return;
+
+  button.addEventListener("click", async () => {
+    const target = document.getElementById("saliencyResult");
+    const clipKey = window.__lastClipKey;
+    if (!clipKey) {
+      target.innerHTML = '<p class="error">Run an analysis first, then explain one of its windows.</p>';
+      return;
+    }
+    const firstFrame = parseInt(document.getElementById("saliencyFrame").value, 10) || 0;
+    button.disabled = true;
+    target.innerHTML = "<p>Computing saliency (one forward + one backward pass)...</p>";
+    try {
+      const response = await fetch("/api/explain", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clip_key: clipKey, first_frame: firstFrame }),
+      });
+      const data = await response.json();
+      if (!data.available) {
+        // An explicit reason, never a blank panel.
+        target.innerHTML =
+          '<p class="error"><strong>Saliency unavailable</strong> (' +
+          (data.reason || "unknown") + "): " + (data.detail || "") + "</p>";
+        return;
+      }
+      const ev = data.temporal_evidence;
+      const sal = data.saliency;
+      target.innerHTML =
+        '<div class="saliency-grid">' +
+        "<div><h4>Temporal evidence</h4><ul>" +
+        "<li>Fight probability: <strong>" + (ev.fight_probability * 100).toFixed(1) +
+        "%</strong> <span class=\"prov\">(measured model probability)</span></li>" +
+        "<li>Decision: <strong>" + ev.decision + "</strong> at threshold " +
+        ev.decision_threshold + "</li>" +
+        "<li>Window: frames <strong>" + ev.window_first_frame + "-" +
+        ev.window_last_frame + "</strong></li>" +
+        "<li>Model provenance: " + ev.model_provenance + "</li>" +
+        "</ul></div>" +
+        "<div><h4>Saliency</h4>" +
+        (sal.peak_slice_png_base64
+          ? '<img class="saliency-img" alt="temporal saliency for the peak frame" src="data:image/png;base64,' +
+            sal.peak_slice_png_base64 + '">'
+          : "<p>(no image)</p>") +
+        "<ul><li>Peak frame: <strong>" + sal.peak_frame + "</strong></li>" +
+        "<li>Displayed slices: " + sal.displayed_temporal_slices +
+        ", from <strong>" + sal.raw_temporal_positions +
+        "</strong> resolved temporal positions</li>" +
+        '<li class="caveat">' + sal.temporal_resolution_caveat + "</li>" +
+        "<li>Faithfulness tested: <strong>" + sal.faithfulness_tested + "</strong></li>" +
+        "</ul></div></div>" +
+        '<p class="muted">' + data.not_real_time + "</p>";
+    } catch (err) {
+      target.innerHTML = '<p class="error">' + err + "</p>";
+    } finally {
+      button.disabled = false;
+    }
+  });
+})();
