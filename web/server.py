@@ -247,7 +247,7 @@ def api_explain():
     result["saliency"]["per_slice_mass"] = [
         float(value) for value in heatmaps.sum(axis=(1, 2))
     ]
-    result["risk_presentation"] = risk_presentation("--")
+    result["risk_presentation"] = risk_presentation()
     result["provenance_legend"] = describe_provenance_legend()
     result["compute_seconds"] = elapsed
     result["computed_on_demand"] = True
@@ -314,6 +314,10 @@ def api_analyze():
     explanation_path = DEMO_OUTPUT_DIR / f"demo_{stem}_explanation.md"
 
     risk_assessments = _json.loads(risk_json_path.read_text(encoding="utf-8"))
+    # The severity label is a configured constant, and the dashboard renders it
+    # as a prominent badge. Ship its validation status alongside so the UI can
+    # never show a level without the caveat that qualifies it.
+    risk_status = risk_presentation()
     explanation_text = explanation_path.read_text(encoding="utf-8")
 
     temporal_signal = next(
@@ -345,6 +349,8 @@ def api_analyze():
             "video_url": f"/outputs/demo/{Path(summary['annotated_video']).name}",
             "risk_json_url": f"/outputs/demo/{risk_json_path.name}",
             "explanation_url": f"/outputs/demo/{explanation_path.name}",
+            "risk_status": risk_status,
+            "provenance_legend": describe_provenance_legend(),
         }
     )
 

@@ -71,6 +71,7 @@
         <div class="result-headline">
           <div class="badge-row">
             <span class="badge" id="riskBadge">--</span>
+            <span class="risk-status" id="riskStatus"></span>
             <span class="badge ground-truth" id="truthBadge">--</span>
           </div>
           <div id="fpNotice" class="notice hidden">
@@ -100,7 +101,7 @@
         <p class="muted">
           Saliency is computed <strong>on demand for one completed 16-frame
           window</strong>, not for every frame: it needs a backward pass as well
-          as a forward one (about 1.8 s per window on this CPU). It is
+          as a forward one (about 2.6 s per window on this CPU, measured). It is
           unavailable in the default replay path, which has a recorded
           probability but no model weights to differentiate.
         </p>

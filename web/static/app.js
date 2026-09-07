@@ -160,6 +160,17 @@ function renderResult(data) {
   // the clip the displayed results actually came from.
   window.__lastClipKey = data.summary.clip_key;
 
+  // The severity badge is the most prominent number on screen and is a
+  // CONFIGURED constant, not a calibrated estimate. Render its status beside it
+  // so a viewer never sees "High" unqualified.
+  const statusEl = document.getElementById("riskStatus");
+  if (statusEl && data.risk_status) {
+    statusEl.textContent = data.risk_status.status_text;
+    statusEl.title =
+      "Provenance: " + data.risk_status.provenance +
+      " | risk_level_is_validated: " + data.risk_status.risk_level_is_validated;
+  }
+
   els.resultVideo.src = data.video_url + "?t=" + Date.now();
   els.videoCaption.textContent = `${data.summary.clip_key} -- ${data.summary.frames_processed} frames processed`;
 

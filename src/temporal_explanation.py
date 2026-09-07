@@ -180,15 +180,23 @@ def explain_frame_window(
     return explain_completed_window(engine, clip, threshold, **kwargs)
 
 
-def risk_presentation(risk_level: str) -> dict:
-    """How a risk level must be shown: a label plus its validation status."""
-    return {
-        "level": risk_level,
+def risk_presentation(risk_level: Optional[str] = None) -> dict:
+    """How a risk level must be shown: the label plus its validation status.
+
+    ``risk_level`` is optional because some callers (the saliency endpoint, for
+    one) know the status must be shown but do not know the level. Passing a
+    placeholder string there would put a meaningless value like "--" on screen;
+    omitting the key is honest.
+    """
+    payload = {
         "provenance": PROVENANCE_CONFIGURED,
         "risk_level_is_validated": False,
         "status_text": RISK_STATUS_TEXT,
         "forbidden_wording": ("risk probability", "risk confidence", "risk score"),
     }
+    if risk_level is not None:
+        payload["level"] = risk_level
+    return payload
 
 
 def describe_provenance_legend() -> dict:
