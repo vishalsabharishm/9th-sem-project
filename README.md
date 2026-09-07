@@ -11,7 +11,11 @@ event/risk pipeline:
 3. Two retained tracking paths: an inspectable greedy IoU tracker and an Ultralytics ByteTrack path with a BoT-SORT fallback.
 4. Basic rule-based abnormal-event detection: stationary person, restricted-area entry, generic crowding, and generic proximity/interaction.
 5. Transparent, configurable rule-based risk assessment for those event records.
-6. Grad-CAM for an actual YOLOv8s person-class detection.
+6. Grad-CAM at two levels: `src/temporal_gradcam.py` explains the R3D-18
+   **violence decision** (the branch that actually classifies Fight/NonFight),
+   surfaced on demand in the demo; `src/yolo_gradcam.py` explains a YOLOv8s
+   person detection, which is a different question and cannot explain the
+   violence decision.
 7. A temporal violence-detection branch (R3D-18, see below) whose sliding-window
    scores feed a frozen aggregation rule (`src/temporal_event_adapter.py`),
    producing a `Temporal Violence Signal` event that `RiskAssessor` maps to
@@ -304,7 +308,15 @@ The existing abnormal-event unit test runs without a video fixture. The optional
 - Phase 3 — Tracking: partially completed; both paths are implemented, but no bundled real-person end-to-end evidence exists.
 - Phase 4 — Abnormal Event Detection: partially completed; two rules and their unit test exist, but real-video validation awaits the fixture.
 - Phase 5 — Risk Assessment: completed; transparent mappings and fixture output are covered by the passing test suite.
-- Phase 6 — Explainable AI: partially completed; Grad-CAM covers YOLO detection only.
+- Phase 6 — Explainable AI: Grad-CAM covers the **R3D-18 violence decision**
+  (`src/temporal_gradcam.py`), aligned to source frames and surfaced in the demo,
+  as well as YOLO person detection (`src/yolo_gradcam.py`). Faithfulness is
+  deliberately **not** claimed: no deletion, insertion or counterfactual test has
+  been run, and `faithfulness_tested` is `false` on every result.
+- Confirmatory fusion experiment — **completed and permanently closed**. Decision C:
+  no meaningful improvement from spatial/temporal fusion over the temporal-only
+  detector (exact McNemar p = 0.771). See **`docs/CONFIRMATORY_FUSION_RESULT.md`**.
+  The 394-clip primary split is now permanently spent.
 - Temporal violence branch — clean baseline completed: R3D-18 fine-tuned on RWF-2000, accuracy **0.8325 / ROC-AUC 0.9251** on the 394 leak-free clips at the frozen threshold 0.16 (see "Clean baseline" above; supersedes the earlier, threshold-biased Experiment 1 number). Sliding-window aggregation selected on a carve split and applied to primary (`temporal_risk/`); integrated into the event/risk pipeline via `src/temporal_event_adapter.py`, producing a `Temporal Violence Signal` event mapped to `High` risk. Demo: `tools/run_demo.py`, and a browser UI on top of it (`web/`, see `docs/web_ui.md`).
 - Phase 7: not started.
 
@@ -312,7 +324,25 @@ The real-person fixture verification has also completed Phases 2--4: YOLO detect
 
 ## Phase 6 explainable AI
 
-`src/yolo_gradcam.py` implements Grad-CAM for a real YOLOv8s object-detection prediction. It explains the raw YOLO class score associated with the selected post-NMS detection (currently verified for a `person`), not a rule-based abnormal event or a risk-assessment result.
+Two Grad-CAM implementations answer two different questions. Only one of them
+explains the violence decision.
+
+**`src/temporal_gradcam.py` — the violence decision.** Grad-CAM against the R3D-18
+task logit, hooking `layer4`. For a 16-frame window that layer emits
+`(1, 512, 2, 7, 7)`: the backbone resolves only **two** temporal positions, and the
+16 displayed slices are interpolated from them — recorded in the payload so the
+upsampling is never mistaken for frame-level detail. Windows are 16 *consecutive*
+frames, so slice *i* maps to source frame `first_frame + i`; the non-contiguous
+whole-clip regime is **refused** rather than given fabricated alignment. It also
+refuses any checkpoint that is not task-specific, because a random head still
+produces a confident-looking map.
+
+**`src/yolo_gradcam.py` — a person detection.** Explains the raw YOLO class score
+for a post-NMS detection. It says *where a person is*, not why a clip was called
+violent, and must not be presented as an explanation of the violence decision.
+
+Neither is a faithfulness-tested explanation. Grad-CAM localises where a logit's
+gradient concentrates; a map can be plausible and wrong.
 
 To generate an explanation from the first frame of the real-person fixture:
 

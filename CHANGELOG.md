@@ -10,6 +10,69 @@ outputs, test results, and measurements of known defects).
 
 ---
 
+## Research programme closed - confirmatory fusion, Decision C
+
+Commits `94f0b78` through `de3fdc3`. The 394-clip primary split is now
+**permanently spent**; see `outputs/fusion/FINAL_experiment_lock_record.json`.
+
+Four pre-registered results, two of them nulls:
+
+**Paired clean-vs-sliding comparison** (`94f0b78`). Clip alignment was
+*established*, not assumed: the recovered predictions carry no clip identifier,
+so re-running the checkpoint locally and a 20,000-draw within-label permutation
+test were used to prove the mapping (observed mean |difference| 4.48e-06 against
+a best permutation of 2.21e-01). Overall accuracy difference is not
+distinguishable (McNemar p = 0.0639), but Fight recall IS significantly worse
+under sliding windows (p = 0.000195) while false alarms are slightly better.
+
+**Aggregation selection** (`ac75b8c`). Six configurations at a matched
+false-positive budget on the carve split. **No candidate promoted** - every
+alternative was strictly worse than `max >= 0.14`, monotonically so as more
+windows entered the statistic. Also found that top-k mean is not alarm-monotone:
+it can retract a streaming alarm, measured on 2/3/5 clips for k = 2/3/5.
+
+**Contamination discovery** (`c032b82`). A "fresh" validation carve drawn from
+the untouched training remainder was source-disjoint from everything and
+untouched by selection - but not by training. Measured memorization gap
+**+0.244 recall** (0.9583 on training data vs 0.7143 on holdout). The experiment
+was abandoned at 120/240 clips and no fusion number was produced from it.
+Source-disjoint does not imply training-disjoint.
+
+**Confirmatory fusion** (`202d979`, `604e8cc`, `5a8a03d`). Protocol frozen and
+committed before primary was opened, with the percentile reference distributions
+stored *inside* the artifact so the confirmatory run could not normalise primary
+against itself. Result: **Decision C, no meaningful improvement.** B0 160/43/151/40
+vs F2 160/46/148/40; exact McNemar b=25 c=22 p=0.770867; accuracy difference
+-0.0076, source-clustered CI [-0.0463, +0.0309]. A development-set advantage of
++14 true positives at equal false positives did not transfer.
+
+Full account: **`docs/CONFIRMATORY_FUSION_RESULT.md`**.
+
+### Explainability, robustness and demo work
+
+`6799594` Grad-CAM for the R3D-18 **violence decision** - the pre-existing
+implementation explained a YOLO person detection, which cannot explain the
+violence decision and was never wired into the runtime.
+
+`6cbfcbe` the risk layer now declares itself unvalidated **in the data**, not
+only in documentation: every emitted record carries `risk_level_is_validated:
+false`. The four concerns - detection, evidence, confidence, risk interpretation
+- are named apart with the empirical support each actually has.
+
+`883053c` failure-mode characterization from development data only. Three
+detection failure modes are class-dependent; missed fights have median
+max-window score 0.041 against 0.886 for detected ones, so they are not marginal
+cases a threshold change would recover.
+
+`be28648`, `de3fdc3` saliency surfaced on demand in the dashboard (2.6 s/window,
+measured), and the severity badge now carries its validation status - it
+previously rendered "High" with nothing qualifying it.
+
+No research number was edited. No threshold, feature, protocol or weight
+changed.
+
+---
+
 ## Step 5 - Uncertainty for the sliding-window system result
 
 Branch `step5-sliding-window-uncertainty`.
