@@ -4,3 +4,7 @@ ultralytics
 torch
 torchvision
 lap>=0.5.12
+# Web demo UI (web/server.py). Absent until now, so a fresh environment
+# following this file could install everything and still fail to launch
+# the dashboard with ImportError: No module named 'flask'.
+flask
