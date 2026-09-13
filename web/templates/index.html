@@ -93,8 +93,19 @@
         </div>
       </div>
 
-      <h3>Per-window fight probability (17 sliding windows)</h3>
+      <h3>Temporal window timeline (16-frame windows, stride 8)</h3>
+      <p class="muted">
+        The temporal branch does not score the clip as a whole: it scores
+        overlapping 16-frame windows and takes the maximum. Each bar is one
+        scored window &mdash; click one to select it for saliency. These
+        probabilities are <strong>replayed from the committed scores</strong>;
+        clicking a window does not run the model.
+      </p>
       <div id="windowChart" class="window-chart"></div>
+      <table class="window-table" id="windowTable">
+        <thead><tr><th>#</th><th>Frames</th><th>Probability</th><th>Decision</th></tr></thead>
+        <tbody></tbody>
+      </table>
 
       <h3>Gradient-based temporal saliency</h3>
       <div class="saliency-panel" id="saliencyPanel">
@@ -106,10 +117,10 @@
           probability but no model weights to differentiate.
         </p>
         <div class="saliency-controls">
-          <label>Window first frame
-            <input type="number" id="saliencyFrame" value="0" min="0" step="8">
-          </label>
-          <button id="explainBtn" type="button">Explain this window</button>
+          <span id="selectedWindow" class="selected-window">
+            Select a window in the timeline above.
+          </span>
+          <button id="explainBtn" type="button" disabled>Explain this window</button>
         </div>
         <div id="saliencyResult"></div>
         <p class="caveat" id="saliencyCaveat">
@@ -124,6 +135,18 @@
 
       <h3>Explanation report</h3>
       <div id="explanation" class="explanation"></div>
+
+      <h3>Incident report</h3>
+      <p class="muted">
+        Exports what this analysis actually found, including the limitations.
+        The severity label is carried with its validation status, and nothing is
+        recomputed &mdash; the report describes the run shown above.
+      </p>
+      <div class="report-actions">
+        <button id="reportJsonBtn" type="button">Download JSON report</button>
+        <button id="reportTextBtn" type="button">Download text report</button>
+      </div>
+      <div id="reportStatus" class="status"></div>
 
       <div class="artifact-links" id="artifactLinks"></div>
     </section>

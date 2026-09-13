@@ -37,6 +37,7 @@ from flask import Flask, jsonify, render_template, request, send_from_directory 
 from config import OUTPUTS_DIR  # noqa: E402
 from detection import DEFAULT_MODEL_PATH  # noqa: E402
 import base64
+import threading
 import time
 
 import numpy as np
@@ -48,6 +49,12 @@ from temporal_explanation import (  # noqa: E402
     unavailable as explanation_unavailable,
 )
 from temporal_runtime import RUNTIME_CLIP_LENGTH, build_violence_engine  # noqa: E402
+from checkpoint_identity import file_sha256  # noqa: E402
+from demo_preflight import run_preflight  # noqa: E402
+from incident_report import (  # noqa: E402
+    build_incident_report,
+    render_incident_report_text,
+)
 
 from temporal_event_adapter import (  # noqa: E402
     TEMPORAL_EVENT_TYPE,
@@ -80,6 +87,38 @@ _score_source = PrecomputedWindowScoreSource(PRIMARY_CSV)
 # The frozen decision threshold, passed to the explainer rather than redefined
 # there, so this file cannot become a second place an operating point lives.
 FROZEN_TEMPORAL_THRESHOLD = 0.14
+
+# ---------------------------------------------------------------------------
+# Process-local engine cache for saliency.
+#
+# /api/explain previously rebuilt the engine on every request, reloading a
+# 132 MB checkpoint each time -- about 1.9 s of a 3.4 s response. The cache key
+# includes the checkpoint's SHA-256, so replacing the file on disk produces a
+# different key and forces a rebuild rather than silently serving a stale model.
+#
+# This caches ONLY the model object. It is never a source of temporal scores:
+# CSV replay continues to read _score_source, and nothing here can turn a
+# replayed probability into a live one.
+# ---------------------------------------------------------------------------
+_engine_cache: dict = {}
+_engine_cache_lock = threading.Lock()
+
+
+def _cached_engine(checkpoint: Path, device: str = "cpu"):
+    """Return a verified engine, rebuilding only when the checkpoint changes."""
+    digest = file_sha256(checkpoint)
+    key = (str(checkpoint.resolve()), digest, device)
+    with _engine_cache_lock:
+        hit = _engine_cache.get(key)
+        if hit is not None:
+            return hit, True
+        # build_violence_engine runs the Step-3 provenance guard and raises on a
+        # random-init, smoke-test or unverifiable checkpoint. Only a verified
+        # engine ever reaches the cache.
+        engine, _verdict = build_violence_engine(checkpoint, device=device)
+        _engine_cache.clear()          # at most one checkpoint is ever cached
+        _engine_cache[key] = engine
+        return engine, False
 
 
 def _resolve_video_path(clip_key: str) -> Path:
@@ -218,7 +257,7 @@ def api_explain():
 
     try:
         with _analyze_lock:
-            engine, _ = build_violence_engine(checkpoint, device="cpu")
+            engine, cache_hit = _cached_engine(checkpoint, device="cpu")
             started = time.perf_counter()
             result = explain_frame_window(
                 engine, frames, numbers, FROZEN_TEMPORAL_THRESHOLD,
@@ -251,11 +290,78 @@ def api_explain():
     result["provenance_legend"] = describe_provenance_legend()
     result["compute_seconds"] = elapsed
     result["computed_on_demand"] = True
+    result["checkpoint_cache_hit"] = cache_hit
     result["not_real_time"] = (
         f"Saliency took {elapsed:.1f} s for one window on CPU. This is an "
         "on-demand diagnostic, not real-time inference."
     )
     return jsonify(result)
+
+
+@app.route("/api/preflight")
+def api_preflight():
+    """What is ready, and what each missing piece actually blocks."""
+    from run_demo import DEMO_CLIPS as _clips
+    result = run_preflight(
+        repo_root=REPO_ROOT,
+        temporal_csv=PRIMARY_CSV,
+        yolo_weights=Path(DEFAULT_MODEL_PATH),
+        demo_videos={key: Path(entry["video"]) for key, entry in _clips.items()},
+    )
+    return jsonify(result.as_dict())
+
+
+@app.route("/api/report", methods=["POST"])
+def api_report():
+    """Downloadable incident report for a clip already analysed.
+
+    Rebuilt from the artifacts the analysis wrote rather than re-running the
+    pipeline, so the report describes exactly the run the examiner is looking
+    at. Saliency is included only if the caller passes the payload it already
+    received; nothing is recomputed here.
+    """
+    payload = request.get_json(silent=True) or {}
+    clip_key = (payload.get("clip_key") or "").strip()
+    if not clip_key:
+        return jsonify({"error": "clip_key is required."}), 400
+
+    stem = Path(clip_key).stem
+    risk_json_path = DEMO_OUTPUT_DIR / f"demo_{stem}_risk_assessment.json"
+    if not risk_json_path.is_file():
+        return (
+            jsonify({"error": (
+                f"No analysis found for '{clip_key}'. Run Analyze first: the "
+                "report is built from that run's artifacts, not by re-running "
+                "the pipeline."
+            )}),
+            404,
+        )
+
+    try:
+        risk_assessments = _json.loads(risk_json_path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        traceback.print_exc()
+        return jsonify({"error": f"Could not read the analysis: {type(exc).__name__}: {exc}"}), 500
+
+    summary = payload.get("summary") or {}
+    window_scores = payload.get("window_scores") or []
+    overall_risk = payload.get("overall_risk") or "Unknown"
+    saliency = payload.get("saliency")
+
+    report = build_incident_report(
+        summary=summary,
+        risk_assessments=risk_assessments,
+        window_scores=window_scores,
+        overall_risk=overall_risk,
+        saliency=saliency,
+    )
+    if (payload.get("format") or "json").lower() == "text":
+        return app.response_class(
+            render_incident_report_text(report),
+            mimetype="text/plain",
+            headers={"Content-Disposition": f"attachment; filename=incident_{stem}.txt"},
+        )
+    return jsonify(report)
 
 
 @app.route("/api/analyze", methods=["POST"])
@@ -361,6 +467,22 @@ def outputs_demo(filename):
 
 
 if __name__ == "__main__":
+    from run_demo import DEMO_CLIPS as _startup_clips
+
+    _preflight = run_preflight(
+        repo_root=REPO_ROOT,
+        temporal_csv=PRIMARY_CSV,
+        yolo_weights=Path(DEFAULT_MODEL_PATH),
+        demo_videos={k: Path(v["video"]) for k, v in _startup_clips.items()},
+    )
+    print(_preflight.render())
+    print()
+    if not _preflight.replay_ready:
+        # Refuse rather than start a dashboard whose first click will fail.
+        print("Refusing to start: the standard demo cannot run. Fix the REPLAY "
+              "failures above.")
+        raise SystemExit(2)
+
     print(f"Repo root:  {REPO_ROOT}")
     print(f"Model:      {DEFAULT_MODEL_PATH}")
     print(f"Scores CSV: {PRIMARY_CSV} ({len(_score_source.clips())} clips)")

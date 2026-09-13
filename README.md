@@ -248,6 +248,45 @@ any of the 394 primary-split clips, or an uploaded video paired with a known
 `clip_key`), and click **Analyze**. A run takes the same ~30-90s on CPU as
 the command-line demo, because it is the same code.
 
+**Startup preflight.** The server checks its own environment before serving and
+prints the result in three tiers. The distinction matters: the standard demo is
+**replay** — temporal probabilities come from the committed
+`temporal_risk/primary_window_scores.csv` and no model is run for them — so a
+missing R3D checkpoint blocks *live inference and saliency*, not the standard
+demo. Replay failures are fatal and the server refuses to start rather than
+serve a dashboard whose first click will fail. The same report is available at
+`GET /api/preflight`. Nothing ever falls back silently from live to replay.
+
+**Temporal window timeline.** The temporal branch scores overlapping 16-frame
+windows at stride 8 and takes the maximum; it does not score the clip as a
+whole. The timeline shows every scored window with its frame range, probability
+and per-window decision. Click a bar or row to select it for saliency. Only
+genuinely scored windows are offered, so a selected window can always be
+reconstructed from source frames. **Clicking a window does not run the model** —
+the probabilities shown are replayed.
+
+**Gradient-based temporal saliency.** On demand only, for the selected window
+(`POST /api/explain`). It needs a backward pass as well as a forward one, about
+2.6 s per window on CPU, so it is never computed for every window of every
+analysis. The map is a gradient-based localisation diagnostic: it is **not**
+causal, **not** ground-truth localization, **not** attention, and has **not**
+undergone a faithfulness test (`faithfulness_tested` is `false` on every
+result). The panel also states that its 16 displayed slices are interpolated
+from only 2 temporal positions the backbone actually resolves.
+
+**Incident report export.** After an analysis, download a JSON or plain-text
+report (`POST /api/report`). It is built from that run's artifacts and
+recomputes nothing. Rules that carry no confidence keep none — no value is
+invented — the configured severity label is never converted into a probability,
+and the validation disclaimer and limitations travel inside the report body
+rather than in a footnote.
+
+**Risk wording.** The severity label is a configured mapping from event type,
+displayed with "Configured severity/risk interpretation — not validated as a
+risk model". It is not calibrated, not learned, and not validated against any
+outcome. No real-time deployment claim is made anywhere: measured throughput is
+roughly seven times slower than real time on CPU.
+
 ## Real-person fixture verification
 
 The bundled `data/sample_video.mp4` is a 60-frame, 320x240 sample that yields zero YOLO detections. It is not a valid end-to-end people-detection fixture.

@@ -159,6 +159,7 @@ function renderResult(data) {
   // what to explain. Set here rather than at submit time so it always reflects
   // the clip the displayed results actually came from.
   window.__lastClipKey = data.summary.clip_key;
+  if (window.__recordAnalysis) window.__recordAnalysis(data);
 
   // The severity badge is the most prominent number on screen and is a
   // CONFIGURED constant, not a calibrated estimate. Render its status beside it
@@ -227,16 +228,92 @@ function renderEventsTable(eventSummary) {
     .join("");
 }
 
+// The temporal branch scores overlapping 16-frame windows, not the whole clip.
+// Making each scored window selectable is what turns that from a sentence in a
+// report into something an examiner can see and poke at.
+//
+// Windows are NOT invented here: every bar comes from a scored window in the
+// analyze response, so a window offered for saliency is always one for which
+// source frames can be reconstructed.
+let selectedWindow = null;
+
+function decisionFor(probability) {
+  // The frozen rule is max-over-windows >= 0.14. Per window this shows whether
+  // that window alone would clear the threshold; the clip decision remains the
+  // maximum, and is reported separately.
+  return probability >= 0.14 ? "Fight" : "NonFight";
+}
+
+function selectWindow(w) {
+  selectedWindow = w;
+  const label = document.getElementById("selectedWindow");
+  if (label) {
+    label.textContent =
+      `Window ${w.window_index} - frames ${w.first_frame}-${w.last_frame}` +
+      ` (p = ${w.fight_probability.toFixed(4)})`;
+  }
+  const button = document.getElementById("explainBtn");
+  if (button) button.disabled = false;
+
+  document.querySelectorAll(".window-bar").forEach((el) => {
+    el.classList.toggle("selected", Number(el.dataset.index) === w.window_index);
+  });
+  document.querySelectorAll("#windowTable tbody tr").forEach((row) => {
+    row.classList.toggle("selected", Number(row.dataset.index) === w.window_index);
+  });
+}
+
 function renderWindowChart(windowScores, firedFrame) {
   els.windowChart.innerHTML = "";
-  (windowScores || []).forEach((w) => {
+  const table = document.querySelector("#windowTable tbody");
+  if (table) table.innerHTML = "";
+  selectedWindow = null;
+  const button = document.getElementById("explainBtn");
+  if (button) button.disabled = true;
+
+  const windows = windowScores || [];
+  const label = document.getElementById("selectedWindow");
+  if (!windows.length) {
+    // An explicit unavailable state, never a silently empty strip.
+    els.windowChart.innerHTML =
+      '<p class="error">No temporal windows available for this clip.</p>';
+    if (label) label.textContent = "No scored windows - saliency unavailable.";
+    return;
+  }
+
+  windows.forEach((w) => {
     const bar = document.createElement("div");
-    const fired = firedFrame !== null && firedFrame !== undefined && w.last_frame >= firedFrame && w.first_frame <= firedFrame;
+    const fired =
+      firedFrame !== null && firedFrame !== undefined &&
+      w.last_frame >= firedFrame && w.first_frame <= firedFrame;
     bar.className = "window-bar" + (w.fight_probability >= 0.5 ? " fired" : "");
     bar.style.height = `${Math.max(6, w.fight_probability * 100)}%`;
-    bar.title = `window ${w.window_index}: frames [${w.first_frame},${w.last_frame}] -> ${w.fight_probability.toFixed(4)}`;
+    bar.dataset.index = w.window_index;
+    bar.title =
+      `window ${w.window_index}: frames [${w.first_frame},${w.last_frame}] -> ` +
+      `${w.fight_probability.toFixed(4)}` +
+      (fired ? " (first alarm falls in this window)" : "") +
+      " - click to select for saliency";
+    bar.addEventListener("click", () => selectWindow(w));
     els.windowChart.appendChild(bar);
+
+    if (table) {
+      const row = document.createElement("tr");
+      row.dataset.index = w.window_index;
+      row.innerHTML =
+        `<td>${w.window_index}</td>` +
+        `<td>${w.first_frame}-${w.last_frame}</td>` +
+        `<td>${w.fight_probability.toFixed(4)}</td>` +
+        `<td>${decisionFor(w.fight_probability)}</td>`;
+      row.addEventListener("click", () => selectWindow(w));
+      table.appendChild(row);
+    }
   });
+
+  // Default to the peak window: the one the frozen max rule actually used.
+  const peak = windows.reduce((a, b) =>
+    b.fight_probability > a.fight_probability ? b : a);
+  selectWindow(peak);
 }
 
 // Minimal, dependency-free renderer for the fixed structure
@@ -331,7 +408,12 @@ loadClips();
       target.innerHTML = '<p class="error">Run an analysis first, then explain one of its windows.</p>';
       return;
     }
-    const firstFrame = parseInt(document.getElementById("saliencyFrame").value, 10) || 0;
+    if (!selectedWindow) {
+      target.innerHTML =
+        '<p class="error">Select a window in the timeline first.</p>';
+      return;
+    }
+    const firstFrame = selectedWindow.first_frame;
     button.disabled = true;
     target.innerHTML = "<p>Computing saliency (one forward + one backward pass)...</p>";
     try {
@@ -348,6 +430,7 @@ loadClips();
           (data.reason || "unknown") + "): " + (data.detail || "") + "</p>";
         return;
       }
+      if (window.__recordSaliency) window.__recordSaliency(data);
       const ev = data.temporal_evidence;
       const sal = data.saliency;
       target.innerHTML =
@@ -380,4 +463,71 @@ loadClips();
       button.disabled = false;
     }
   });
+})();
+
+// ---------------------------------------------------------------------------
+// Incident report export.
+//
+// Sends back the analysis payload the client already holds rather than asking
+// the server to re-run anything, so the report always describes the run on
+// screen. Saliency is attached only if the examiner actually computed it.
+// ---------------------------------------------------------------------------
+(function () {
+  let lastAnalysis = null;
+  let lastSaliency = null;
+
+  window.__recordAnalysis = (data) => { lastAnalysis = data; lastSaliency = null; };
+  window.__recordSaliency = (data) => { lastSaliency = data; };
+
+  async function download(format) {
+    const status = document.getElementById("reportStatus");
+    if (!lastAnalysis) {
+      status.textContent = "Run an analysis first.";
+      status.className = "status error";
+      return;
+    }
+    status.textContent = "Building report...";
+    status.className = "status";
+    try {
+      const response = await fetch("/api/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clip_key: lastAnalysis.summary.clip_key,
+          summary: lastAnalysis.summary,
+          window_scores: lastAnalysis.window_scores,
+          overall_risk: lastAnalysis.overall_risk,
+          saliency: lastSaliency,
+          format: format,
+        }),
+      });
+      if (!response.ok) {
+        let message = `HTTP ${response.status}`;
+        try { message = (await response.json()).error || message; } catch (e) {}
+        status.textContent = message;
+        status.className = "status error";
+        return;
+      }
+      const blob = await response.blob();
+      const stem = lastAnalysis.summary.clip_key.split("/").pop().replace(/\.[^.]+$/, "");
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `incident_${stem}.${format === "text" ? "txt" : "json"}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(link.href);
+      status.textContent =
+        "Report downloaded" + (lastSaliency ? " (including saliency)." : " (no saliency requested).");
+      status.className = "status";
+    } catch (err) {
+      status.textContent = String(err);
+      status.className = "status error";
+    }
+  }
+
+  const jsonBtn = document.getElementById("reportJsonBtn");
+  const textBtn = document.getElementById("reportTextBtn");
+  if (jsonBtn) jsonBtn.addEventListener("click", () => download("json"));
+  if (textBtn) textBtn.addEventListener("click", () => download("text"));
 })();
