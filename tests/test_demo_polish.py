@@ -228,6 +228,97 @@ class IncidentReportTests(unittest.TestCase):
         self.assertIn("none recorded", text)   # Crowding has no confidence
 
 
+class StaleStateTests(unittest.TestCase):
+    """Two bugs found in the hardening audit, both about state outliving its run."""
+
+    def test_failed_saliency_reaches_the_report_as_a_failure(self):
+        """It was recorded only on success, so a failure read as 'not requested'.
+
+        The UI would say "Saliency unavailable (checkpoint_unavailable)" while
+        the exported report said saliency was never asked for -- the exact
+        inconsistency the requested/available split exists to prevent.
+        """
+        script = APP_JS.read_text(encoding="utf-8")
+        record_at = script.index("__recordSaliency(data)")
+        failure_at = script.index("if (!data.available) {", record_at - 2000)
+        self.assertLess(record_at, failure_at,
+                        "saliency must be recorded BEFORE the failure branch returns")
+
+    def test_report_distinguishes_failure_from_absence(self):
+        failed = build_incident_report(
+            sample_summary(), SAMPLE_RISKS, SAMPLE_WINDOWS, "High",
+            saliency={"available": False, "reason": "checkpoint_unavailable",
+                      "detail": "no weights on this machine"})["saliency"]
+        self.assertTrue(failed["requested"])
+        self.assertFalse(failed["available"])
+        self.assertEqual(failed["status"], "checkpoint_unavailable")
+        self.assertIn("no weights", failed["detail"])
+
+    def test_a_new_analyze_clears_the_previous_runs_state(self):
+        """A failed analyze left the OLD clip armed for Explain and Export."""
+        script = APP_JS.read_text(encoding="utf-8")
+        submit = script[script.index("els.analyzeBtn.disabled = true;"):
+                        script.index('const res = await fetch("/api/analyze"')]
+        for cleared in ("__clearAnalysis", "__lastClipKey = null",
+                        "selectedWindow = null"):
+            self.assertIn(cleared, submit,
+                          f"{cleared} must be reset before a new analyze starts")
+
+    def test_clear_hook_drops_both_analysis_and_saliency(self):
+        script = APP_JS.read_text(encoding="utf-8")
+        self.assertIn("window.__clearAnalysis = () => { lastAnalysis = null; "
+                      "lastSaliency = null; };", script)
+
+    def test_explain_button_is_disabled_when_state_is_cleared(self):
+        script = APP_JS.read_text(encoding="utf-8")
+        submit = script[script.index("els.analyzeBtn.disabled = true;"):
+                        script.index('const res = await fetch("/api/analyze"')]
+        self.assertIn("staleExplain.disabled = true", submit)
+
+
+class SelectedWindowInReportTests(unittest.TestCase):
+    """The report showed the peak window but not the one the operator chose."""
+
+    def test_selected_window_is_recorded_when_supplied(self):
+        report = build_incident_report(
+            sample_summary(), SAMPLE_RISKS, SAMPLE_WINDOWS, "High",
+            selected_window=SAMPLE_WINDOWS[2])
+        selected = report["selected_window"]
+        self.assertEqual(selected["window_index"], 2)
+        self.assertEqual(selected["first_frame"], 16)
+        self.assertEqual(selected["last_frame"], 31)
+
+    def test_selected_window_is_not_conflated_with_the_peak(self):
+        report = build_incident_report(
+            sample_summary(), SAMPLE_RISKS, SAMPLE_WINDOWS, "High",
+            selected_window=SAMPLE_WINDOWS[2])
+        self.assertNotEqual(report["selected_window"]["window_index"],
+                            report["temporal_evidence"]["peak_window_index"])
+        self.assertIn("not necessarily the peak", report["selected_window"]["note"])
+
+    def test_selected_window_is_none_when_not_supplied(self):
+        report = build_incident_report(
+            sample_summary(), SAMPLE_RISKS, SAMPLE_WINDOWS, "High")
+        self.assertIsNone(report["selected_window"])
+
+    def test_text_rendering_keeps_selected_and_peak_apart(self):
+        report = build_incident_report(
+            sample_summary(), SAMPLE_RISKS, SAMPLE_WINDOWS, "High",
+            selected_window=SAMPLE_WINDOWS[2])
+        text = render_incident_report_text(report)
+        self.assertIn("SELECTED WINDOW", text)
+        self.assertIn("not necessarily the peak", text)
+
+    def test_client_sends_the_selected_window(self):
+        script = APP_JS.read_text(encoding="utf-8")
+        self.assertIn("selected_window: selectedWindow", script)
+
+    def test_server_forwards_the_selected_window(self):
+        source = SERVER.read_text(encoding="utf-8")
+        self.assertIn('selected_window = payload.get("selected_window")', source)
+        self.assertIn("selected_window=selected_window", source)
+
+
 class ReportEndpointTests(unittest.TestCase):
     def test_report_route_is_registered(self):
         source = SERVER.read_text(encoding="utf-8")

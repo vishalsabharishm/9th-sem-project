@@ -347,6 +347,7 @@ def api_report():
     window_scores = payload.get("window_scores") or []
     overall_risk = payload.get("overall_risk") or "Unknown"
     saliency = payload.get("saliency")
+    selected_window = payload.get("selected_window")
 
     report = build_incident_report(
         summary=summary,
@@ -354,6 +355,7 @@ def api_report():
         window_scores=window_scores,
         overall_risk=overall_risk,
         saliency=saliency,
+        selected_window=selected_window,
     )
     if (payload.get("format") or "json").lower() == "text":
         return app.response_class(

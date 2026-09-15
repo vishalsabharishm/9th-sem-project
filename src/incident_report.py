@@ -95,6 +95,7 @@ def build_incident_report(
     window_scores: Sequence[dict],
     overall_risk: str,
     saliency: Optional[dict] = None,
+    selected_window: Optional[dict] = None,
     generated_at: Optional[str] = None,
 ) -> dict:
     """Assemble the report from an analysis that already ran.
@@ -159,6 +160,19 @@ def build_incident_report(
             "probability_provenance": "measured_model_probability",
             "aggregation_rule": "max over completed windows >= 0.14 (frozen)",
         },
+        "selected_window": (
+            {
+                "window_index": selected_window.get("window_index"),
+                "first_frame": selected_window.get("first_frame"),
+                "last_frame": selected_window.get("last_frame"),
+                "fight_probability": selected_window.get("fight_probability"),
+                "note": (
+                    "the window the operator selected in the timeline; this is "
+                    "not necessarily the peak window the frozen max rule used"
+                ),
+            }
+            if selected_window else None
+        ),
         "spatial_events": _events(risk_assessments),
         "risk_interpretation": {
             **risk_presentation(overall_risk),
@@ -208,6 +222,18 @@ def render_incident_report_text(report: dict) -> str:
         f"Aggregation rule  : {temporal['aggregation_rule']}",
         f"Value provenance  : {temporal['probability_provenance']}",
         "",
+    ]
+    selected = report.get("selected_window")
+    if selected:
+        lines += [
+            "SELECTED WINDOW (operator choice, not necessarily the peak)",
+            "-" * 68,
+            f"  Window {selected['window_index']}, frames "
+            f"{selected['first_frame']}-{selected['last_frame']}, "
+            f"p = {selected['fight_probability']}",
+            "",
+        ]
+    lines += [
         "SPATIAL EVENTS",
         "-" * 68,
     ]

@@ -136,6 +136,20 @@ async function runAnalyze() {
   setStatus("Running YOLO detection + tracking + Phase-4 rules + temporal signal + risk assessment... this can take 30-90s on CPU.", false);
   els.resultsPanel.classList.add("hidden");
 
+  // Drop the previous run's state before starting a new one. Without this a
+  // failed analyze leaves the OLD clip armed: Explain would explain the
+  // previous clip and Export would write the previous clip's report, while the
+  // screen shows an error for the new one.
+  if (window.__clearAnalysis) window.__clearAnalysis();
+  window.__lastClipKey = null;
+  selectedWindow = null;
+  const staleExplain = document.getElementById("explainBtn");
+  if (staleExplain) staleExplain.disabled = true;
+  const staleSelection = document.getElementById("selectedWindow");
+  if (staleSelection) staleSelection.textContent = "Select a window in the timeline above.";
+  const staleSaliency = document.getElementById("saliencyResult");
+  if (staleSaliency) staleSaliency.innerHTML = "";
+
   try {
     const res = await fetch("/api/analyze", { method: "POST", body: formData });
     const data = await res.json();
@@ -423,6 +437,12 @@ loadClips();
         body: JSON.stringify({ clip_key: clipKey, first_frame: firstFrame }),
       });
       const data = await response.json();
+      // Record BEFORE the failure branch. A failed attempt must reach the
+      // report as a failure with its reason; recording only on success would
+      // make the report say "not requested" while the screen says
+      // "unavailable", which is exactly the inconsistency the report's
+      // requested/available split exists to prevent.
+      if (window.__recordSaliency) window.__recordSaliency(data);
       if (!data.available) {
         // An explicit reason, never a blank panel.
         target.innerHTML =
@@ -430,7 +450,6 @@ loadClips();
           (data.reason || "unknown") + "): " + (data.detail || "") + "</p>";
         return;
       }
-      if (window.__recordSaliency) window.__recordSaliency(data);
       const ev = data.temporal_evidence;
       const sal = data.saliency;
       target.innerHTML =
@@ -477,6 +496,7 @@ loadClips();
   let lastSaliency = null;
 
   window.__recordAnalysis = (data) => { lastAnalysis = data; lastSaliency = null; };
+  window.__clearAnalysis = () => { lastAnalysis = null; lastSaliency = null; };
   window.__recordSaliency = (data) => { lastSaliency = data; };
 
   async function download(format) {
@@ -497,6 +517,7 @@ loadClips();
           summary: lastAnalysis.summary,
           window_scores: lastAnalysis.window_scores,
           overall_risk: lastAnalysis.overall_risk,
+          selected_window: selectedWindow,
           saliency: lastSaliency,
           format: format,
         }),
