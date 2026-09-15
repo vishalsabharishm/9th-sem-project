@@ -93,7 +93,30 @@ class BehaviorAnalyzer:
         return summaries
 
     def get_previous_bbox(self, object_id: int) -> Optional[np.ndarray]:
-        """Return the previous bounding box for an object, if available."""
+        """Return the second-most-recent bounding box for an object.
+
+        NOTE ON NAMING -- read before using this for a speed.
+
+        This returns ``history[-2]``, not ``history[-1]``. Callers that invoke
+        it BEFORE ``update_history`` has recorded the current frame therefore
+        get the track's bbox from TWO appearances ago, and a displacement
+        measured against ``track.bbox`` spans two appearances rather than one
+        transition. The frozen spatial feature is computed exactly that way; it
+        is a deliberate, locked behaviour, documented in
+        docs/SPATIAL_FEATURE_SEMANTICS.md.
+
+        History records only frames in which the track was matched to a
+        detection, so across a tracker dropout that two-appearance gap can span
+        many more wall-clock frames.
+
+        ``update_history`` itself does not use this accessor -- it reads
+        ``history[-1]`` directly, so the per-frame ``movement`` it records for
+        the stationary rule IS a one-transition displacement. The two are
+        different measurements and are not interchangeable.
+
+        Behaviour here is unchanged and must stay unchanged: it is what
+        produced the frozen thresholds and the locked primary results.
+        """
         history = self._bbox_history.get(object_id, [])
         if len(history) < 2:
             return None

@@ -136,20 +136,126 @@ class SpatialFeatureTests(unittest.TestCase):
         accumulator.observe(0, [_Track(1, [0, 0, 20, 40])])
         self.assertIsNone(accumulator.score)
 
-    def test_displacement_sample_spans_two_frames_as_the_frozen_code_does(self):
-        """Pins the frozen ordering. See operational_fusion._observe_speeds.
 
-        The protocol prose says "between consecutive frames"; the frozen
-        implementation compares against history[-2] and so spans two. The
-        locked thresholds are expressed in these units, so this is preserved
-        deliberately. If this test ever fails, the live feature has silently
-        moved onto a different scale from the frozen thresholds.
-        """
+class SpatialHistoryOffsetTests(unittest.TestCase):
+    """Pins the EXACT history offset the frozen implementation uses.
+
+    These tests verify behaviour; they must never be used to change it. The
+    frozen thresholds, the development percentile reference and every locked
+    primary result were produced by this offset, so if any assertion here
+    fails, the live feature has silently moved onto a different scale from the
+    thresholds it is compared against.
+
+    See docs/SPATIAL_FEATURE_SEMANTICS.md.
+    """
+
+    @staticmethod
+    def _box(x):
+        return [x, 0.0, x + 20.0, 40.0]
+
+    def test_sample_spans_two_appearances_not_one_transition(self):
+        """10 px of motion per frame must yield 20 px samples, not 10."""
         accumulator = SpatialFeatureAccumulator()
         for frame in range(6):
-            accumulator.observe(frame, [_Track(1, [frame * 10.0, 0, frame * 10 + 20.0, 40])])
-        self.assertAlmostEqual(accumulator.speed_mean, 20.0,
-                               msg="per-frame motion is 10 px; a 2-frame span gives 20")
+            accumulator.observe(frame, [_Track(1, self._box(frame * 10.0))])
+        self.assertEqual(accumulator._speeds, [20.0, 20.0, 20.0, 20.0])
+        self.assertAlmostEqual(accumulator.speed_mean, 20.0)
+
+    def test_the_accessor_really_returns_the_second_most_recent_box(self):
+        """The root cause, asserted directly on BehaviorAnalyzer."""
+        from behavior_analyzer import BehaviorAnalyzer
+
+        analyzer = BehaviorAnalyzer()
+        for frame in range(4):
+            analyzer.update_history(
+                build_tracking_snapshot(frame, [_Track(1, self._box(frame * 10.0))]), 3.0, 5)
+        # history is [0, 10, 20, 30]; the accessor must hand back 20, not 30.
+        self.assertAlmostEqual(float(analyzer.get_previous_bbox(1)[0]), 20.0)
+
+    def test_warm_up_costs_the_first_two_appearances(self):
+        """A track seen k times contributes max(k - 2, 0) samples."""
+        for appearances, expected in [(1, 0), (2, 0), (3, 1), (4, 2), (6, 4)]:
+            with self.subTest(appearances=appearances):
+                accumulator = SpatialFeatureAccumulator()
+                for frame in range(appearances):
+                    accumulator.observe(frame, [_Track(1, self._box(frame * 10.0))])
+                self.assertEqual(len(accumulator._speeds), expected)
+
+    def test_across_a_dropout_the_gap_is_appearances_not_wall_clock_frames(self):
+        """The span is NOT a fixed two frames when the tracker drops a track."""
+        accumulator = SpatialFeatureAccumulator()
+        seen = {0: 0.0, 1: 10.0, 5: 50.0, 7: 70.0}
+        for frame in range(8):
+            tracks = [_Track(1, self._box(seen[frame]))] if frame in seen else []
+            accumulator.observe(frame, tracks)
+        # 3rd appearance (frame 5) measures against the 1st (frame 0): 50 px
+        #    across five wall-clock frames.
+        # 4th appearance (frame 7) measures against the 2nd (frame 1): 60 px
+        #    across six wall-clock frames.
+        self.assertEqual(accumulator._speeds, [50.0, 60.0])
+
+    def test_a_non_person_track_does_not_perturb_a_person_history(self):
+        """History is per track id, so other classes cannot shift the offset."""
+        accumulator = SpatialFeatureAccumulator()
+        for frame in range(6):
+            accumulator.observe(frame, [
+                _Track(1, self._box(frame * 10.0)),
+                _Track(2, self._box(500.0), class_id=2),
+            ])
+        self.assertEqual(accumulator._speeds, [20.0, 20.0, 20.0, 20.0])
+
+    def test_the_ratio_uses_exactly_these_samples(self):
+        """Numerator is the mean of this sample set; denominator is separate."""
+        accumulator = SpatialFeatureAccumulator()
+        for frame in range(6):
+            accumulator.observe(frame, [_Track(1, self._box(frame * 10.0))])
+        self.assertAlmostEqual(accumulator.speed_mean,
+                               sum(accumulator._speeds) / len(accumulator._speeds))
+        # Denominator counts person-bearing frames, including the warm-up ones
+        # that contributed no displacement sample.
+        self.assertEqual(len(accumulator._diagonals), 6)
+        self.assertEqual(accumulator.score,
+                         accumulator.speed_mean / accumulator.diagonal_mean)
+
+    def test_the_payload_describes_the_numerator_accurately(self):
+        """A consumer must not be told this is a consecutive-frame speed."""
+        payload = SpatialFeatureAccumulator().as_dict()
+        self.assertIn("two-appearance history offset", payload["numerator"])
+        self.assertIn("NOT a consecutive-frame speed", payload["numerator"])
+        self.assertEqual(payload["semantics_reference"],
+                         "docs/SPATIAL_FEATURE_SEMANTICS.md")
+
+    def test_the_module_does_not_call_it_a_consecutive_frame_speed(self):
+        """Guards against the loose wording creeping back into the source.
+
+        Checked per line, requiring a negation on the same line. The docstrings
+        deliberately QUOTE the protocol's "between consecutive frames of the
+        same track", and list the phrases not to use, in order to say they do
+        not describe the code -- so a flat substring ban would flag the very
+        text that exists to prevent the confusion. What must not appear is one
+        of these phrases ASSERTED, i.e. on a line carrying no negation.
+        """
+        import re
+
+        source_path = REPO_ROOT / "src" / "operational_fusion.py"
+        source = source_path.read_text(encoding="utf-8")
+        loose = ("one-frame speed", "frame-to-frame velocity",
+                 "consecutive-frame speed", "consecutive-frame displacement",
+                 "between consecutive frames")
+        negations = ("not", "never", "none of those")
+        # Sentence granularity: the prose wraps across lines, so a negation for
+        # a banned phrase routinely sits on the line above it.
+        flat = re.sub(r"\s+", " ", source.lower())
+        for sentence in flat.split("."):
+            for phrase in loose:
+                if phrase in sentence and not any(n in sentence for n in negations):
+                    self.fail(f"operational_fusion.py asserts {phrase!r} without "
+                              f"negation, in: {sentence.strip()!r}")
+        self.assertIn("two-appearance", flat)
+
+
+class SpatialFeatureGeometryTests(unittest.TestCase):
+    """The denominator and the person filter, independent of the history offset."""
 
     def test_zero_person_frames_do_not_enter_the_denominator(self):
         accumulator = SpatialFeatureAccumulator()

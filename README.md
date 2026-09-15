@@ -279,9 +279,15 @@ by a forward pass during that run.
 
 **Evidence fusion.** The operational pipeline implements a configured
 evidence-fusion layer combining the temporal probability with an interpretable
-spatial motion feature (mean per-track centroid displacement normalised by the
-mean person-group diagonal). Thresholds, weight and the percentile reference
-distributions are read from the frozen protocol, not restated in code. Because
+spatial motion feature: mean centroid displacement over the implementation's
+two-appearance history offset, normalised by the mean person-group diagonal
+(a ratio of means). That numerator is **not** a consecutive-frame speed — the
+accessor it uses returns `history[-2]`, so each sample skips one intervening
+appearance of the track. The frozen thresholds and every locked result were
+generated with exactly this implementation, so it is preserved rather than
+corrected; see **`docs/SPATIAL_FEATURE_SEMANTICS.md`**. Thresholds, weight and
+the percentile reference distributions are read from the frozen protocol, not
+restated in code. Because
 the spatial feature is a whole-video aggregate, fusion is **offline whole-video
 evidence fusion** and is not a causal mid-video alarm; the temporal-only signal
 can still fire earlier. In the frozen confirmatory evaluation, fusion did

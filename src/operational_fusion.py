@@ -39,15 +39,23 @@ labelled ``offline whole-video evidence fusion``. The temporal-only alarm can
 still fire mid-video, because the frozen aggregation rule is monotone in the
 prefix; fusion cannot, and this module never pretends otherwise.
 
-ONE IMPLEMENTATION DETAIL WORTH KNOWING
----------------------------------------
-``SpatialFeatureAccumulator`` reproduces the frozen implementation's call
-ordering exactly -- ``get_previous_bbox`` BEFORE ``update_history`` -- because
-that ordering is part of what produced the locked artifact. See the note on
-``_observe_speeds``; it is not what the protocol prose describes, and it is
-deliberately preserved rather than corrected. ``tests/test_operational_fusion.py``
-asserts byte-equality against the research tool's own function on real video, so
-the two cannot drift.
+WHAT THE NUMERATOR ACTUALLY MEASURES
+------------------------------------
+Not a frame-to-frame speed. ``SpatialFeatureAccumulator`` reproduces the frozen
+implementation's call ordering exactly -- ``get_previous_bbox`` BEFORE
+``update_history`` -- and that accessor returns ``history[-2]``, so each
+displacement sample spans TWO APPEARANCES of the track rather than one
+transition. Under continuous tracking that is two frame transitions; across a
+tracker dropout it is longer. See ``_observe_speeds`` for the full consequences
+and docs/SPATIAL_FEATURE_SEMANTICS.md for why it is documented rather than
+corrected.
+
+Describe it as a two-appearance centroid displacement. Do NOT describe it as a
+one-frame speed, a consecutive-frame displacement, or a frame-to-frame
+velocity: the code computes none of those.
+
+``tests/test_operational_fusion.py`` asserts equality against the research
+tool's own function on real video, so the two implementations cannot drift.
 """
 from __future__ import annotations
 
@@ -135,8 +143,12 @@ class FusionProtocolError(RuntimeError):
 class SpatialFeatureAccumulator:
     """Accumulates the frozen spatial feature over a video, frame by frame.
 
-    ``mean(per-track centroid displacement) / mean(person-group diagonal)`` --
-    a RATIO OF MEANS, not a mean of ratios, as the protocol specifies.
+    ``mean(displacement samples) / mean(person-group diagonal)`` -- a RATIO OF
+    MEANS, not a mean of ratios, as the protocol specifies.
+
+    A displacement sample is the distance between a track's centroid now and
+    its centroid two APPEARANCES earlier, not one frame earlier. See
+    ``_observe_speeds``.
 
     Feed it one call per decoded frame, with the person tracks for that frame,
     in decode order. It holds its own BehaviorAnalyzer so that driving it
@@ -188,18 +200,33 @@ class SpatialFeatureAccumulator:
         This ordering is load-bearing and is preserved deliberately.
         ``get_previous_bbox`` returns ``history[-2]``. Called here -- before
         ``update_history`` has appended the current frame -- ``history[-1]`` is
-        the previous frame and ``history[-2]`` is the one before that, so each
-        sample spans TWO frames, not one.
+        the track's bbox at its most recent PREVIOUS appearance and
+        ``history[-2]`` the appearance before that. Each sample therefore spans
+        TWO APPEARANCES of the track, skipping one intervening appearance.
 
-        The protocol prose says "between consecutive frames of the same track",
-        which does not describe this. The implementation is nevertheless what
-        produced the locked artifact: the same computation generated the
-        development reference distribution, theta_s, theta_or and theta_f, and
-        the primary spatial scores, so every threshold and percentile is
-        expressed in these units and the result is internally consistent.
-        Changing it here would silently put live videos on a different scale
-        from the frozen thresholds. It is reported as a prose/implementation
-        discrepancy and left exactly as it is.
+        Three consequences, all verified in
+        tests/test_operational_fusion.py::SpatialHistoryOffsetTests:
+
+          * under continuous tracking that is two frame transitions, so a track
+            moving 10 px/frame yields samples of 20.0 px, not 10.0;
+          * history records only frames where the track was matched to a
+            detection, so across a tracker dropout the same two-appearance gap
+            can span many more wall-clock frames -- it is NOT a fixed two-frame
+            window;
+          * warm-up: no sample at a track's 1st or 2nd appearance
+            (``len(history) < 2`` yields None), so a track seen k times
+            contributes max(k - 2, 0) samples.
+
+        The frozen protocol prose says "between consecutive frames of the same
+        track", which describes a one-transition displacement and does not
+        describe this. The implementation is nevertheless what produced the
+        locked artifact: the same computation generated the development
+        reference distribution, theta_s, theta_or and theta_f, and the primary
+        spatial scores, so every threshold and percentile is expressed in these
+        units and the result is internally consistent. Changing it here would
+        silently put live video on a different scale from the frozen thresholds
+        while leaving those thresholds unchanged. It is reproduced exactly and
+        documented in docs/SPATIAL_FEATURE_SEMANTICS.md rather than corrected.
         """
         for track in persons:
             previous = self._behaviour.get_previous_bbox(track.id)
@@ -243,6 +270,16 @@ class SpatialFeatureAccumulator:
             "zero_person_frames": self.zero_person_frames,
             "displacement_samples": len(self._speeds),
             "form": "RATIO OF MEANS, not mean of ratios",
+            "numerator": (
+                "mean centroid displacement computed over the implementation's "
+                "two-appearance history offset (get_previous_bbox returns "
+                "history[-2]); NOT a consecutive-frame speed"
+            ),
+            "denominator": (
+                "mean, over frames containing at least one person, of the "
+                "diagonal of the box enclosing all person boxes in that frame"
+            ),
+            "semantics_reference": "docs/SPATIAL_FEATURE_SEMANTICS.md",
             "provenance": "measured_from_this_video",
             "note": None if self.score is not None else SPATIAL_UNDEFINED_NOTE,
         }
