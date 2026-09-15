@@ -8,6 +8,7 @@
 const state = {
   activeTab: "presets",
   selectedPreset: null,
+  mode: "replay", // "replay" | "live" -- always sent explicitly, never inferred
   clips: [], // [{clip_key, true_label}]
 };
 
@@ -33,6 +34,13 @@ const els = {
   windowChart: document.getElementById("windowChart"),
   explanation: document.getElementById("explanation"),
   artifactLinks: document.getElementById("artifactLinks"),
+  modeSelect: document.getElementById("modeSelect"),
+  modeBanner: document.getElementById("modeBanner"),
+  liveNote: document.getElementById("liveNote"),
+  fusionPanel: document.getElementById("fusionPanel"),
+  uploadHintReplay: document.getElementById("uploadHintReplay"),
+  uploadHintLive: document.getElementById("uploadHintLive"),
+  timelineProvenance: document.getElementById("timelineProvenance"),
 };
 
 function setStatus(text, isError) {
@@ -41,15 +49,40 @@ function setStatus(text, isError) {
 }
 
 function updateAnalyzeEnabled() {
+  const hasFile = els.videoUpload.files && els.videoUpload.files.length > 0;
   if (state.activeTab === "presets") {
     els.analyzeBtn.disabled = !state.selectedPreset;
   } else if (state.activeTab === "browse") {
-    els.analyzeBtn.disabled = !isKnownClip(els.clipSearch.value.trim());
+    // Live mode can score any dataset clip; replay needs one with a CSV row.
+    els.analyzeBtn.disabled =
+      state.mode === "live"
+        ? !els.clipSearch.value.trim()
+        : !isKnownClip(els.clipSearch.value.trim());
   } else {
-    const hasFile = els.videoUpload.files && els.videoUpload.files.length > 0;
-    els.analyzeBtn.disabled = !(hasFile && isKnownClip(els.uploadClipSearch.value.trim()));
+    // The clip_key requirement exists only because replay has to find a
+    // precomputed score. Live reads no CSV, so a file is all it needs.
+    els.analyzeBtn.disabled =
+      state.mode === "live"
+        ? !hasFile
+        : !(hasFile && isKnownClip(els.uploadClipSearch.value.trim()));
   }
 }
+
+function setMode(mode) {
+  state.mode = mode;
+  els.modeSelect.querySelectorAll(".mode-option").forEach((el) =>
+    el.classList.toggle("selected", el.dataset.mode === mode)
+  );
+  const live = mode === "live";
+  els.uploadHintReplay.classList.toggle("hidden", live);
+  els.uploadHintLive.classList.toggle("hidden", !live);
+  els.uploadClipSearch.classList.toggle("hidden", live);
+  updateAnalyzeEnabled();
+}
+
+els.modeSelect.addEventListener("change", (event) => {
+  if (event.target.name === "mode") setMode(event.target.value);
+});
 
 function isKnownClip(clipKey) {
   return state.clips.some((c) => c.clip_key === clipKey);
@@ -123,17 +156,29 @@ els.analyzeBtn.addEventListener("click", runAnalyze);
 
 async function runAnalyze() {
   const formData = new FormData();
+  // Always explicit. The server rejects an unknown mode rather than guessing,
+  // and never falls back from live to replay, so this value decides which
+  // pipeline actually runs.
+  formData.append("mode", state.mode);
   if (state.activeTab === "presets") {
     formData.append("preset", state.selectedPreset);
   } else if (state.activeTab === "browse") {
     formData.append("clip_key", els.clipSearch.value.trim());
   } else {
-    formData.append("clip_key", els.uploadClipSearch.value.trim());
+    // Live needs no clip_key: it reads no CSV and so has nothing to look up.
+    if (state.mode !== "live") {
+      formData.append("clip_key", els.uploadClipSearch.value.trim());
+    }
     formData.append("video", els.videoUpload.files[0]);
   }
 
   els.analyzeBtn.disabled = true;
-  setStatus("Running YOLO detection + tracking + Phase-4 rules + temporal signal + risk assessment... this can take 30-90s on CPU.", false);
+  setStatus(
+    state.mode === "live"
+      ? "LIVE MODEL: YOLO detection + tracking + spatial feature + an R3D-18 forward pass per 16-frame window. Offline, not real time -- expect roughly 0.5s per window plus detection, so a few minutes for a long video."
+      : "REPLAY: YOLO detection + tracking + Phase-4 rules + replayed temporal scores + risk assessment... this can take 30-90s on CPU.",
+    false
+  );
   els.resultsPanel.classList.add("hidden");
 
   // Drop the previous run's state before starting a new one. Without this a
@@ -174,6 +219,22 @@ function renderResult(data) {
   // the clip the displayed results actually came from.
   window.__lastClipKey = data.summary.clip_key;
   if (window.__recordAnalysis) window.__recordAnalysis(data);
+
+  renderModeBanner(data);
+  renderFusion(data.fusion, data.spatial_fusion_feature);
+
+  // The timeline caption must describe THIS run. Saying "replayed" above a
+  // live timeline would misdescribe the one number an examiner cares most
+  // about where it came from.
+  if (els.timelineProvenance) {
+    els.timelineProvenance.innerHTML =
+      data.mode === "live"
+        ? "Each probability below was produced by an <strong>R3D-18 forward " +
+          "pass on the frames of this video</strong> during this run; no " +
+          "precomputed score was read."
+        : "These probabilities are <strong>replayed from the committed " +
+          "scores</strong>; no temporal model ran in this process.";
+  }
 
   // The severity badge is the most prominent number on screen and is a
   // CONFIGURED constant, not a calibrated estimate. Render its status beside it
@@ -519,6 +580,8 @@ loadClips();
           overall_risk: lastAnalysis.overall_risk,
           selected_window: selectedWindow,
           saliency: lastSaliency,
+          fusion: lastAnalysis.fusion,
+          spatial_fusion_feature: lastAnalysis.spatial_fusion_feature,
           format: format,
         }),
       });
@@ -552,3 +615,102 @@ loadClips();
   if (jsonBtn) jsonBtn.addEventListener("click", () => download("json"));
   if (textBtn) textBtn.addEventListener("click", () => download("text"));
 })();
+
+
+// ---------------------------------------------------------------------------
+// Mode banner and fusion panel.
+//
+// Both render from the server's own fields. Nothing here decides what mode a
+// result came from or what a fusion rule concluded -- inferring either on the
+// client would be a second source of truth for the one distinction this system
+// most needs to keep straight.
+// ---------------------------------------------------------------------------
+
+function renderModeBanner(data) {
+  const live = data.mode === "live";
+  els.modeBanner.textContent =
+    data.mode_label || (live ? "LIVE MODEL" : "REPLAY");
+  els.modeBanner.classList.toggle("live", live);
+  els.modeBanner.classList.toggle("replay", !live);
+
+  const provenance = (data.summary && data.summary.temporal_provenance) || {};
+  if (live) {
+    const windows =
+      (provenance.window_geometry && provenance.window_geometry.windows_completed) ?? "?";
+    const seconds = provenance.inference_seconds_total;
+    els.modeBanner.title =
+      `R3D-18 ran in this process on frames decoded from this video. ` +
+      `${windows} window(s), ${seconds ?? "?"}s of inference, ` +
+      `checkpoint ${provenance.checkpoint_sha256 || "unknown"}.`;
+  } else {
+    els.modeBanner.title =
+      "Per-window probabilities were replayed from the committed CSV. " +
+      "No temporal model ran in this process.";
+  }
+
+  if (data.live_note) {
+    els.liveNote.textContent = data.live_note;
+    els.liveNote.classList.remove("hidden");
+  } else {
+    els.liveNote.textContent = "";
+    els.liveNote.classList.add("hidden");
+  }
+}
+
+function renderFusion(fusion, feature) {
+  if (!fusion) {
+    els.fusionPanel.innerHTML =
+      '<p class="muted">No fusion result was returned for this run.</p>';
+    return;
+  }
+  if (!fusion.available) {
+    els.fusionPanel.innerHTML =
+      `<p class="muted">Fusion unavailable (${fusion.reason}): ` +
+      `${fusion.detail || ""}</p>`;
+    return;
+  }
+
+  const inputs = fusion.inputs || {};
+  // An undefined spatial feature is shown as undefined. It is never rendered
+  // as 0, which would read as "measured no motion" rather than "not measurable".
+  const spatialText = inputs.spatial_defined
+    ? `${Number(inputs.spatial_score).toFixed(6)} (percentile ${Number(
+        inputs.spatial_percentile
+      ).toFixed(3)})`
+    : "undefined &mdash; abstains, treated as spatial-negative";
+
+  const rows = Object.entries(fusion.candidates)
+    .map(([name, candidate]) => {
+      const score =
+        typeof candidate.score === "number" ? candidate.score.toFixed(6) : "&mdash;";
+      const incumbent = name === fusion.system_decision.from;
+      return (
+        `<tr class="${incumbent ? "incumbent" : ""}">` +
+        `<td><code>${name}</code>${incumbent ? " <em>(system decision)</em>" : ""}</td>` +
+        `<td>${candidate.rule}</td>` +
+        `<td>${score}</td>` +
+        `<td class="${candidate.fired ? "fired" : ""}">${candidate.decision}</td>` +
+        `</tr>`
+      );
+    })
+    .join("");
+
+  const featureRow = feature
+    ? `<p class="muted">Spatial feature <code>${feature.feature}</code>: ` +
+      (feature.defined
+        ? `mean speed ${feature.speed_mean_pixels.toFixed(3)} px / mean group diagonal ` +
+          `${feature.group_diagonal_mean.toFixed(3)} px over ${feature.frames} frames ` +
+          `(${feature.zero_person_frames} with no person detected).`
+        : `undefined for this video &mdash; ${feature.note}`) +
+      `</p>`
+    : "";
+
+  els.fusionPanel.innerHTML =
+    `<p class="muted"><strong>${fusion.mode}</strong>. ${fusion.causality}</p>` +
+    featureRow +
+    `<p class="muted">Temporal max ${Number(inputs.temporal_max).toFixed(6)} ` +
+    `(percentile ${Number(inputs.temporal_percentile).toFixed(3)}); spatial ${spatialText}.</p>` +
+    `<table class="fusion-table"><thead><tr><th>candidate</th><th>rule</th>` +
+    `<th>score</th><th>decision</th></tr></thead><tbody>${rows}</tbody></table>` +
+    `<p class="muted">${fusion.system_decision.why}</p>`;
+}

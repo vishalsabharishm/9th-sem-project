@@ -25,11 +25,12 @@ event/risk pipeline:
 Dashboard/UI, SHAP, and stabbing detection are not implemented. Crowding and
 proximity remain generic geometric signals, not violence or stabbing
 classifiers. Violence detection itself *is* now implemented end-to-end (see
-point 7), but only against precomputed/window-scored clips or a live
-checkpoint deployed on this machine -- the clean-baseline checkpoint
-(`best.pt`, 132.74 MB) has not yet been downloaded here, so the demo
-(`tools/run_demo.py`) uses real, precomputed scores rather than a live
-forward pass. See `docs/demo_instructions.md`.
+point 7). The clean-baseline checkpoint (`best.pt`, 132.74 MB) is now present
+on this machine, so the system runs in either of two explicitly selected
+modes: **replay**, which reads the committed per-window probabilities and runs
+no temporal model, and **live**, which runs R3D-18 on the frames of a video
+supplied now and needs no precomputed score at all. Replay stays the default
+for the reproducible research presentation. See `docs/demo_instructions.md`.
 
 A browser UI for this pipeline now exists -- see "Web demo UI" under Runners
 below and `docs/web_ui.md`.
@@ -257,13 +258,37 @@ demo. Replay failures are fatal and the server refuses to start rather than
 serve a dashboard whose first click will fail. The same report is available at
 `GET /api/preflight`. Nothing ever falls back silently from live to replay.
 
+**Two modes, chosen explicitly.** The dashboard asks for a mode before it asks
+for a video, and the result banner states which one produced what is on screen.
+*REPLAY* replays the committed probabilities for the 394 primary-split clips and
+runs no temporal model. *LIVE MODEL* accepts any video — including one that has
+never been scored — and runs YOLO, tracking, the spatial fusion feature and an
+actual R3D-18 forward pass per complete 16-frame window. The mode is never
+inferred and never falls back: a live request that cannot run live fails with
+an actionable error rather than quietly returning a replay. Live inference is
+**offline, not real time** — roughly 0.65 s per window on this CPU.
+
 **Temporal window timeline.** The temporal branch scores overlapping 16-frame
 windows at stride 8 and takes the maximum; it does not score the clip as a
 whole. The timeline shows every scored window with its frame range, probability
 and per-window decision. Click a bar or row to select it for saliency. Only
 genuinely scored windows are offered, so a selected window can always be
-reconstructed from source frames. **Clicking a window does not run the model** —
-the probabilities shown are replayed.
+reconstructed from source frames. **Clicking a window does not run the model.**
+In replay the probabilities shown are replayed; in live mode they were produced
+by a forward pass during that run.
+
+**Evidence fusion.** The operational pipeline implements a configured
+evidence-fusion layer combining the temporal probability with an interpretable
+spatial motion feature (mean per-track centroid displacement normalised by the
+mean person-group diagonal). Thresholds, weight and the percentile reference
+distributions are read from the frozen protocol, not restated in code. Because
+the spatial feature is a whole-video aggregate, fusion is **offline whole-video
+evidence fusion** and is not a causal mid-video alarm; the temporal-only signal
+can still fire earlier. In the frozen confirmatory evaluation, fusion did
+**not** produce a statistically significant improvement over the temporal-only
+baseline (exact McNemar p = 0.771), so the temporal-only rule remains the
+system's decision. Fusion is implemented because the research question concerns
+an explainable multi-signal system, not because it performs better.
 
 **Gradient-based temporal saliency.** On demand only, for the selected window
 (`POST /api/explain`). It needs a backward pass as well as a forward one, about

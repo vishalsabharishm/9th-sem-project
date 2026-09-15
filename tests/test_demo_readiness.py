@@ -99,9 +99,44 @@ class NoMisleadingWordingTests(unittest.TestCase):
         self.assertIn("not ground-truth localization", markup)
 
     def test_replay_and_live_are_still_distinguished(self):
+        """The UI now offers both modes, so the distinction must be louder.
+
+        This used to assert the exact sentence "cannot get a live temporal
+        score", written when the UI was replay-only and an upload could never
+        be scored. The UI now runs live inference, so that sentence is gone;
+        what it protected -- that a viewer can always tell which mode produced
+        what they are looking at -- is asserted directly instead.
+        """
         markup = TEMPLATE.read_text(encoding="utf-8")
         self.assertIn("precomputed temporal score", markup)
-        self.assertIn("cannot get a live temporal score", markup)
+
+        # Both modes are named, described, and selectable.
+        self.assertIn('data-mode="replay"', markup)
+        self.assertIn('data-mode="live"', markup)
+        self.assertIn("REPLAY &mdash; precomputed research evidence", markup)
+        self.assertIn("LIVE MODEL &mdash; actual video inference", markup)
+        self.assertIn("No temporal model runs.", markup)
+
+        # The result carries a banner saying which mode produced it.
+        self.assertIn('id="modeBanner"', markup)
+
+        # Live inference is not sold as real time.
+        self.assertIn("Offline, not real time", markup)
+
+    def test_the_timeline_caption_does_not_claim_replay_unconditionally(self):
+        """A live timeline described as "replayed" would misstate provenance."""
+        markup = TEMPLATE.read_text(encoding="utf-8")
+        script = APP_JS.read_text(encoding="utf-8")
+        self.assertIn('id="timelineProvenance"', markup)
+        # The client rewrites it per run, from the response's own mode.
+        self.assertIn("timelineProvenance", script)
+        self.assertIn("R3D-18 forward ", script)
+
+    def test_fusion_is_never_presented_as_an_improvement(self):
+        markup = TEMPLATE.read_text(encoding="utf-8")
+        self.assertIn("did\n        <strong>not</strong> produce a statistically significant improvement",
+                      markup)
+        self.assertIn("not</em> because it performs better", markup)
 
 
 class TwoResolutionLimitationIsVisibleTests(unittest.TestCase):

@@ -66,7 +66,17 @@ New runtime-only folder (created automatically, not checked in with content):
 
 ### `/api/analyze` request shape
 
-`multipart/form-data` with one of:
+`multipart/form-data`.
+
+`mode` selects the pipeline and is **never inferred**:
+
+- `mode=replay` (the default) -- per-window probabilities come from the
+  committed CSV and no temporal model runs.
+- `mode=live` -- R3D-18 runs on the frames of the supplied video. Requires the
+  checkpoint; needs no CSV row and reads none. An unknown mode is rejected, and
+  a live request that cannot run live returns an error rather than a replay.
+
+In `mode=replay`, supply one of:
 
 - `preset` = `fight` \| `nonfight` \| `fp` -- runs a built-in clip.
 - `clip_key` = one of the 394 keys from `/api/clips` -- resolves the video
@@ -75,6 +85,20 @@ New runtime-only folder (created automatically, not checked in with content):
   through the live pipeline, paired with `clip_key`'s precomputed temporal
   score. Only meaningful if the uploaded file is (or closely matches) that
   clip -- the UI says this explicitly.
+
+In `mode=live`, supply one of:
+
+- `video` (a file) -- any video, scored from scratch. No `clip_key` needed.
+  The filename is sanitised and the destination checked for containment; only
+  `.avi .mp4 .mov .mkv .webm .mpg .mpeg` are accepted.
+- `preset` or `clip_key` -- runs the model over that clip instead of replaying
+  it. If the clip also has a research score, the response carries a
+  `live_note` saying the live number is an engineering artifact and is not the
+  locked research score.
+
+Live results are keyed `live/<filename>` and registered in-process so
+`/api/explain` and `/api/report` can serve them. The registry holds only paths
+the server itself resolved, and it is not persisted across a restart.
 
 ### `/api/analyze` response shape
 
@@ -85,6 +109,11 @@ New runtime-only folder (created automatically, not checked in with content):
   "temporal_signal": { ...the Temporal Violence Signal risk-assessment record, plus evidence_parsed... } | null,
   "event_summary": [ {"event_type": ..., "risk_level": ..., "occurrences": ...}, ... ],
   "window_scores": [ {"window_index": ..., "first_frame": ..., "last_frame": ..., "fight_probability": ...}, ... ],
+  "mode": "replay | live",
+  "mode_label": "REPLAY -- precomputed research evidence | LIVE MODEL -- actual video inference",
+  "live_note": "...set only when a live run used a clip that also has a research score..." | null,
+  "fusion": { ...configured fusion candidates, or available:false with a reason... },
+  "spatial_fusion_feature": { ...measured feature, or spatial_score:null when undefined... },
   "explanation_text": "...the full explanation .md content...",
   "video_url": "/outputs/demo/demo_<stem>.mp4",
   "risk_json_url": "/outputs/demo/demo_<stem>_risk_assessment.json",

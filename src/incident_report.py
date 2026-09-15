@@ -97,6 +97,8 @@ def build_incident_report(
     saliency: Optional[dict] = None,
     selected_window: Optional[dict] = None,
     generated_at: Optional[str] = None,
+    fusion: Optional[dict] = None,
+    spatial_feature: Optional[dict] = None,
 ) -> dict:
     """Assemble the report from an analysis that already ran.
 
@@ -174,6 +176,10 @@ def build_incident_report(
             if selected_window else None
         ),
         "spatial_events": _events(risk_assessments),
+        # The measured fusion feature, kept separate from the rule events above
+        # because it is a continuous measurement, not a fired rule.
+        "spatial_fusion_feature": spatial_feature,
+        "fusion": fusion,
         "risk_interpretation": {
             **risk_presentation(overall_risk),
             "disclaimer": RISK_STATUS_TEXT,
@@ -186,6 +192,13 @@ def build_incident_report(
                     else "unknown",
             "note": provenance.get("note"),
             "scores_from": provenance.get("scores_from"),
+            # Present only for a live run: which weights actually produced
+            # these numbers, and how long they took. A replayed report has no
+            # checkpoint because no model ran in that process.
+            "checkpoint_sha256": provenance.get("checkpoint_sha256"),
+            "model_provenance": provenance.get("model_provenance"),
+            "device": provenance.get("device"),
+            "inference_seconds_total": provenance.get("inference_seconds_total"),
             "legend": describe_provenance_legend(),
         },
         "limitations": list(LIMITATIONS),
@@ -250,6 +263,42 @@ def render_incident_report_text(report: dict) -> str:
     else:
         lines.append("  none")
 
+    feature = report.get("spatial_fusion_feature")
+    if feature:
+        lines += ["", "SPATIAL FUSION FEATURE (measured)", "-" * 68]
+        if feature.get("defined"):
+            lines += [
+                f"  {feature['feature']} = {feature['spatial_score']:.6f}",
+                f"  mean speed {feature['speed_mean_pixels']:.3f} px / "
+                f"mean group diagonal {feature['group_diagonal_mean']:.3f} px "
+                f"({feature['form']})",
+                f"  persons/frame {feature['person_count_mean']}, "
+                f"{feature['zero_person_frames']} frame(s) with no person",
+            ]
+        else:
+            lines.append(f"  undefined -- {feature.get('note')}")
+
+    fusion = report.get("fusion")
+    if fusion:
+        lines += ["", "EVIDENCE FUSION", "-" * 68]
+        if not fusion.get("available"):
+            lines.append(f"  Not available : {fusion.get('reason')} -- {fusion.get('detail','')}")
+        else:
+            lines.append(f"  Mode      : {fusion['mode']}")
+            for name, candidate in fusion["candidates"].items():
+                score = candidate.get("score")
+                suffix = f"  score {score:.6f}" if isinstance(score, float) else ""
+                lines.append(f"    {name:18} {candidate['decision']:<9}{suffix}")
+            lines += [
+                f"  System    : {fusion['system_decision']['decision']} "
+                f"(from {fusion['system_decision']['from']})",
+                f"  Causality : {fusion['causality']}",
+            ]
+        # The no-improvement statement travels inside the report body, not a
+        # footnote, for the same reason the risk disclaimer does.
+        lines.append(f"  Finding   : {fusion['interpretation']}")
+        lines.append(f"  {fusion['not_claimed']}")
+
     lines += [
         "",
         "RISK INTERPRETATION",
@@ -280,6 +329,10 @@ def render_incident_report_text(report: dict) -> str:
         "-" * 68,
         f"Mode : {provenance['mode']}",
     ]
+    if provenance.get("checkpoint_sha256"):
+        lines.append(f"Model: {provenance['checkpoint_sha256']} on {provenance.get('device')}")
+    if provenance.get("inference_seconds_total") is not None:
+        lines.append(f"Time : {provenance['inference_seconds_total']} s of R3D inference")
     if provenance.get("note"):
         lines.append(f"Note : {provenance['note']}")
 

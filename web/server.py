@@ -34,6 +34,7 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
 from flask import Flask, jsonify, render_template, request, send_from_directory  # noqa: E402
+from werkzeug.utils import secure_filename  # noqa: E402
 
 from config import OUTPUTS_DIR  # noqa: E402
 from detection import DEFAULT_MODEL_PATH  # noqa: E402
@@ -123,6 +124,49 @@ def _cached_engine(checkpoint: Path, device: str = "cpu"):
 
 
 DATASET_ROOT = REPO_ROOT / "data" / "rwf2000" / "RWF-2000"
+
+# ---------------------------------------------------------------------------
+# Live-analysis registry.
+#
+# Replay can resolve a clip from the committed CSV. Live mode cannot: the whole
+# point is that the video was never in it. This records the videos THIS process
+# actually analysed live, so /api/explain and /api/report can serve them
+# without either trusting a client-supplied path or falling back to the CSV.
+#
+# It holds paths this server itself validated and wrote, never a caller's
+# string, so an entry here is not a way around the containment check.
+# It is process-local and deliberately not persisted: a restart should not
+# leave the dashboard offering saliency for a video whose frames may be gone.
+# ---------------------------------------------------------------------------
+_live_registry: dict = {}
+_live_registry_lock = threading.Lock()
+
+# Extensions OpenCV will actually decode here. An upload is refused rather than
+# handed to VideoCapture to find out, so an arbitrary file cannot be parked in
+# the upload directory under a harmless-looking name.
+ALLOWED_VIDEO_SUFFIXES = {".avi", ".mp4", ".mov", ".mkv", ".webm", ".mpg", ".mpeg"}
+
+MODE_REPLAY = "replay"
+MODE_LIVE = "live"
+SUPPORTED_MODES = (MODE_REPLAY, MODE_LIVE)
+
+
+def _register_live_analysis(clip_key: str, video_path: Path) -> None:
+    with _live_registry_lock:
+        _live_registry[clip_key] = {
+            "video_path": str(video_path),
+            "mode": MODE_LIVE,
+        }
+
+
+def _live_video_for(clip_key: str) -> Optional[Path]:
+    """The video a live analysis in THIS process used, if there was one."""
+    with _live_registry_lock:
+        entry = _live_registry.get(clip_key)
+    if entry is None:
+        return None
+    path = Path(entry["video_path"])
+    return path if path.is_file() else None
 
 
 def _clip_key_from(payload: dict) -> Optional[str]:
@@ -256,6 +300,15 @@ def api_explain():
     except (TypeError, ValueError):
         return jsonify(explanation_unavailable(
             "bad_request", "first_frame must be an integer.")), 400
+    # A negative start silently collected frames 0..15 and returned a map for
+    # THAT window with available=true -- answering a question the caller did
+    # not ask. No window starts before frame 0, so this is a bad request.
+    if first_frame < 0:
+        return jsonify(explanation_unavailable(
+            "bad_request",
+            f"first_frame must be zero or greater; got {first_frame}. "
+            "Windows start at frame 0 and advance by the frozen stride.",
+        )), 400
     checkpoint = REPO_ROOT / "models" / "temporal_violence" / "best.pt"
     if not checkpoint.is_file():
         return jsonify(explanation_unavailable(
@@ -265,22 +318,26 @@ def api_explain():
             "cannot be differentiated.",
         ))
 
-    # Membership first, matching the guard /api/analyze already applies. A key
-    # that is not a known scored clip cannot be explained, and checking this
-    # before touching the filesystem means an unknown key reveals nothing about
-    # what does or does not exist on disk.
-    if _score_source.get(clip_key) is None:
+    # Membership first, before any filesystem access, so an unknown key reveals
+    # nothing about what does or does not exist on disk. A key is known if it
+    # is either a clip with precomputed scores OR one this process analysed
+    # live. The live registry holds only paths this server itself validated, so
+    # admitting it here does not reopen the containment hole: a caller still
+    # cannot name a file the server never approved.
+    live_video = _live_video_for(clip_key)
+    if live_video is None and _score_source.get(clip_key) is None:
         return jsonify(explanation_unavailable(
             "unknown_clip",
-            f"'{clip_key}' is not one of the clips with precomputed temporal "
-            "scores. Pick a clip from the browse list or a built-in preset.",
+            f"'{clip_key}' is not a clip with precomputed temporal scores, and "
+            "no live analysis of it has run in this process. Pick a clip from "
+            "the browse list, a built-in preset, or run a live analysis first.",
         ))
 
-    video_path = _resolve_video_path(clip_key)
+    video_path = live_video if live_video is not None else _resolve_video_path(clip_key)
     if video_path is None or not video_path.exists():
         return jsonify(explanation_unavailable(
             "video_unavailable",
-            f"No video available for clip '{clip_key}' under the dataset root.",
+            f"No video available for clip '{clip_key}'.",
         ))
 
     import cv2
@@ -397,6 +454,9 @@ def api_report():
     saliency = payload.get("saliency")
     selected_window = payload.get("selected_window")
 
+    # Fusion and the spatial feature come from the analysis summary, which the
+    # client received and passes back, so the report describes the run on
+    # screen rather than a fresh computation that might disagree with it.
     report = build_incident_report(
         summary=summary,
         risk_assessments=risk_assessments,
@@ -404,6 +464,10 @@ def api_report():
         overall_risk=overall_risk,
         saliency=saliency,
         selected_window=selected_window,
+        fusion=payload.get("fusion") or summary.get("fusion"),
+        spatial_feature=(
+            payload.get("spatial_fusion_feature") or summary.get("spatial_fusion_feature")
+        ),
     )
     if (payload.get("format") or "json").lower() == "text":
         return app.response_class(
@@ -414,62 +478,164 @@ def api_report():
     return jsonify(report)
 
 
+def _save_upload(uploaded) -> Path:
+    """Persist an uploaded video under the upload directory, or refuse it.
+
+    ``secure_filename`` strips directory components and hostile characters; the
+    resolved path is then checked against the upload root anyway, because a
+    sanitiser is a filter and containment is the actual guarantee. The suffix
+    allowlist stops an arbitrary file being parked here under a name OpenCV
+    would never decode.
+    """
+    name = secure_filename(uploaded.filename or "")
+    if not name:
+        raise ValueError("The uploaded file has no usable filename.")
+    suffix = Path(name).suffix.lower()
+    if suffix not in ALLOWED_VIDEO_SUFFIXES:
+        raise ValueError(
+            f"'{suffix or name}' is not a supported video type. Supported: "
+            + ", ".join(sorted(ALLOWED_VIDEO_SUFFIXES))
+        )
+    destination = (UPLOAD_DIR / name).resolve()
+    if UPLOAD_DIR.resolve() not in destination.parents:
+        raise ValueError("The uploaded filename does not resolve inside the upload directory.")
+    uploaded.save(str(destination))
+    return destination
+
+
 @app.route("/api/analyze", methods=["POST"])
 def api_analyze():
+    """Analyse one video in an EXPLICITLY chosen mode.
+
+    mode=replay  the research/demo path: per-window probabilities are replayed
+                 from the committed CSV and no temporal model runs.
+    mode=live    actual R3D-18 inference on the frames of the video supplied,
+                 which needs no CSV row and never consults one.
+
+    The mode is never inferred and never falls back. A live request that cannot
+    run live fails with an actionable error rather than quietly returning a
+    replay, because those two outputs would otherwise be indistinguishable --
+    which is the single most misleading thing this system could do.
+    """
     preset = (request.form.get("preset") or "").strip()
     clip_key = (request.form.get("clip_key") or "").strip()
+    mode = (request.form.get("mode") or MODE_REPLAY).strip().lower()
     uploaded = request.files.get("video")
 
-    if preset:
-        if preset not in DEMO_CLIPS:
-            return jsonify({"error": f"Unknown preset '{preset}'."}), 400
-        resolved_clip_key = DEMO_CLIPS[preset]["clip_key"]
-        video_path = DEMO_CLIPS[preset]["video"]
-    elif clip_key:
-        if _score_source.get(clip_key) is None:
-            return (
-                jsonify(
-                    {
-                        "error": (
-                            f"No precomputed temporal score exists for clip_key '{clip_key}' in "
-                            "temporal_risk/primary_window_scores.csv. Live scoring is not available "
-                            "on this machine (the R3D-18 checkpoint, best.pt, was never downloaded "
-                            "here) -- pick a clip_key from the browse list, which only lists clips "
-                            "that already have a real score."
-                        )
-                    }
-                ),
-                400,
-            )
-        resolved_clip_key = clip_key
-        if uploaded and uploaded.filename:
-            safe_name = Path(uploaded.filename).name
-            video_path = UPLOAD_DIR / safe_name
-            uploaded.save(str(video_path))
-        else:
+    if mode not in SUPPORTED_MODES:
+        return jsonify({"error": (
+            f"Unknown mode '{mode}'. Use 'replay' (precomputed research scores) "
+            "or 'live' (actual model inference)."
+        )}), 400
+
+    checkpoint = REPO_ROOT / "models" / "temporal_violence" / "best.pt"
+    live_note = None
+
+    if mode == MODE_LIVE:
+        if not checkpoint.is_file():
+            return jsonify({"error": (
+                f"Live mode needs the R3D-18 checkpoint at {checkpoint}, which is "
+                "not present on this machine. There is no fallback: a live "
+                "request will not be answered with replayed scores."
+            )}), 400
+
+        if uploaded is not None and uploaded.filename:
+            try:
+                video_path = _save_upload(uploaded)
+            except ValueError as error:
+                return jsonify({"error": str(error)}), 400
+            resolved_clip_key = f"live/{video_path.name}"
+        elif preset:
+            if preset not in DEMO_CLIPS:
+                return jsonify({"error": f"Unknown preset '{preset}'."}), 400
+            video_path = Path(DEMO_CLIPS[preset]["video"])
+            resolved_clip_key = f"live/{Path(DEMO_CLIPS[preset]['clip_key']).name}"
+        elif clip_key:
             video_path = _resolve_video_path(clip_key)
             if video_path is None or not video_path.exists():
+                return jsonify({"error": (
+                    f"No video available for clip '{clip_key}' under the dataset root."
+                )}), 400
+            resolved_clip_key = f"live/{Path(clip_key).name}"
+        else:
+            return jsonify({"error": (
+                "Live mode needs a video: upload one as 'video', or name a "
+                "'preset' or 'clip_key' to run the model over."
+            )}), 400
+
+        # A live run over a clip that also has a research score is legitimate
+        # engineering, but the number it produces is NOT the research number
+        # and must never be mistaken for it. Say so in the response.
+        if clip_key and _score_source.get(clip_key) is not None:
+            live_note = (
+                f"'{clip_key}' also has a precomputed research score. This live "
+                "result was computed now, by this process, and is an "
+                "engineering artifact -- it is not the locked research score "
+                "for that clip and does not replace it."
+            )
+        if not video_path.is_file():
+            return jsonify({"error": f"Video file not found: {video_path}"}), 400
+    else:
+        if preset:
+            if preset not in DEMO_CLIPS:
+                return jsonify({"error": f"Unknown preset '{preset}'."}), 400
+            resolved_clip_key = DEMO_CLIPS[preset]["clip_key"]
+            video_path = DEMO_CLIPS[preset]["video"]
+        elif clip_key:
+            if _score_source.get(clip_key) is None:
                 return (
-                    jsonify({"error": (
-                        f"No video available for clip '{clip_key}' under the "
-                        "dataset root."
-                    )}),
+                    jsonify(
+                        {
+                            "error": (
+                                f"No precomputed temporal score exists for clip_key '{clip_key}' in "
+                                "temporal_risk/primary_window_scores.csv. Switch to mode=live to "
+                                "run the model on this video, or pick a clip_key from the browse "
+                                "list, which only lists clips that already have a real score."
+                            )
+                        }
+                    ),
                     400,
                 )
-    else:
-        return (
-            jsonify({"error": "Provide either 'preset' (fight/nonfight/fp) or a 'clip_key' from /api/clips."}),
-            400,
-        )
+            resolved_clip_key = clip_key
+            if uploaded and uploaded.filename:
+                try:
+                    video_path = _save_upload(uploaded)
+                except ValueError as error:
+                    return jsonify({"error": str(error)}), 400
+            else:
+                video_path = _resolve_video_path(clip_key)
+                if video_path is None or not video_path.exists():
+                    return (
+                        jsonify({"error": (
+                            f"No video available for clip '{clip_key}' under the "
+                            "dataset root."
+                        )}),
+                        400,
+                    )
+        else:
+            return (
+                jsonify({"error": "Provide either 'preset' (fight/nonfight/fp) or a 'clip_key' from /api/clips."}),
+                400,
+            )
 
     try:
         with _analyze_lock:
-            summary = run_demo(Path(video_path), resolved_clip_key, DEFAULT_MODEL_PATH, DEMO_OUTPUT_DIR)
+            summary = run_demo(
+                Path(video_path),
+                resolved_clip_key,
+                DEFAULT_MODEL_PATH,
+                DEMO_OUTPUT_DIR,
+                temporal_source=("live" if mode == MODE_LIVE else "csv"),
+                checkpoint=(checkpoint if mode == MODE_LIVE else None),
+            )
     except SystemExit as exc:
         return jsonify({"error": str(exc)}), 400
     except Exception as exc:  # surfaced to the UI verbatim, never swallowed
         traceback.print_exc()
         return jsonify({"error": f"{type(exc).__name__}: {exc}"}), 500
+
+    if mode == MODE_LIVE:
+        _register_live_analysis(resolved_clip_key, Path(video_path))
 
     stem = Path(resolved_clip_key).stem
     risk_json_path = DEMO_OUTPUT_DIR / f"demo_{stem}_risk_assessment.json"
@@ -489,16 +655,21 @@ def api_analyze():
         temporal_signal = dict(temporal_signal)
         temporal_signal["evidence_parsed"] = _parse_evidence(temporal_signal["evidence"])
 
-    windows = _score_source.get(resolved_clip_key) or []
-    window_scores = [
-        {
-            "window_index": w.window_index,
-            "first_frame": w.first_frame,
-            "last_frame": w.last_frame,
-            "fight_probability": w.fight_probability,
-        }
-        for w in windows
-    ]
+    if mode == MODE_LIVE:
+        # Live has no CSV to read a timeline from -- these are the windows the
+        # model actually scored during this run, carried out of run_demo().
+        window_scores = list(summary.get("window_scores") or [])
+    else:
+        windows = _score_source.get(resolved_clip_key) or []
+        window_scores = [
+            {
+                "window_index": w.window_index,
+                "first_frame": w.first_frame,
+                "last_frame": w.last_frame,
+                "fight_probability": w.fight_probability,
+            }
+            for w in windows
+        ]
 
     return jsonify(
         {
@@ -507,6 +678,16 @@ def api_analyze():
             "temporal_signal": temporal_signal,
             "event_summary": _summarize_events(risk_assessments),
             "window_scores": window_scores,
+            # The mode is echoed explicitly so no consumer has to infer it from
+            # the shape of the payload.
+            "mode": mode,
+            "mode_label": (
+                "LIVE MODEL -- actual video inference" if mode == MODE_LIVE
+                else "REPLAY -- precomputed research evidence"
+            ),
+            "live_note": live_note,
+            "fusion": summary.get("fusion"),
+            "spatial_fusion_feature": summary.get("spatial_fusion_feature"),
             "explanation_text": explanation_text,
             "video_url": f"/outputs/demo/{Path(summary['annotated_video']).name}",
             "risk_json_url": f"/outputs/demo/{risk_json_path.name}",

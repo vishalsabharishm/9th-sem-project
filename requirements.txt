@@ -8,3 +8,4 @@ lap>=0.5.12
 # following this file could install everything and still fail to launch
 # the dashboard with ImportError: No module named 'flask'.
 flask
+werkzeug

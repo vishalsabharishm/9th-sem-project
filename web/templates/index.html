@@ -16,7 +16,30 @@
 
   <main class="layout">
     <section class="panel panel-input">
-      <h2>1. Choose a video</h2>
+      <h2>1. Choose a mode</h2>
+
+      <div class="mode-select" id="modeSelect">
+        <label class="mode-option selected" data-mode="replay">
+          <input type="radio" name="mode" value="replay" checked />
+          <span class="mode-title">REPLAY &mdash; precomputed research evidence</span>
+          <span class="mode-desc">
+            Temporal probabilities are replayed from the committed CSV for the
+            394 primary-split clips. <strong>No temporal model runs.</strong>
+            This is the deterministic path used for the research presentation.
+          </span>
+        </label>
+        <label class="mode-option" data-mode="live">
+          <input type="radio" name="mode" value="live" />
+          <span class="mode-title">LIVE MODEL &mdash; actual video inference</span>
+          <span class="mode-desc">
+            R3D-18 runs on the frames of the video you supply. Works on a video
+            that has never been scored. <strong>Offline, not real time</strong>
+            &mdash; roughly 0.5&nbsp;s of inference per 16-frame window on CPU.
+          </span>
+        </label>
+      </div>
+
+      <h2>2. Choose a video</h2>
 
       <div class="tabs" role="tablist">
         <button class="tab-btn active" data-tab="presets" type="button">Built-in clips</button>
@@ -42,14 +65,24 @@
       </div>
 
       <div class="tab-panel hidden" data-panel="upload">
-        <p class="hint">
-          <strong>Honest limitation:</strong> the R3D-18 checkpoint
-          (<code>best.pt</code>) is not present on this machine, so an
-          uploaded video cannot get a live temporal score. Upload only works
-          if you also pick the <code>clip_key</code> of a primary-split clip
-          that already has one -- ideally by uploading that exact file. YOLO
-          detection, tracking, and Phase-4 rules still run live on whatever
-          you upload.
+        <p class="hint" id="uploadHintReplay">
+          <strong>In REPLAY mode</strong> an uploaded video cannot get a
+          temporal score of its own, because replay reads probabilities from
+          the committed CSV. Upload here only works if you also pick the
+          <code>clip_key</code> of a primary-split clip that already has one
+          &mdash; ideally by uploading that exact file. YOLO detection,
+          tracking and the Phase-4 rules still run live on whatever you upload.
+          <br />
+          To analyse a genuinely new video, switch to <strong>LIVE MODEL</strong>
+          mode above.
+        </p>
+        <p class="hint hidden" id="uploadHintLive">
+          <strong>In LIVE MODEL mode</strong> the video you upload is processed
+          end to end: YOLO detection, tracking, the spatial fusion feature, and
+          an actual R3D-18 forward pass for every complete 16-frame window. No
+          <code>clip_key</code> is needed and no precomputed score is read.
+          A video shorter than 16 frames yields no temporal window, which is
+          reported rather than guessed.
         </p>
         <input id="videoUpload" type="file" accept="video/*" />
         <input id="uploadClipSearch" list="clipDataList" placeholder="Matching clip_key (required)" autocomplete="off" />
@@ -60,7 +93,13 @@
     </section>
 
     <section class="panel panel-results hidden" id="resultsPanel">
-      <h2>2. Result</h2>
+      <h2>3. Result</h2>
+
+      <!-- Which mode produced what is on screen. Rendered from the response's
+           own mode field, never inferred, so it cannot disagree with the
+           numbers beside it. -->
+      <div id="modeBanner" class="mode-banner">--</div>
+      <div id="liveNote" class="notice hidden"></div>
 
       <div class="result-grid">
         <div class="result-video">
@@ -97,9 +136,13 @@
       <p class="muted">
         The temporal branch does not score the clip as a whole: it scores
         overlapping 16-frame windows and takes the maximum. Each bar is one
-        scored window &mdash; click one to select it for saliency. These
-        probabilities are <strong>replayed from the committed scores</strong>;
-        clicking a window does not run the model.
+        scored window &mdash; click one to select it for saliency.
+        <span id="timelineProvenance">
+          In REPLAY mode these probabilities are
+          <strong>replayed from the committed scores</strong>; in LIVE MODEL
+          mode each one was produced by an R3D-18 forward pass during that run.
+        </span>
+        Clicking a window does not run the model.
       </p>
       <div id="windowChart" class="window-chart"></div>
       <table class="window-table" id="windowTable">
@@ -132,6 +175,25 @@
           attention, and not ground-truth localization.</em>
         </p>
       </div>
+
+      <h3>Evidence fusion</h3>
+      <p class="muted">
+        A <strong>configured</strong> fusion layer combining the temporal
+        probability with an interpretable spatial motion feature. The spatial
+        feature is a whole-video aggregate, so the fusion decision is available
+        only after the whole video has been processed &mdash; it is
+        <strong>not</strong> a causal mid-video alarm. Thresholds are read from
+        the frozen protocol, not tuned here.
+      </p>
+      <div id="fusionPanel" class="fusion-panel"></div>
+      <p class="caveat" id="fusionCaveat">
+        In the frozen confirmatory evaluation, fusion did
+        <strong>not</strong> produce a statistically significant improvement
+        over the temporal-only baseline (exact McNemar p&nbsp;=&nbsp;0.771).
+        The temporal-only rule remains the system's decision. Fusion is shown
+        because the research question concerns an explainable multi-signal
+        system, <em>not</em> because it performs better.
+      </p>
 
       <h3>Explanation report</h3>
       <div id="explanation" class="explanation"></div>

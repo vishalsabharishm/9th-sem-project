@@ -330,3 +330,48 @@ input[type="text"], input[list], input[type="file"] {
                    font-size: .9rem; }
 .risk-status { font-size: .8rem; color: #8a6d3b; margin-left: .5rem; }
 .report-actions { margin-top: .75rem; display: flex; gap: .5rem; flex-wrap: wrap; }
+
+/* ---------------------------------------------------------------------------
+   Mode selection and the mode banner.
+
+   The single most important thing a viewer must be able to tell within seconds
+   is whether they are looking at replayed research evidence or an actual model
+   run, so the two are given deliberately different colours and the banner sits
+   above the result rather than beside it.
+   --------------------------------------------------------------------------- */
+
+.mode-select { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+
+.mode-option {
+  display: block;
+  padding: 10px 12px;
+  border: 1px solid #d5d9e0;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #fbfcfd;
+}
+.mode-option.selected { border-color: #2f6fb0; background: #eef4fb; }
+.mode-option input { margin-right: 8px; }
+.mode-title { font-weight: 600; font-size: 0.92rem; }
+.mode-desc { display: block; margin-top: 4px; font-size: 0.8rem; color: #566; line-height: 1.45; }
+
+.mode-banner {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+  margin-bottom: 12px;
+}
+.mode-banner.replay { background: #eef4fb; color: #1f4b7a; border-left: 4px solid #2f6fb0; }
+.mode-banner.live   { background: #eaf6ee; color: #1d5c34; border-left: 4px solid #2f9c54; }
+
+/* Fusion panel */
+.fusion-panel { margin: 8px 0 4px; }
+.fusion-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+.fusion-table th, .fusion-table td {
+  text-align: left; padding: 5px 8px; border-bottom: 1px solid #e6e9ee; vertical-align: top;
+}
+.fusion-table th { color: #566; font-weight: 600; }
+.fusion-table tr.incumbent { background: #f6f8fb; }
+.fusion-table td.fired { color: #b3261e; font-weight: 600; }

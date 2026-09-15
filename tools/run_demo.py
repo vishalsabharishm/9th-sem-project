@@ -57,6 +57,11 @@ from temporal_event_adapter import (  # noqa: E402
     WindowScore,
     window_score_from,
 )
+from operational_fusion import (  # noqa: E402
+    FrozenFusionProtocol,
+    FusionProtocolError,
+    SpatialFeatureAccumulator,
+)
 from temporal_runtime import (  # noqa: E402
     RUNTIME_CLIP_LENGTH,
     RUNTIME_STRIDE,
@@ -420,12 +425,29 @@ def run_demo(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     frozen_rule = FrozenAggregationRule.load(FROZEN_JSON)
-    score_source = PrecomputedWindowScoreSource(PRIMARY_CSV)
+
     # A CSV row is required for replay, but NOT for live inference: live mode
     # must be able to score a clip that was never in the committed file, which
     # is also the strongest available evidence that a model actually ran.
-    windows = score_source.get(clip_key)
-    true_label = score_source.true_label(clip_key)
+    #
+    # The CSV is opened here for two different reasons, and only one of them is
+    # load-bearing in live mode. Replay needs the SCORES. Both modes consult it
+    # for an optional dataset GROUND-TRUTH LABEL, which is display-only and
+    # never reaches a decision. Constructing the source unconditionally made a
+    # live run fail outright when the CSV was absent -- a dependency on a file
+    # whose contents live mode does not use. A missing CSV now simply means no
+    # label is available, which is a state the summary already represents.
+    # Replay still fails loudly, in build_window_source, because for replay the
+    # file genuinely is the evidence.
+    windows = None
+    true_label = None
+    try:
+        score_source = PrecomputedWindowScoreSource(PRIMARY_CSV)
+        windows = score_source.get(clip_key)
+        true_label = score_source.true_label(clip_key)
+    except Exception:
+        if temporal_source != SOURCE_LIVE:
+            raise
 
     window_source = build_window_source(
         temporal_source, clip_key, windows, checkpoint=checkpoint, device=device
@@ -456,6 +478,10 @@ def run_demo(
     running_scores: List[float] = []
     # Windows the source actually produced, in completion order.
     observed_windows: List[WindowScore] = []
+    # The frozen spatial feature, measured from THIS video as it is decoded.
+    # It keeps its own BehaviorAnalyzer so that driving it cannot perturb the
+    # rule engine's analyzer, which holds separate state for a different job.
+    spatial_feature = SpatialFeatureAccumulator()
 
     while True:
         ok, frame = cap.read()
@@ -480,6 +506,13 @@ def run_demo(
         # frozen box reads as a ghost detection). src/end_to_end_fixture.py
         # already filters them; the demo does the same here.
         tracks = active_tracks(tracker.update(boxes, class_ids, confidences), tracker.frame_idx)
+
+        # Fed BEFORE the rule engine, because the frozen spatial scorer reads
+        # get_previous_bbox before update_history and that ordering is part of
+        # what produced the locked artifact. Separate analyzer, so the order of
+        # these two calls relative to each other cannot matter.
+        spatial_feature.observe(frame_idx, tracks)
+
         snapshot = build_tracking_snapshot(frame_idx + 1, tracks)
         frame_events = event_detector.process_snapshot(snapshot)
         all_events.extend(frame_events)
@@ -521,6 +554,23 @@ def run_demo(
     risk_json_path = output_dir / f"demo_{stem}_risk_assessment.json"
     write_risk_assessments(risk_assessments, risk_json_path)
 
+    # Evidence fusion, evaluated once the whole video has been seen. The
+    # spatial feature's denominator is a mean over every frame containing a
+    # person, so it does not exist until now -- this is an offline whole-video
+    # judgement and is labelled as one. A missing or edited protocol makes
+    # fusion explicitly unavailable; it never falls back to default parameters.
+    temporal_max = (
+        max(w.fight_probability for w in observed_windows) if observed_windows else None
+    )
+    try:
+        fusion = FrozenFusionProtocol.load().evaluate(temporal_max, spatial_feature.score)
+    except FusionProtocolError as error:
+        fusion = {
+            "available": False,
+            "reason": "protocol_unavailable",
+            "detail": str(error),
+        }
+
     summary = {
         "clip_key": clip_key,
         "video_path": str(video_path),
@@ -537,10 +587,38 @@ def run_demo(
         "risk_assessment_json": str(risk_json_path),
         "temporal_provenance": window_source.describe(),
         "windows_observed": len(observed_windows),
+        # The windows this run actually observed, in completion order. Live
+        # mode has no CSV to read a timeline from, and a consumer must never
+        # have to reconstruct one; replay yields the same list it replayed.
+        "window_scores": [
+            {
+                "window_index": w.window_index,
+                "first_frame": w.first_frame,
+                "last_frame": w.last_frame,
+                "fight_probability": w.fight_probability,
+            }
+            for w in observed_windows
+        ],
+        "temporal_max_probability": temporal_max,
+        "temporal_evidence_available": bool(observed_windows),
+        # With zero completed windows there is no temporal evidence at all, and
+        # calling that "NonFight" would assert a negative the system never
+        # measured -- the honest answer is that the question was not decidable.
+        # A video needs 16 frames to close one window; replay clips always
+        # close 17, so this state is reachable only on very short live input.
         "final_temporal_decision": (
-            "Fight" if temporal_event is not None else "NonFight"
+            "Undetermined" if not observed_windows
+            else "Fight" if temporal_event is not None
+            else "NonFight"
+        ),
+        "undetermined_reason": (
+            None if observed_windows else
+            "No 16-frame window completed, so the temporal model never ran on "
+            "this video. No temporal decision is claimed."
         ),
         "alert_risk_level": ("High" if temporal_event is not None else None),
+        "spatial_fusion_feature": spatial_feature.as_dict(),
+        "fusion": fusion,
     }
 
     report_path = output_dir / f"demo_{stem}_explanation.md"

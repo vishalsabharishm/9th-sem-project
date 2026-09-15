@@ -357,20 +357,45 @@ class GroundTruthLabelTests(unittest.TestCase):
         self.assertIsNone(labels.true_label("val/Val_NonFight/cw8fPfUL_0.avi"))
 
 
-class WebServerIsolationTests(unittest.TestCase):
-    """Live mode stays on the CLI; the browser UI is unchanged for now."""
+class WebServerModeSelectionTests(unittest.TestCase):
+    """The browser UI now offers live mode, and must choose it EXPLICITLY.
 
-    def test_web_server_does_not_select_a_temporal_source(self):
-        source = (REPO_ROOT / "web" / "server.py").read_text(encoding="utf-8")
-        self.assertNotIn("temporal_source", source)
-        self.assertNotIn("--checkpoint", source)
+    This class previously asserted the opposite -- that web/server.py never
+    mentioned ``temporal_source`` at all, because live inference was
+    deliberately kept on the CLI while the UI stayed replay-only. That scope
+    boundary has been lifted on purpose; the UI now exposes both modes.
 
-    def test_web_server_calls_run_demo_positionally_and_gets_csv(self):
-        source = (REPO_ROOT / "web" / "server.py").read_text(encoding="utf-8")
-        self.assertIn(
-            "run_demo(Path(video_path), resolved_clip_key, DEFAULT_MODEL_PATH, DEMO_OUTPUT_DIR)",
-            source,
-        )
+    What those tests were really protecting is not the boundary but the
+    property behind it: replay and live must never be confusable. That property
+    is stronger here than it was there, so it is asserted directly instead of
+    via the absence of a substring.
+    """
+
+    def setUp(self):
+        self.source = (REPO_ROOT / "web" / "server.py").read_text(encoding="utf-8")
+
+    def test_web_server_selects_the_temporal_source_explicitly(self):
+        self.assertIn("temporal_source=", self.source)
+        self.assertIn('"live" if mode == MODE_LIVE else "csv"', self.source)
+
+    def test_mode_is_read_from_the_request_and_defaults_to_replay(self):
+        self.assertIn('request.form.get("mode") or MODE_REPLAY', self.source)
+
+    def test_an_unknown_mode_is_rejected_rather_than_guessed(self):
+        self.assertIn("if mode not in SUPPORTED_MODES:", self.source)
+
+    def test_live_mode_requires_a_checkpoint_and_never_falls_back(self):
+        """A live request that cannot run live must fail, not replay."""
+        self.assertIn("checkpoint=(checkpoint if mode == MODE_LIVE else None)", self.source)
+        self.assertIn("There is no fallback", self.source)
+
+    def test_live_window_scores_come_from_the_run_not_the_csv(self):
+        """The one place a live result could silently become a replayed one."""
+        self.assertIn('summary.get("window_scores")', self.source)
+
+    def test_the_response_states_which_mode_produced_it(self):
+        self.assertIn('"mode": mode', self.source)
+        self.assertIn("mode_label", self.source)
 
 
 if __name__ == "__main__":
