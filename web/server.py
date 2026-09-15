@@ -27,6 +27,7 @@ import sys
 import threading
 import traceback
 from pathlib import Path
+from typing import Optional
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
@@ -121,10 +122,45 @@ def _cached_engine(checkpoint: Path, device: str = "cpu"):
         return engine, False
 
 
-def _resolve_video_path(clip_key: str) -> Path:
-    """clip_key looks like 'val/Val_Fight/trtrhrt_1049.avi' -- the same
-    relative path DEMO_CLIPS uses under data/rwf2000/RWF-2000/."""
-    return REPO_ROOT / "data" / "rwf2000" / "RWF-2000" / clip_key
+DATASET_ROOT = REPO_ROOT / "data" / "rwf2000" / "RWF-2000"
+
+
+def _clip_key_from(payload: dict) -> Optional[str]:
+    """Extract clip_key as a string, or None if the caller sent something else.
+
+    ``(payload.get("clip_key") or "").strip()`` raises AttributeError when the
+    JSON carries a list or a number, which surfaced as HTTP 500 -- a crash where
+    the caller simply sent the wrong type. A malformed request deserves an
+    actionable 400, not a server error.
+    """
+    value = payload.get("clip_key")
+    if not isinstance(value, str):
+        return None
+    return value.strip() or None
+
+
+def _resolve_video_path(clip_key: str) -> Optional[Path]:
+    """Resolve a clip_key under the dataset root, or None if it escapes.
+
+    clip_key looks like 'val/Val_Fight/trtrhrt_1049.avi' -- the same relative
+    path DEMO_CLIPS uses under data/rwf2000/RWF-2000/.
+
+    clip_key is user-controlled, and a bare ``root / clip_key`` is not safe for
+    two reasons. ``..`` segments walk out of the dataset, and pathlib REPLACES
+    the base entirely when the right-hand operand is absolute, so
+    'C:/Windows/win.ini' would resolve to exactly that. Both were reachable
+    before this guard: a request could open any file on disk that OpenCV would
+    accept, and the differing error for a present versus absent file worked as
+    a file-existence oracle for arbitrary paths.
+
+    Returning None rather than raising keeps the caller's error handling
+    uniform: an out-of-tree key is simply not a resolvable clip.
+    """
+    candidate = (DATASET_ROOT / clip_key).resolve()
+    root = DATASET_ROOT.resolve()
+    if candidate == root or root not in candidate.parents:
+        return None
+    return candidate
 
 
 def _parse_evidence(evidence: list) -> dict:
@@ -211,16 +247,15 @@ def api_explain():
     as explicit reasons rather than an empty panel.
     """
     payload = request.get_json(silent=True) or {}
-    clip_key = (payload.get("clip_key") or "").strip()
+    clip_key = _clip_key_from(payload)
+    if clip_key is None:
+        return jsonify(explanation_unavailable(
+            "bad_request", "clip_key is required and must be a string.")), 400
     try:
         first_frame = int(payload.get("first_frame"))
     except (TypeError, ValueError):
         return jsonify(explanation_unavailable(
             "bad_request", "first_frame must be an integer.")), 400
-    if not clip_key:
-        return jsonify(explanation_unavailable(
-            "bad_request", "clip_key is required.")), 400
-
     checkpoint = REPO_ROOT / "models" / "temporal_violence" / "best.pt"
     if not checkpoint.is_file():
         return jsonify(explanation_unavailable(
@@ -230,10 +265,23 @@ def api_explain():
             "cannot be differentiated.",
         ))
 
-    video_path = _resolve_video_path(clip_key)
-    if not video_path.exists():
+    # Membership first, matching the guard /api/analyze already applies. A key
+    # that is not a known scored clip cannot be explained, and checking this
+    # before touching the filesystem means an unknown key reveals nothing about
+    # what does or does not exist on disk.
+    if _score_source.get(clip_key) is None:
         return jsonify(explanation_unavailable(
-            "video_unavailable", f"Video not found locally: {video_path}"))
+            "unknown_clip",
+            f"'{clip_key}' is not one of the clips with precomputed temporal "
+            "scores. Pick a clip from the browse list or a built-in preset.",
+        ))
+
+    video_path = _resolve_video_path(clip_key)
+    if video_path is None or not video_path.exists():
+        return jsonify(explanation_unavailable(
+            "video_unavailable",
+            f"No video available for clip '{clip_key}' under the dataset root.",
+        ))
 
     import cv2
     capture = cv2.VideoCapture(str(video_path))
@@ -321,9 +369,9 @@ def api_report():
     received; nothing is recomputed here.
     """
     payload = request.get_json(silent=True) or {}
-    clip_key = (payload.get("clip_key") or "").strip()
-    if not clip_key:
-        return jsonify({"error": "clip_key is required."}), 400
+    clip_key = _clip_key_from(payload)
+    if clip_key is None:
+        return jsonify({"error": "clip_key is required and must be a string."}), 400
 
     stem = Path(clip_key).stem
     risk_json_path = DEMO_OUTPUT_DIR / f"demo_{stem}_risk_assessment.json"
@@ -400,8 +448,14 @@ def api_analyze():
             uploaded.save(str(video_path))
         else:
             video_path = _resolve_video_path(clip_key)
-            if not video_path.exists():
-                return jsonify({"error": f"Video file not found locally: {video_path}"}), 400
+            if video_path is None or not video_path.exists():
+                return (
+                    jsonify({"error": (
+                        f"No video available for clip '{clip_key}' under the "
+                        "dataset root."
+                    )}),
+                    400,
+                )
     else:
         return (
             jsonify({"error": "Provide either 'preset' (fight/nonfight/fp) or a 'clip_key' from /api/clips."}),

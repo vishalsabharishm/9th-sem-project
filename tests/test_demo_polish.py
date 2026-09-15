@@ -228,6 +228,119 @@ class IncidentReportTests(unittest.TestCase):
         self.assertIn("none recorded", text)   # Crowding has no confidence
 
 
+class PathTraversalTests(unittest.TestCase):
+    """clip_key is user-controlled and was joined to the dataset root unchecked.
+
+    Two distinct escapes were reachable through /api/explain before this guard:
+    ``..`` segments walked out of the dataset, and pathlib REPLACES the base
+    when the right-hand operand is absolute, so 'C:/Windows/win.ini' resolved to
+    exactly that. Any file OpenCV would open could be reached, and the differing
+    response for a present versus absent file worked as a file-existence oracle
+    for arbitrary paths.
+    """
+
+    def setUp(self):
+        sys.path.insert(0, str(REPO_ROOT / "web"))
+        import server
+        self.server = server
+
+    def test_legitimate_clip_still_resolves(self):
+        resolved = self.server._resolve_video_path("val/Val_Fight/trtrhrt_1049.avi")
+        self.assertIsNotNone(resolved)
+        self.assertIn("RWF-2000", str(resolved))
+
+    def test_dot_dot_traversal_is_refused(self):
+        for key in ("../../../README.md",
+                    "../../../models/yolov8s.pt",
+                    "../../../../../../Windows/win.ini",
+                    "val/../../../../README.md"):
+            self.assertIsNone(self.server._resolve_video_path(key),
+                              f"traversal not blocked: {key}")
+
+    def test_absolute_path_is_refused(self):
+        """pathlib drops the base for an absolute operand -- the subtler escape."""
+        for key in ("C:/Windows/System32/drivers/etc/hosts",
+                    r"C:\Windows\win.ini",
+                    "/etc/passwd"):
+            self.assertIsNone(self.server._resolve_video_path(key),
+                              f"absolute path not blocked: {key}")
+
+    def test_dataset_root_itself_is_not_a_clip(self):
+        self.assertIsNone(self.server._resolve_video_path(""))
+        self.assertIsNone(self.server._resolve_video_path("."))
+
+    def test_explain_checks_membership_before_touching_the_filesystem(self):
+        """An unknown key must reveal nothing about what exists on disk."""
+        source = SERVER.read_text(encoding="utf-8")
+        explain = source[source.index("def api_explain"):source.index("def api_preflight")]
+        membership = explain.index('_score_source.get(clip_key) is None')
+        resolve = explain.index("_resolve_video_path(clip_key)")
+        self.assertLess(membership, resolve,
+                        "membership must be checked before the path is resolved")
+
+    def test_errors_do_not_echo_absolute_filesystem_paths(self):
+        source = SERVER.read_text(encoding="utf-8")
+        explain = source[source.index("def api_explain"):source.index("def api_preflight")]
+        self.assertNotIn("{video_path}", explain,
+                         "error text must not leak the resolved absolute path")
+
+
+class MalformedRequestTests(unittest.TestCase):
+    """A wrong TYPE is a client error, not a server error.
+
+    ``(payload.get("clip_key") or "").strip()`` raises AttributeError on a list
+    or a number, which surfaced as HTTP 500 -- a crash where the caller merely
+    sent the wrong type.
+    """
+
+    def setUp(self):
+        sys.path.insert(0, str(REPO_ROOT / "web"))
+        import server
+        self.extract = server._clip_key_from
+
+    def test_non_string_clip_keys_are_rejected_not_crashed(self):
+        for bad in ([], ["a"], {"a": 1}, 5, 3.2, True, None):
+            self.assertIsNone(self.extract({"clip_key": bad}), repr(bad))
+
+    def test_blank_and_missing_are_rejected(self):
+        self.assertIsNone(self.extract({}))
+        self.assertIsNone(self.extract({"clip_key": ""}))
+        self.assertIsNone(self.extract({"clip_key": "   "}))
+
+    def test_valid_key_is_returned_stripped(self):
+        self.assertEqual(self.extract({"clip_key": "  val/a.avi  "}), "val/a.avi")
+
+    def test_both_endpoints_use_the_shared_extractor(self):
+        """Checks ASSIGNMENTS, not any occurrence of the old pattern.
+
+        The retired expression is quoted inside _clip_key_from's docstring to
+        explain the bug it fixes, so a plain substring search flags the very
+        documentation that describes the fix.
+        """
+        source = SERVER.read_text(encoding="utf-8")
+        self.assertEqual(source.count("_clip_key_from(payload)"), 2,
+                         "explain and report must both use the guarded extractor")
+        # Only JSON payloads need the guard. /api/analyze reads request.form,
+        # where Flask's .get() always yields str or None, so .strip() there is
+        # type-safe and correctly left alone.
+        assignments = [
+            line.strip() for line in source.splitlines()
+            if line.strip().startswith("clip_key =")
+        ]
+        self.assertTrue(assignments, "no clip_key assignment found")
+        for line in assignments:
+            guarded = "_clip_key_from(payload)" in line
+            form_sourced = "request.form.get" in line
+            self.assertTrue(
+                guarded or form_sourced,
+                f"clip_key assigned from an unguarded JSON payload: {line}",
+            )
+        self.assertTrue(
+            any("request.form.get" in line for line in assignments),
+            "expected the analyze endpoint to read clip_key from request.form",
+        )
+
+
 class StaleStateTests(unittest.TestCase):
     """Two bugs found in the hardening audit, both about state outliving its run."""
 
