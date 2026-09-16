@@ -556,15 +556,25 @@ async function runAnalyze() {
   els.processingError.classList.add("hidden");
   els.processingError.textContent = "";
   els.viewResultsBtn.classList.add("hidden");
+  if (els.stageStrip) {
+    els.stageStrip.classList.remove("settled", "group-active");
+    els.stageStrip.querySelectorAll("li").forEach(function (li) {
+      delete li.dataset.reveal;
+      li.dataset.state = "waiting";
+    });
+  }
+  const priorBanner = document.getElementById("completionBanner");
+  if (priorBanner) priorBanner.classList.add("hidden");
   els.processingSub.textContent = state.mode === "live"
     ? "Running R3D-18 inference locally on CPU. This is not real time."
     : "Replaying committed window probabilities. No temporal model runs.";
 
   els.analyzeBtn.disabled = true;
   els.analyzeBtn.classList.add("busy");
-  // Indeterminate: the backend reports a final result, not progress, so the
-  // whole chain reads "processing" rather than faking a percentage.
-  setStages("processing");
+  // Nothing claims to be running until the server reports a phase. The request
+  // has not even been accepted yet here, so showing fusion or risk as
+  // "processing" would be a claim about work that has not started.
+  setStages("waiting");
   setStatus(
     state.mode === "live"
       ? "LIVE MODEL: YOLO detection + tracking + spatial feature + an R3D-18 forward pass per 16-frame window. Offline, not real time -- expect roughly 0.5s per window plus detection, so a few minutes for a long video."
@@ -617,11 +627,18 @@ async function runAnalyze() {
     if (elapsedEl && state.session && state.session.elapsed != null) {
       elapsedEl.textContent = `Completed in ${state.session.elapsed}s of local processing.`;
     }
+    const strip = els.stageStrip;
+    if (strip) {
+      strip.classList.remove("group-active");
+      strip.classList.add("settled");
+    }
+    const banner = document.getElementById("completionBanner");
+    if (banner) banner.classList.remove("hidden");
     // Hand the examiner straight to the results rather than leaving them on a
     // finished progress screen.
     setTimeout(function () {
       if (state.view === "processing") showView("results");
-    }, 1600);
+    }, 1100);
   } catch (err) {
     const message = `Request failed: ${err}`;
     setStatus(message, true);
@@ -1481,9 +1498,22 @@ function applyJobPhase(job) {
       else if (interleaved.indexOf(stage) !== -1) li.dataset.state = "processing";
       else li.dataset.state = "waiting";
     } else if (phase === "finalising") {
-      if (stage === "video_input" || interleaved.indexOf(stage) !== -1) li.dataset.state = "complete";
-      else if (postLoop.indexOf(stage) !== -1) li.dataset.state = "complete";
-      else li.dataset.state = "processing";
+      // By the time the server reports finalising, run_demo has returned: the
+      // frame loop, fusion and risk have ALL finished inside that one call.
+      // So these are revealed as complete, staggered purely so the eye can
+      // follow -- the cascade is a reveal of finished work, never a claim that
+      // fusion or risk are executing now. Only explanation_ready is genuinely
+      // in progress here: the server is reading the artifacts it just wrote.
+      if (stage === "video_input" || interleaved.indexOf(stage) !== -1) {
+        li.dataset.state = "complete";
+      } else if (postLoop.indexOf(stage) !== -1) {
+        li.dataset.state = "complete";
+        li.dataset.reveal = String(postLoop.indexOf(stage));
+      } else {
+        li.dataset.state = "processing";
+      }
+    } else if (phase === "complete") {
+      li.dataset.state = "complete";
     }
   });
 
@@ -1494,6 +1524,9 @@ function applyJobPhase(job) {
 
   const note = document.getElementById("interleavedNote");
   if (note) note.classList.toggle("hidden", phase !== "analysing");
+  // The scan marks the interleaved BLOCK as working. Deliberately not a
+  // row-to-row flow animation: these stages do not hand off to one another.
+  strip.classList.toggle("group-active", phase === "analysing");
 
   const elapsed = document.getElementById("processingElapsed");
   if (elapsed) {
@@ -1552,18 +1585,27 @@ async function loadBrowserPreview(data) {
   els.videoFallback.classList.add("hidden");
   els.resultVideo.classList.remove("hidden");
 
-  // Clear the previous run's footage FIRST. Converting a preview takes a few
-  // seconds, and leaving the old video on screen meanwhile showed one clip's
-  // annotated frames beside another clip's evidence.
+  // Clear the previous run's footage FIRST, and make the clearing VISIBLE.
+  // Converting a preview takes a few seconds, and leaving the old video on
+  // screen meanwhile showed one clip's annotated frames beside another clip's
+  // evidence. The element is hidden rather than merely re-sourced because
+  // currentSrc lingers until a new resource selection completes, so "cleared"
+  // has to be something the viewer can see, not just technically true.
   els.resultVideo.removeAttribute("src");
   els.resultVideo.load();
+  els.resultVideo.classList.add("hidden");
   state.fps = null;
   const provenanceEl = document.getElementById("videoProvenance");
-  if (provenanceEl) provenanceEl.textContent = "Preparing a browser-playable preview…";
+  if (provenanceEl) provenanceEl.textContent = "";
+  els.videoFallback.classList.remove("hidden");
+  els.videoFallback.innerHTML =
+    '<span class="preview-spinner" aria-hidden="true"></span>' +
+    "<p>Preparing a browser-playable preview of the annotated video…</p>";
 
   function offerOriginal(detail) {
     els.resultVideo.classList.add("hidden");
     els.videoFallback.classList.remove("hidden");
+    if (provenanceEl) provenanceEl.textContent = "";
     els.videoFallback.innerHTML =
       "<strong>This browser cannot play the annotated video.</strong>" +
       "<p>" + escapeHtml(detail) + " The file itself is complete and contains " +
@@ -1584,6 +1626,8 @@ async function loadBrowserPreview(data) {
     });
     const preview = await res.json();
     if (preview.available) {
+      els.videoFallback.classList.add("hidden");
+      els.resultVideo.classList.remove("hidden");
       els.resultVideo.src = preview.url + "?t=" + Date.now();
       const caption = document.getElementById("videoProvenance");
       if (caption) {
@@ -1597,6 +1641,8 @@ async function loadBrowserPreview(data) {
     offerOriginal(preview.detail || "No browser-playable encoder is available.");
   } catch (err) {
     // Conversion is a convenience; failing it must not break the results page.
+    els.videoFallback.classList.add("hidden");
+    els.resultVideo.classList.remove("hidden");
     els.resultVideo.src = original + "?t=" + Date.now();
     measureFps(data);
   }

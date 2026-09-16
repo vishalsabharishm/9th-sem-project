@@ -384,5 +384,90 @@ class JobLifecycleTests(unittest.TestCase):
         self.assertIn("analysing", phases)
 
 
+class ProcessingChoreographyTests(unittest.TestCase):
+    """The animation must never claim work that has not happened."""
+
+    def test_nothing_is_processing_before_the_server_reports_a_phase(self):
+        """The request has not even been accepted when the view opens."""
+        body = SCRIPT[SCRIPT.index("async function runAnalyze"):]
+        body = body[:body.index("async function pollJob")] if "async function pollJob" in body else body
+        pre_submit = body[:body.index("/api/analysis")]
+        self.assertIn('setStages("waiting")', pre_submit)
+        self.assertNotIn('setStages("processing")', pre_submit,
+                         "nothing may read as running before the job is accepted")
+
+    def test_the_interleaved_block_gets_one_scan_not_per_row_flow(self):
+        """A row-to-row flow would depict a handoff that does not happen."""
+        css = STYLE.read_text(encoding="utf-8")
+        self.assertIn("group-active", css)
+        self.assertIn("groupScan", css)
+        self.assertIn("strip.classList.toggle(\"group-active\"", SCRIPT)
+        # The connector between rows must stay static.
+        self.assertNotIn("connectorFlow", css)
+
+    def test_post_loop_stages_are_revealed_as_complete_not_as_active(self):
+        """Fusion and risk finished inside run_demo before finalising began.
+
+        Staggering them is a reveal of finished work. Marking them
+        "processing" during finalising would assert they were executing then,
+        which is false.
+        """
+        fn = SCRIPT[SCRIPT.index("function applyJobPhase"):]
+        fn = fn[:fn.index("\nasync function pollJob")]
+        finalising = fn[fn.index('phase === "finalising"'):fn.index('phase === "complete"')]
+        self.assertIn('li.dataset.state = "complete"', finalising)
+        self.assertIn("li.dataset.reveal", finalising)
+        # The only thing genuinely in progress at finalising is artifact reading.
+        self.assertIn('li.dataset.state = "processing"', finalising)
+
+    def test_completion_state_is_announced_without_overclaiming(self):
+        self.assertIn('id="completionBanner"', MARKUP)
+        banner = MARKUP[MARKUP.index('id="completionBanner"'):]
+        banner = banner[:banner.index("</div>", banner.index("</span>"))]
+        self.assertIn("Analysis complete", banner)
+        self.assertIn("Evidence available for inspection", banner)
+        # It must not claim an explanation was produced.
+        self.assertNotIn("saliency generated", banner.lower())
+
+    def test_auto_navigation_leaves_a_manual_fallback(self):
+        self.assertIn('id="viewResultsBtn"', MARKUP)
+        self.assertIn("showView(\"results\")", SCRIPT)
+
+    def test_a_rerun_clears_the_previous_completion_state(self):
+        body = SCRIPT[SCRIPT.index("async function runAnalyze"):]
+        pre_submit = body[:body.index("/api/analysis")]
+        self.assertIn('classList.remove("settled", "group-active")', pre_submit)
+        self.assertIn("delete li.dataset.reveal", pre_submit)
+
+
+class PreviewPreparationTests(unittest.TestCase):
+    def test_the_player_is_hidden_while_a_new_preview_converts(self):
+        """currentSrc lingers after load(), so clearing must be visible."""
+        fn = SCRIPT[SCRIPT.index("async function loadBrowserPreview"):]
+        fn = fn[:fn.index("\n}")]
+        hide_at = fn.index('els.resultVideo.classList.add("hidden")')
+        fetch_at = fn.index('fetch("/api/preview_video"')
+        self.assertLess(hide_at, fetch_at, "hide the player before converting")
+        self.assertIn("preview-spinner", fn)
+        self.assertIn("Preparing a browser-playable preview", fn)
+
+    def test_the_player_is_revealed_only_with_a_new_source(self):
+        fn = SCRIPT[SCRIPT.index("async function loadBrowserPreview"):]
+        fn = fn[:fn.index("\n}")]
+        reveal_at = fn.index('els.resultVideo.classList.remove("hidden");\n      els.resultVideo.src')
+        self.assertGreater(reveal_at, fn.index('fetch("/api/preview_video"'))
+
+
+class FaviconTests(unittest.TestCase):
+    def test_the_page_declares_its_own_icon(self):
+        """Without this the browser requests /favicon.ico and logs a 404."""
+        self.assertIn('rel="icon"', MARKUP)
+        self.assertIn("data:image/svg+xml", MARKUP)
+        # Inline, so it is still one request-free page on an offline machine.
+        icon = MARKUP[MARKUP.index('rel="icon"'):]
+        icon = icon[:icon.index("/>")]
+        self.assertNotIn("http", icon.replace("http://www.w3.org/2000/svg", ""))
+
+
 if __name__ == "__main__":
     unittest.main()

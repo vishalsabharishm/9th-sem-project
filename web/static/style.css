@@ -1115,3 +1115,79 @@ button {
   .rl-title, .rl-meta dd, .rp-item .rp-v { color: #111; }
   .explanation { max-height: none; overflow: visible; }
 }
+
+/* ===========================================================================
+   Processing choreography.
+
+   Every animation here corresponds to a state the server actually reported.
+   Note what is deliberately ABSENT: there is no row-to-row "flow" animation
+   between YOLO, tracking, spatial and temporal, because those four do not hand
+   off to one another -- they run together, once per decoded frame. Animating a
+   handoff would draw a pipeline this project does not have. The group is given
+   one scanning bracket instead, which says "this block is working".
+   =========================================================================== */
+
+/* Static connector: structure, not motion. */
+.pipeline li:not(:last-child)::after { opacity: .55; }
+
+/* The interleaved block reads as one unit while it runs. */
+.pipeline.group-active li.grouped { border-left-color: var(--accent); }
+.pipeline.group-active li.grouped::before {
+  content: ""; position: absolute; left: -2px; top: 0; width: 2px; height: 34%;
+  background: linear-gradient(180deg, transparent, var(--accent), transparent);
+  animation: groupScan 2.4s ease-in-out infinite;
+}
+@keyframes groupScan {
+  0%   { top: 0; opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { top: 66%; opacity: 0; }
+}
+
+/* Completion cascade. The delay staggers a REVEAL of work already finished
+   when the server reported finalising -- it is not a progress claim. */
+.pipeline li[data-reveal="0"] .stage-mark { transition-delay: .00s; }
+.pipeline li[data-reveal="1"] .stage-mark { transition-delay: .18s; }
+
+.pipeline li[data-state="complete"] .stage-mark {
+  animation: markSettle .42s var(--ease) both;
+}
+@keyframes markSettle {
+  0%   { transform: scale(.55); }
+  60%  { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+
+/* Final settle: the whole list stops drawing attention to itself. */
+.pipeline.settled li { border-color: var(--border); background: rgba(255,255,255,.015); }
+.pipeline.settled li.grouped::before { display: none; }
+
+.completion-banner {
+  display: flex; align-items: center; gap: 13px;
+  margin: 18px 0 14px; padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(76,195,138,.34); background: var(--ok-soft);
+  animation: bannerIn .6s var(--ease) both;
+}
+.completion-banner .cb-check {
+  display: grid; place-items: center; flex: none;
+  width: 30px; height: 30px; border-radius: 50%;
+  color: #0c1a13; background: var(--ok);
+  animation: checkPop .55s var(--ease) both .1s;
+}
+.completion-banner strong { display: block; font-size: 13.6px; color: #d4efe1; }
+.completion-banner em {
+  display: block; margin-top: 2px; font-style: normal;
+  font-size: 12px; color: var(--muted);
+}
+@keyframes bannerIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes checkPop { 0% { transform: scale(.4); opacity: 0; } 65% { transform: scale(1.12); } 100% { transform: scale(1); opacity: 1; } }
+
+/* Preview preparation: the player is hidden and the wait is stated, so a
+   previous run's frames can never sit under a new run's evidence. */
+.preview-spinner {
+  display: block; width: 20px; height: 20px; margin: 0 auto 10px;
+  border-radius: 50%; border: 2px solid rgba(63,188,216,.25);
+  border-top-color: var(--accent);
+  animation: spin .8s linear infinite;
+}
