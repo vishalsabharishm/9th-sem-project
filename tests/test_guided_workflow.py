@@ -102,9 +102,42 @@ class ExplicitStartTests(unittest.TestCase):
 
 class ProcessingHonestyTests(unittest.TestCase):
     def test_pipeline_lists_the_real_stages(self):
-        for stage in ("video", "yolo", "tracking", "spatial", "temporal",
-                      "fusion", "risk", "explanation"):
+        for stage in ("video_input", "yolo_detection", "object_tracking",
+                      "spatial_analysis", "temporal_analysis", "evidence_fusion",
+                      "risk_interpretation", "explanation_ready"):
             self.assertIn(f'data-stage="{stage}"', MARKUP, f"missing stage {stage}")
+
+    def test_stage_ids_match_the_names_the_server_publishes(self):
+        """The client keys off the server's own stage vocabulary."""
+        server = SERVER.read_text(encoding="utf-8")
+        for stage in ("yolo_detection", "object_tracking", "spatial_analysis",
+                      "temporal_analysis"):
+            self.assertIn(f'"{stage}"', server, f"{stage} not declared server-side")
+        for stage in ("evidence_fusion", "risk_interpretation"):
+            self.assertIn(f'"{stage}"', server)
+
+    def test_interleaved_stages_are_declared_not_animated_as_a_sequence(self):
+        """Detection/tracking/spatial/temporal run together, once per frame.
+
+        Showing them completing one after another would depict a pipeline this
+        project does not have, so the UI states the concurrency instead.
+        """
+        self.assertIn('id="interleavedNote"', MARKUP)
+        self.assertIn("together, once per decoded frame", MARKUP)
+        self.assertIn("INTERLEAVED_STAGES", SERVER.read_text(encoding="utf-8"))
+
+    def test_processing_is_driven_by_server_phases_not_a_timer(self):
+        self.assertIn("function applyJobPhase", SCRIPT)
+        self.assertIn("async function pollJob", SCRIPT)
+        poll = SCRIPT[SCRIPT.index("async function pollJob"):]
+        poll = poll[:poll.index("\n}")]
+        self.assertIn("/api/analysis/", poll)
+        self.assertNotIn("Math.random", poll)
+
+    def test_explanation_ready_does_not_mean_saliency_was_generated(self):
+        block = MARKUP[MARKUP.index('data-stage="explanation_ready"'):]
+        block = block[:block.index("</li>")]
+        self.assertIn("no saliency is generated automatically", block)
 
     def test_processing_screen_promises_no_percentage(self):
         block = MARKUP[MARKUP.index('data-view="processing"'):MARKUP.index('data-view="results"')]
@@ -178,6 +211,48 @@ class VideoPlaybackTests(unittest.TestCase):
         # It must offer the file rather than merely apologising.
         self.assertIn("Open annotated video", SCRIPT)
 
+    def test_a_browser_playable_copy_is_requested_not_assumed(self):
+        """The annotated artifact stays mp4v; a preview copy is made beside it."""
+        self.assertIn("/api/preview_video", SCRIPT)
+        server = SERVER.read_text(encoding="utf-8")
+        self.assertIn("BROWSER_PREVIEW_SUFFIX", server)
+        # Only codecs browsers actually decode may be produced.
+        codecs = server[server.index("BROWSER_CODECS = ("):]
+        codecs = codecs[:codecs.index(")\n")]
+        self.assertNotIn("mp4v", codecs, "mp4v is what the browser cannot play")
+        for playable in ("avc1", "VP90", "VP80"):
+            self.assertIn(playable, codecs)
+
+    def test_the_original_annotated_artifact_is_never_overwritten(self):
+        server = SERVER.read_text(encoding="utf-8")
+        fn = server[server.index("def _browser_preview_for("):]
+        fn = fn[:fn.index("\n@app.route")]
+        # The preview always gets its own name derived from the source stem.
+        self.assertIn("source.stem + BROWSER_PREVIEW_SUFFIX", fn)
+        # And a failed encode removes its own output rather than leaving junk.
+        self.assertIn("target.unlink(missing_ok=True)", fn)
+
+    def test_a_failed_conversion_degrades_instead_of_breaking(self):
+        self.assertIn("conversion_unavailable", SERVER.read_text(encoding="utf-8"))
+        self.assertIn("Open annotated video", SCRIPT)
+
+    def test_new_analysis_resets_the_session(self):
+        self.assertIn('data-reset="session"', MARKUP)
+        self.assertIn("function resetSession", SCRIPT)
+        fn = SCRIPT[SCRIPT.index("function resetSession"):]
+        fn = fn[:fn.index("\n}")]
+        for cleared in ("state.session = null", "selectedWindow = null",
+                        "__clearAnalysis", "__lastClipKey = null"):
+            self.assertIn(cleared, fn, f"{cleared} must be reset")
+
+    def test_timeline_timestamps_are_measured_not_assumed(self):
+        """fps is derived from the preview duration, never hard-coded."""
+        fn = SCRIPT[SCRIPT.index("function measureFps"):]
+        fn = fn[:fn.index("\n}\n")]
+        self.assertIn("frames / duration", fn)
+        for guess in ("30.0", "= 30;", "25.0"):
+            self.assertNotIn(guess, fn, "frame rate must not be assumed")
+
     def test_leaving_a_view_pauses_its_video(self):
         self.assertIn("if (owner && owner.dataset.view !== name && !v.paused) v.pause();", SCRIPT)
 
@@ -206,6 +281,107 @@ class BackendContractUnchangedTests(unittest.TestCase):
         fn = fn[:fn.index("\nfunction selectWindow")]
         self.assertIn("selectWindow(w)", fn, "the picker must share one selection path")
         self.assertNotIn("fetch(", fn, "selecting a window must not call the backend")
+
+
+class BrowserPreviewEndpointTests(unittest.TestCase):
+    """The presentation copy, exercised through the real Flask app."""
+
+    def setUp(self):
+        import server as SERVER_MODULE
+
+        SERVER_MODULE.app.config["TESTING"] = True
+        self.module = SERVER_MODULE
+        self.client = SERVER_MODULE.app.test_client()
+
+    def test_a_non_string_name_is_refused(self):
+        response = self.client.post("/api/preview_video", json={"video_name": 42})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.get_json()["reason"], "bad_request")
+
+    def test_a_traversing_name_cannot_escape_the_output_directory(self):
+        for name in ("../../../README.md", "..\\..\\server.py", "/etc/passwd"):
+            response = self.client.post("/api/preview_video", json={"video_name": name})
+            self.assertIn(response.status_code, (400, 404), name)
+            self.assertFalse(response.get_json().get("available"), name)
+
+    def test_an_unknown_video_is_reported_not_guessed(self):
+        response = self.client.post("/api/preview_video",
+                                    json={"video_name": "demo_nothing_here.mp4"})
+        self.assertEqual(response.status_code, 404)
+        body = response.get_json()
+        self.assertFalse(body["available"])
+        self.assertEqual(body["reason"], "missing")
+
+    def test_only_browser_playable_codecs_are_candidates(self):
+        """mp4v is exactly what the browser cannot decode."""
+        fourccs = [c[0] for c in self.module.BROWSER_CODECS]
+        self.assertNotIn("mp4v", fourccs)
+        self.assertIn("avc1", fourccs)
+
+    def test_the_preview_name_never_collides_with_the_original(self):
+        suffix = self.module.BROWSER_PREVIEW_SUFFIX
+        self.assertTrue(suffix)
+        source = Path("demo_example.mp4")
+        for _fourcc, ext, _label in self.module.BROWSER_CODECS:
+            preview = source.with_name(source.stem + suffix + ext)
+            self.assertNotEqual(preview.name, source.name)
+
+
+class StaleVideoTests(unittest.TestCase):
+    def test_the_previous_runs_footage_is_cleared_before_the_new_preview(self):
+        """Converting takes seconds; the old clip must not fill the gap.
+
+        Leaving it there showed one clip's annotated frames beside another
+        clip's evidence, which is the stale-state failure this project has
+        repeatedly guarded against.
+        """
+        fn = SCRIPT[SCRIPT.index("async function loadBrowserPreview"):]
+        fn = fn[:fn.index("\n}")]
+        clear_at = fn.index('els.resultVideo.removeAttribute("src")')
+        fetch_at = fn.index('fetch("/api/preview_video"')
+        self.assertLess(clear_at, fetch_at,
+                        "the old source must be cleared before the new one is fetched")
+        self.assertLess(fn.index("state.fps = null"), fetch_at,
+                        "the measured frame rate belongs to the old video")
+
+
+class JobLifecycleTests(unittest.TestCase):
+    def setUp(self):
+        import server as SERVER_MODULE
+
+        SERVER_MODULE.app.config["TESTING"] = True
+        self.client = SERVER_MODULE.app.test_client()
+
+    def test_an_unknown_job_is_a_clean_404(self):
+        response = self.client.get("/api/analysis/not-a-real-job")
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("Unknown or expired", response.get_json()["error"])
+
+    def test_an_invalid_mode_never_starts_a_job(self):
+        response = self.client.post("/api/analysis", data={"mode": "banana", "preset": "fight"})
+        self.assertEqual(response.status_code, 400)
+        self.assertNotIn("job_id", response.get_json())
+
+    def test_live_without_a_video_never_starts_a_job(self):
+        response = self.client.post("/api/analysis", data={"mode": "live"})
+        self.assertEqual(response.status_code, 400)
+        self.assertNotIn("job_id", response.get_json())
+
+    def test_the_job_declares_which_stages_are_concurrent(self):
+        server = SERVER.read_text(encoding="utf-8")
+        self.assertIn("INTERLEAVED_STAGES", server)
+        self.assertIn("POST_LOOP_STAGES", server)
+        # And the temporal wording must differ by mode, so replay can never
+        # read as model execution.
+        self.assertIn("running R3D-18 inference", server)
+        self.assertIn("replaying committed window probabilities", server)
+
+    def test_no_phase_carries_a_percentage(self):
+        server = SERVER.read_text(encoding="utf-8")
+        phases = server[server.index("ANALYSIS_PHASES = ("):]
+        phases = phases[:phases.index(")")]
+        self.assertNotIn("percent", phases.lower())
+        self.assertIn("analysing", phases)
 
 
 if __name__ == "__main__":

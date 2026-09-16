@@ -30,6 +30,23 @@ RUN_DEMO_SOURCE = (REPO_ROOT / "tools" / "run_demo.py").read_text(encoding="utf-
 CHECKPOINT = REPO_ROOT / "models" / "temporal_violence" / "best.pt"
 YOLO_WEIGHTS = REPO_ROOT / "models" / "yolov8s.pt"
 
+
+def _function_source(source: str, name: str) -> str:
+    """Return one top-level function's source, ending at the next top-level line.
+
+    Slicing to the next "@app.route" overshoots whenever a plain function
+    follows, which silently widened these assertions to cover code they were
+    not about.
+    """
+    start = source.index(f"def {name}(")
+    lines = source[start:].splitlines(keepends=True)
+    body = [lines[0]]
+    for line in lines[1:]:
+        if line.strip() and not line[0].isspace():
+            break
+        body.append(line)
+    return "".join(body)
+
 needs_checkpoint = unittest.skipUnless(CHECKPOINT.is_file(), "R3D checkpoint not present")
 needs_yolo = unittest.skipUnless(YOLO_WEIGHTS.is_file(), "YOLO weights not present")
 
@@ -73,10 +90,31 @@ class ModeContractTests(unittest.TestCase):
         self.assertNotIn("except Exception:\n            mode = MODE_REPLAY", SERVER_SOURCE)
 
     def test_live_timeline_comes_from_the_run_not_the_score_source(self):
-        """A live timeline read from _score_source would be a replay in disguise."""
-        analyze = SERVER_SOURCE.split("def api_analyze()")[1]
-        live_branch = analyze.split("if mode == MODE_LIVE:")[-1]
+        """A live timeline read from _score_source would be a replay in disguise.
+
+        Response building now lives in _analysis_payload, shared by the
+        blocking POST /api/analyze and the background job behind
+        POST /api/analysis, so there is one definition of what a result looks
+        like. The property is asserted where it now lives.
+        """
+        payload = _function_source(SERVER_SOURCE, "_analysis_payload")
+        live_branch = payload.split("if mode == MODE_LIVE:")[-1]
         self.assertIn('summary.get("window_scores")', live_branch)
+        # ...and replay must still read the committed source, in the same place.
+        self.assertIn("_score_source.get(resolved_clip_key)", payload)
+
+    def test_both_entry_points_share_one_result_definition(self):
+        """Two builders would be two chances to disagree about a result."""
+        self.assertEqual(SERVER_SOURCE.count("def _analysis_payload("), 1)
+        # One call from the blocking endpoint, one from the background worker
+        # (the count excludes the definition line itself).
+        calls = SERVER_SOURCE.count("_analysis_payload(summary, mode,") - 1
+        self.assertEqual(calls, 2, "both entry points must call the one builder")
+
+    def test_the_background_job_cannot_downgrade_live_to_replay(self):
+        job = _function_source(SERVER_SOURCE, "_run_analysis_job")
+        self.assertIn('temporal_source=("live" if mode == MODE_LIVE else "csv")', job)
+        self.assertIn("checkpoint=(checkpoint if mode == MODE_LIVE else None)", job)
 
     def test_response_states_its_mode_explicitly(self):
         self.assertIn('"mode": mode', SERVER_SOURCE)

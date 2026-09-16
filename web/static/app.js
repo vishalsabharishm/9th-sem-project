@@ -13,7 +13,19 @@ const state = {
   presets: [],
   view: "home",
   reached: ["home"],
+  // One place the analysis session lives. Cleared by New Analysis so a new run
+  // can never inherit the previous run's evidence.
+  session: null,
+  fps: null,          // measured from the preview video, never assumed
 };
+
+function resetSession() {
+  state.session = null;
+  state.fps = null;
+  selectedWindow = null;
+  if (window.__clearAnalysis) window.__clearAnalysis();
+  window.__lastClipKey = null;
+}
 
 const els = {
   tabBtns: document.querySelectorAll(".tab-btn"),
@@ -122,6 +134,13 @@ function lockStepsAfter(name) {
 document.addEventListener("click", function (event) {
   const target = event.target.closest("[data-goto]");
   if (!target || target.disabled) return;
+  // "New Analysis" is an explicit reset, not just navigation: the previous
+  // run's evidence must not survive into a new configuration.
+  if (target.dataset.reset === "session") {
+    resetSession();
+    lockStepsAfter("setup");
+    setStages(null);
+  }
   showView(target.dataset.goto);
 });
 
@@ -191,15 +210,16 @@ function setStagesFromResult(data) {
   const feature = data.spatial_fusion_feature || null;
   const fusion = data.fusion || null;
   const known = {
-    video: summary.frames_processed > 0 ? "complete" : "warning",
-    yolo: "complete",
-    tracking: "complete",
+    video_input: summary.frames_processed > 0 ? "complete" : "warning",
+    yolo_detection: "complete",
+    object_tracking: "complete",
     // An undefined spatial feature is a warning, not a failure: it means no
     // usable track pair existed, which the panel below states plainly.
-    spatial: feature && feature.defined ? "complete" : "warning",
-    temporal: (data.window_scores || []).length ? "complete" : "warning",
-    fusion: fusion && fusion.available ? "complete" : "warning",
-    explanation: "complete",
+    spatial_analysis: feature && feature.defined ? "complete" : "warning",
+    temporal_analysis: (data.window_scores || []).length ? "complete" : "warning",
+    evidence_fusion: fusion && fusion.available ? "complete" : "warning",
+    risk_interpretation: data.overall_risk ? "complete" : "warning",
+    explanation_ready: "complete",
   };
   els.stageStrip.querySelectorAll("li").forEach((li) => {
     li.dataset.state = known[li.dataset.stage] || "complete";
@@ -568,15 +588,21 @@ async function runAnalyze() {
   if (staleSaliency) staleSaliency.innerHTML = "";
 
   try {
-    const res = await fetch("/api/analyze", { method: "POST", body: formData });
-    const data = await res.json();
-    if (!res.ok) {
-      const message = data.error || `Request failed (HTTP ${res.status}).`;
+    // The dashboard drives the background job so the processing screen can
+    // report phases the server actually reached. /api/analyze still exists and
+    // still behaves identically for any other caller.
+    const started = await fetch("/api/analysis", { method: "POST", body: formData });
+    const job = await started.json();
+    if (!started.ok) {
+      const message = job.error || `Request failed (HTTP ${started.status}).`;
       setStatus(message, true);
       setStages("warning");
       showProcessingError(message);
       return;
     }
+    applyJobPhase(job);
+    const data = await pollJob(job.job_id);
+    if (data === null) return;
     setStatus("Analysis complete.", false);
     showToast("Analysis complete.");
     renderResult(data);
@@ -584,12 +610,18 @@ async function runAnalyze() {
     unlockStep("explain");
     unlockStep("report");
     els.viewResultsBtn.classList.remove("hidden");
-    els.processingSub.textContent = "Analysis complete.";
+    els.processingSub.textContent = "Analysis complete. Evidence available for inspection.";
+    const note = document.getElementById("interleavedNote");
+    if (note) note.classList.add("hidden");
+    const elapsedEl = document.getElementById("processingElapsed");
+    if (elapsedEl && state.session && state.session.elapsed != null) {
+      elapsedEl.textContent = `Completed in ${state.session.elapsed}s of local processing.`;
+    }
     // Hand the examiner straight to the results rather than leaving them on a
     // finished progress screen.
     setTimeout(function () {
       if (state.view === "processing") showView("results");
-    }, 700);
+    }, 1600);
   } catch (err) {
     const message = `Request failed: ${err}`;
     setStatus(message, true);
@@ -666,18 +698,7 @@ function renderResult(data) {
   // ---------------------------------------------------------------------
   els.videoFallback.classList.add("hidden");
   els.resultVideo.classList.remove("hidden");
-  els.resultVideo.onerror = function () {
-    els.resultVideo.classList.add("hidden");
-    els.videoFallback.classList.remove("hidden");
-    els.videoFallback.innerHTML =
-      "<strong>This browser cannot play the annotated video.</strong>" +
-      "<p>The file was written successfully and contains every annotated " +
-      "frame, but it uses the MPEG-4 Part 2 codec, which browsers do not " +
-      "decode. Open or download it to view the detections and track IDs.</p>" +
-      '<a class="btn btn-ghost btn-sm" href="' + data.video_url +
-      '" target="_blank" rel="noopener">Open annotated video</a>';
-  };
-  els.resultVideo.src = data.video_url + "?t=" + Date.now();
+  loadBrowserPreview(data);
   els.videoCaption.textContent = `${data.summary.clip_key} -- ${data.summary.frames_processed} frames processed`;
 
   els.riskBadge.textContent = data.overall_risk;
@@ -753,9 +774,10 @@ function decisionFor(probability) {
 // The Explain view needs its own list of the SAME scored windows -- ids must
 // stay unique, so the timeline lives on Results and this is a second control
 // bound to the identical data and the identical selectWindow().
-function renderExplainPicker(windowScores) {
+function renderExplainPicker(windowScores, keepSelection) {
   if (!els.explainWindowList) return;
   const windows = windowScores || [];
+  state.lastWindows = windows;
   if (!windows.length) {
     els.explainWindowList.innerHTML =
       '<p class="muted">No temporal windows are available to explain. ' +
@@ -770,7 +792,9 @@ function renderExplainPicker(windowScores) {
     return '<button class="wp-item" type="button" data-index="' + w.window_index + '">' +
       '<span class="wp-idx">#' + w.window_index +
       (w.window_index === peak.window_index ? ' <em>peak</em>' : "") + "</span>" +
-      '<span class="wp-frames">frames ' + w.first_frame + "–" + w.last_frame + "</span>" +
+      '<span class="wp-frames">frames ' + w.first_frame + "–" + w.last_frame +
+      (windowTimestamp(w) ? '<em class="wp-time">' + windowTimestamp(w) + "</em>" : "") +
+      "</span>" +
       '<span class="wp-prob">' + w.fight_probability.toFixed(4) + "</span>" +
       '<span class="wp-dec' + (decision === "Fight" ? " is-fight" : "") + '">' + decision + "</span>" +
       "</button>";
@@ -783,6 +807,7 @@ function renderExplainPicker(windowScores) {
       if (w) selectWindow(w);
     });
   });
+  if (keepSelection && selectedWindow) selectWindow(selectedWindow);
 }
 
 function selectWindow(w) {
@@ -1367,8 +1392,32 @@ function renderSpatialEvidence(data) {
 // the same payload the export sends -- it never describes a field the report
 // would not carry.
 // ---------------------------------------------------------------------------
+function renderReportMeta(data) {
+  const target = document.getElementById("reportMeta");
+  if (!target) return;
+  const summary = data.summary || {};
+  const provenance = summary.temporal_provenance || {};
+  // Every field is read from the run; nothing -- including any timestamp -- is
+  // invented. generated_utc comes from the report the server builds, so it is
+  // deliberately not shown here.
+  const rows = [
+    ["Analysis ID", summary.clip_key || "--"],
+    ["Mode", data.mode === "live" ? "Live inference" : "Replay (precomputed)"],
+    ["Frames processed", summary.frames_processed != null ? String(summary.frames_processed) : "Not available"],
+    ["Evidence status", (data.window_scores || []).length
+      ? `${(data.window_scores || []).length} scored temporal window(s)`
+      : "No temporal window completed"],
+    ["Temporal source", provenance.temporal_source === "live"
+      ? "R3D-18 inference in this process" : "Committed window probabilities"],
+  ];
+  target.innerHTML = rows.map(function (r) {
+    return "<dt>" + escapeHtml(r[0]) + "</dt><dd>" + escapeHtml(r[1]) + "</dd>";
+  }).join("");
+}
+
 function renderReportPreview(data) {
   if (!els.reportPreview) return;
+  renderReportMeta(data);
   const summary = data.summary || {};
   const provenance = summary.temporal_provenance || {};
   const fusion = data.fusion || {};
@@ -1390,4 +1439,186 @@ function renderReportPreview(data) {
     .map(([k, v]) => `<div class="rp-item"><span class="rp-k">${escapeHtml(k)}</span>` +
                      `<span class="rp-v">${escapeHtml(v)}</span></div>`)
     .join("");
+}
+
+
+// ---------------------------------------------------------------------------
+// Processing: driven by real server phases, never by a timer.
+//
+// What the server can honestly observe is limited, and the UI says so rather
+// than inventing a sequence. run_demo performs detection, tracking, spatial
+// accumulation and temporal windowing INTERLEAVED, once per decoded frame --
+// they do not complete one after another -- and aggregation, fusion and risk
+// run after that loop inside the same call. So during processing the
+// interleaved stages are shown active TOGETHER, labelled as such, and the
+// post-loop stages stay queued until the result arrives. No percentage is ever
+// shown, because none is knowable.
+// ---------------------------------------------------------------------------
+const STAGE_PHASE_TEXT = {
+  queued: "Queued",
+  validating: "Validating the request",
+  analysing: "Analysing footage",
+  finalising: "Reading analysis artifacts",
+  complete: "Analysis complete",
+  failed: "Analysis failed",
+};
+
+function applyJobPhase(job) {
+  const phase = job.phase;
+  els.processingSub.textContent = STAGE_PHASE_TEXT[phase] || phase;
+
+  const strip = els.stageStrip;
+  if (!strip) return;
+  const interleaved = job.interleaved_stages || [];
+  const postLoop = job.post_loop_stages || [];
+
+  strip.querySelectorAll("li").forEach(function (li) {
+    const stage = li.dataset.stage;
+    if (phase === "validating" || phase === "queued") {
+      li.dataset.state = stage === "video_input" ? "processing" : "waiting";
+    } else if (phase === "analysing") {
+      if (stage === "video_input") li.dataset.state = "complete";
+      else if (interleaved.indexOf(stage) !== -1) li.dataset.state = "processing";
+      else li.dataset.state = "waiting";
+    } else if (phase === "finalising") {
+      if (stage === "video_input" || interleaved.indexOf(stage) !== -1) li.dataset.state = "complete";
+      else if (postLoop.indexOf(stage) !== -1) li.dataset.state = "complete";
+      else li.dataset.state = "processing";
+    }
+  });
+
+  // The temporal row says which of the two things is happening, from the
+  // server's own wording -- replay must never read as model execution.
+  const temporal = strip.querySelector('li[data-stage="temporal_analysis"] .stage-detail');
+  if (temporal && job.temporal_note) temporal.textContent = job.temporal_note;
+
+  const note = document.getElementById("interleavedNote");
+  if (note) note.classList.toggle("hidden", phase !== "analysing");
+
+  const elapsed = document.getElementById("processingElapsed");
+  if (elapsed) {
+    elapsed.textContent = job.elapsed != null ? `${job.elapsed}s elapsed` : "";
+  }
+}
+
+async function pollJob(jobId) {
+  // 700 ms: responsive enough to feel live, light enough to be invisible next
+  // to a multi-second analysis.
+  while (true) {
+    await new Promise(function (r) { setTimeout(r, 700); });
+    let job;
+    try {
+      const res = await fetch(`/api/analysis/${jobId}`);
+      job = await res.json();
+      if (!res.ok) {
+        const message = job.error || `Lost contact with the analysis (HTTP ${res.status}).`;
+        setStatus(message, true);
+        setStages("warning");
+        showProcessingError(message);
+        return null;
+      }
+    } catch (err) {
+      const message = `Lost contact with the analysis: ${err}`;
+      setStatus(message, true);
+      setStages("warning");
+      showProcessingError(message);
+      return null;
+    }
+    applyJobPhase(job);
+    if (job.phase === "failed") {
+      setStatus(job.error || "Analysis failed.", true);
+      setStages("warning");
+      showProcessingError(job.error || "Analysis failed.");
+      return null;
+    }
+    if (job.phase === "complete") {
+      state.session = { job_id: jobId, elapsed: job.elapsed };
+      return job.result;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Browser-playable annotated video.
+//
+// The pipeline writes the annotated video with OpenCV's mp4v fourcc, which
+// browsers do not decode. The server re-encodes the SAME frames into a
+// browser-native codec on request, beside the original, and never in place of
+// it. If no encoder is available the original is offered for download instead.
+// ---------------------------------------------------------------------------
+async function loadBrowserPreview(data) {
+  const original = data.video_url;
+  const name = original.split("/").pop();
+  els.videoFallback.classList.add("hidden");
+  els.resultVideo.classList.remove("hidden");
+
+  // Clear the previous run's footage FIRST. Converting a preview takes a few
+  // seconds, and leaving the old video on screen meanwhile showed one clip's
+  // annotated frames beside another clip's evidence.
+  els.resultVideo.removeAttribute("src");
+  els.resultVideo.load();
+  state.fps = null;
+  const provenanceEl = document.getElementById("videoProvenance");
+  if (provenanceEl) provenanceEl.textContent = "Preparing a browser-playable preview…";
+
+  function offerOriginal(detail) {
+    els.resultVideo.classList.add("hidden");
+    els.videoFallback.classList.remove("hidden");
+    els.videoFallback.innerHTML =
+      "<strong>This browser cannot play the annotated video.</strong>" +
+      "<p>" + escapeHtml(detail) + " The file itself is complete and contains " +
+      "every annotated frame.</p>" +
+      '<a class="btn btn-ghost btn-sm" href="' + original +
+      '" target="_blank" rel="noopener">Open annotated video</a>';
+  }
+
+  els.resultVideo.onerror = function () {
+    offerOriginal("The browser could not decode it.");
+  };
+
+  try {
+    const res = await fetch("/api/preview_video", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ video_name: name }),
+    });
+    const preview = await res.json();
+    if (preview.available) {
+      els.resultVideo.src = preview.url + "?t=" + Date.now();
+      const caption = document.getElementById("videoProvenance");
+      if (caption) {
+        caption.textContent =
+          "Browser preview (" + preview.codec + ") re-encoded from the same " +
+          "annotated frames. The original artifact is unchanged.";
+      }
+      measureFps(data);
+      return;
+    }
+    offerOriginal(preview.detail || "No browser-playable encoder is available.");
+  } catch (err) {
+    // Conversion is a convenience; failing it must not break the results page.
+    els.resultVideo.src = original + "?t=" + Date.now();
+    measureFps(data);
+  }
+}
+
+// Frames-per-second is MEASURED from the preview's own duration against the
+// frame count the analysis reported. It is never assumed, and when it cannot
+// be measured the timeline simply shows frames instead of timestamps.
+function measureFps(data) {
+  const frames = (data.summary || {}).frames_processed;
+  els.resultVideo.onloadedmetadata = function () {
+    const duration = els.resultVideo.duration;
+    if (frames && duration && isFinite(duration) && duration > 0) {
+      state.fps = frames / duration;
+      renderExplainPicker((data.window_scores || []), true);
+    }
+  };
+}
+
+function windowTimestamp(w) {
+  if (!state.fps) return null;
+  const start = w.first_frame / state.fps;
+  const end = (w.last_frame + 1) / state.fps;
+  return start.toFixed(2) + "\u2013" + end.toFixed(2) + "s";
 }

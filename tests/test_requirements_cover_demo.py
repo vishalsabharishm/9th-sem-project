@@ -12,12 +12,15 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 REQUIREMENTS = REPO_ROOT / "requirements.txt"
 SERVER = REPO_ROOT / "web" / "server.py"
 
-STDLIB_OR_LOCAL = {
-    "os","sys","json","time","base64","traceback","pathlib","typing","datetime",
-    "argparse","csv","math","hashlib","itertools","dataclasses","collections",
-    "subprocess","re","functools","warnings","threading","random","statistics",
-    "__future__",
-}
+# The interpreter's own list is the source of truth, so a newly used stdlib
+# module can never be mistaken for an undeclared dependency. The literals below
+# only supplement it (`__future__` is not in stdlib_module_names).
+#
+# This was a hand-maintained set, and it drifted: importing `uuid` in
+# web/server.py failed a test whose actual purpose is to catch undeclared
+# THIRD-PARTY imports. Deriving it removes that whole class of false positive
+# without loosening what the test checks.
+STDLIB_OR_LOCAL = set(sys.stdlib_module_names) | {"__future__"}
 
 
 def declared():

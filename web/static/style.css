@@ -1047,3 +1047,71 @@ button {
   }
   .panel { animation: none; }
 }
+
+/* ------------------------------------------------- processing detail rows */
+
+.pipeline .stage-name { display: flex; flex-direction: column; gap: 2px; }
+.stage-detail { font-size: 11px; color: var(--faint); line-height: 1.4; }
+.pipeline li[data-state="processing"] .stage-detail { color: var(--accent); opacity: .85; }
+.pipeline li[data-state="waiting"] { opacity: .62; }
+
+/* The interleaved group is bracketed so it reads as one concurrent block. */
+.pipeline li.grouped { border-left: 2px solid var(--border-strong); }
+.pipeline li.grouped[data-state="processing"] { border-left-color: var(--accent); }
+
+.interleaved-note {
+  margin: 14px 0 6px; padding: 11px 13px;
+  border-radius: var(--radius-sm); border: 1px solid var(--accent-line);
+  background: var(--accent-soft); color: #cfe9f2;
+  font-size: 12px; line-height: 1.6;
+}
+.processing-elapsed {
+  margin: 8px 0 0; font-family: var(--mono); font-size: 11.6px; color: var(--muted);
+}
+
+/* -------------------------------------------------------- video provenance */
+
+.video-provenance {
+  margin-top: 5px; font-size: 11.4px; line-height: 1.5; color: var(--faint);
+}
+
+/* --------------------------------------------------------- timeline times */
+
+.wp-time {
+  display: block; font-style: normal; font-size: 10.4px; color: var(--faint);
+}
+
+/* ------------------------------------------------------- report letterhead */
+
+/* No negative-margin bleed: the panel's padding changes with viewport height,
+   so a hard-coded -17px overflowed the card by a few pixels on short screens. */
+.report-letterhead {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
+  margin: 0 0 18px; padding: 0 0 16px;
+  border-bottom: 1px solid var(--border-strong);
+}
+.rl-brand {
+  display: block; font-size: 11.5px; font-weight: 700;
+  letter-spacing: .18em; color: var(--accent);
+}
+.rl-title {
+  display: block; margin-top: 3px; font-size: 17px; font-weight: 600;
+  letter-spacing: -.01em; color: var(--text);
+}
+.rl-meta {
+  display: grid; grid-template-columns: auto 1fr; gap: 3px 12px;
+  margin: 0; font-size: 11.6px; min-width: 280px;
+}
+.rl-meta dt { color: var(--muted); }
+.rl-meta dd { margin: 0; font-family: var(--mono); font-size: 11px; word-break: break-all; }
+
+@media print {
+  .topbar, .stepper, .appfoot, .view-head .view-actions,
+  .report-actions, .toast { display: none !important; }
+  body { background: #fff; color: #111; }
+  .panel, .report-sheet { border-color: #ccc; box-shadow: none; background: #fff; }
+  .rl-brand { color: #036; }
+  .rl-title, .rl-meta dd, .rp-item .rp-v { color: #111; }
+  .explanation { max-height: none; overflow: visible; }
+}

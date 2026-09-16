@@ -368,10 +368,15 @@ class StaleStateTests(unittest.TestCase):
         self.assertIn("no weights", failed["detail"])
 
     def test_a_new_analyze_clears_the_previous_runs_state(self):
-        """A failed analyze left the OLD clip armed for Explain and Export."""
+        """A failed analyze left the OLD clip armed for Explain and Export.
+
+        The slice ends at the submit call, which is now POST /api/analysis --
+        the background job the dashboard drives. The property is unchanged: the
+        previous run's state must be cleared BEFORE the new request is sent.
+        """
         script = APP_JS.read_text(encoding="utf-8")
         submit = script[script.index("els.analyzeBtn.disabled = true;"):
-                        script.index('const res = await fetch("/api/analyze"')]
+                        script.index('await fetch("/api/analysis", { method: "POST", body: formData })')]
         for cleared in ("__clearAnalysis", "__lastClipKey = null",
                         "selectedWindow = null"):
             self.assertIn(cleared, submit,
@@ -385,7 +390,7 @@ class StaleStateTests(unittest.TestCase):
     def test_explain_button_is_disabled_when_state_is_cleared(self):
         script = APP_JS.read_text(encoding="utf-8")
         submit = script[script.index("els.analyzeBtn.disabled = true;"):
-                        script.index('const res = await fetch("/api/analyze"')]
+                        script.index('await fetch("/api/analysis", { method: "POST", body: formData })')]
         self.assertIn("staleExplain.disabled = true", submit)
 
 

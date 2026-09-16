@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import json as _json
 import sys
+import uuid
 import threading
 import traceback
 from pathlib import Path
@@ -503,6 +504,105 @@ def _save_upload(uploaded) -> Path:
     return destination
 
 
+def _resolve_analysis_target(mode, preset, clip_key, uploaded):
+    """Validate a request and resolve it to a concrete video and clip key.
+
+    Returns ``{"error": message}`` or the resolved target. Shared by
+    POST /api/analyze and the background job behind POST /api/analysis so the
+    two cannot accept different things -- in particular, so neither can ever
+    silently downgrade a live request into a replay.
+
+    The logic is unchanged from when it lived inline in api_analyze; only the
+    error shape moved, from an HTTP response to a value the caller renders.
+    """
+    checkpoint = REPO_ROOT / "models" / "temporal_violence" / "best.pt"
+    live_note = None
+
+    if mode == MODE_LIVE:
+        if not checkpoint.is_file():
+            return {"error": (
+                f"Live mode needs the R3D-18 checkpoint at {checkpoint}, which is "
+                "not present on this machine. There is no fallback: a live "
+                "request will not be answered with replayed scores."
+            )}
+
+        if uploaded is not None and uploaded.filename:
+            try:
+                video_path = _save_upload(uploaded)
+            except ValueError as error:
+                return {"error": str(error)}
+            resolved_clip_key = f"live/{video_path.name}"
+        elif preset:
+            if preset not in DEMO_CLIPS:
+                return {"error": f"Unknown preset '{preset}'."}
+            video_path = Path(DEMO_CLIPS[preset]["video"])
+            resolved_clip_key = f"live/{Path(DEMO_CLIPS[preset]['clip_key']).name}"
+        elif clip_key:
+            video_path = _resolve_video_path(clip_key)
+            if video_path is None or not video_path.exists():
+                return {"error": (
+                    f"No video available for clip '{clip_key}' under the dataset root."
+                )}
+            resolved_clip_key = f"live/{Path(clip_key).name}"
+        else:
+            return {"error": (
+                "Live mode needs a video: upload one as 'video', or name a "
+                "'preset' or 'clip_key' to run the model over."
+            )}
+
+        # A live run over a clip that also has a research score is legitimate
+        # engineering, but the number it produces is NOT the research number
+        # and must never be mistaken for it. Say so in the response.
+        if clip_key and _score_source.get(clip_key) is not None:
+            live_note = (
+                f"'{clip_key}' also has a precomputed research score. This live "
+                "result was computed now, by this process, and is an "
+                "engineering artifact -- it is not the locked research score "
+                "for that clip and does not replace it."
+            )
+        if not video_path.is_file():
+            return {"error": f"Video file not found: {video_path}"}
+    else:
+        if preset:
+            if preset not in DEMO_CLIPS:
+                return {"error": f"Unknown preset '{preset}'."}
+            resolved_clip_key = DEMO_CLIPS[preset]["clip_key"]
+            video_path = DEMO_CLIPS[preset]["video"]
+        elif clip_key:
+            if _score_source.get(clip_key) is None:
+                return {"error": (
+                    f"No precomputed temporal score exists for clip_key '{clip_key}' in "
+                    "temporal_risk/primary_window_scores.csv. Switch to mode=live to "
+                    "run the model on this video, or pick a clip_key from the browse "
+                    "list, which only lists clips that already have a real score."
+                )}
+            resolved_clip_key = clip_key
+            if uploaded and uploaded.filename:
+                try:
+                    video_path = _save_upload(uploaded)
+                except ValueError as error:
+                    return {"error": str(error)}
+            else:
+                video_path = _resolve_video_path(clip_key)
+                if video_path is None or not video_path.exists():
+                    return {"error": (
+                        f"No video available for clip '{clip_key}' under the "
+                        "dataset root."
+                    )}
+        else:
+            return {"error": (
+                "Provide either 'preset' (fight/nonfight/fp) or a 'clip_key' from /api/clips."
+            )}
+
+    return {
+        "error": None,
+        "video_path": video_path,
+        "resolved_clip_key": resolved_clip_key,
+        "checkpoint": checkpoint,
+        "live_note": live_note,
+    }
+
+
 @app.route("/api/analyze", methods=["POST"])
 def api_analyze():
     """Analyse one video in an EXPLICITLY chosen mode.
@@ -528,95 +628,13 @@ def api_analyze():
             "or 'live' (actual model inference)."
         )}), 400
 
-    checkpoint = REPO_ROOT / "models" / "temporal_violence" / "best.pt"
-    live_note = None
-
-    if mode == MODE_LIVE:
-        if not checkpoint.is_file():
-            return jsonify({"error": (
-                f"Live mode needs the R3D-18 checkpoint at {checkpoint}, which is "
-                "not present on this machine. There is no fallback: a live "
-                "request will not be answered with replayed scores."
-            )}), 400
-
-        if uploaded is not None and uploaded.filename:
-            try:
-                video_path = _save_upload(uploaded)
-            except ValueError as error:
-                return jsonify({"error": str(error)}), 400
-            resolved_clip_key = f"live/{video_path.name}"
-        elif preset:
-            if preset not in DEMO_CLIPS:
-                return jsonify({"error": f"Unknown preset '{preset}'."}), 400
-            video_path = Path(DEMO_CLIPS[preset]["video"])
-            resolved_clip_key = f"live/{Path(DEMO_CLIPS[preset]['clip_key']).name}"
-        elif clip_key:
-            video_path = _resolve_video_path(clip_key)
-            if video_path is None or not video_path.exists():
-                return jsonify({"error": (
-                    f"No video available for clip '{clip_key}' under the dataset root."
-                )}), 400
-            resolved_clip_key = f"live/{Path(clip_key).name}"
-        else:
-            return jsonify({"error": (
-                "Live mode needs a video: upload one as 'video', or name a "
-                "'preset' or 'clip_key' to run the model over."
-            )}), 400
-
-        # A live run over a clip that also has a research score is legitimate
-        # engineering, but the number it produces is NOT the research number
-        # and must never be mistaken for it. Say so in the response.
-        if clip_key and _score_source.get(clip_key) is not None:
-            live_note = (
-                f"'{clip_key}' also has a precomputed research score. This live "
-                "result was computed now, by this process, and is an "
-                "engineering artifact -- it is not the locked research score "
-                "for that clip and does not replace it."
-            )
-        if not video_path.is_file():
-            return jsonify({"error": f"Video file not found: {video_path}"}), 400
-    else:
-        if preset:
-            if preset not in DEMO_CLIPS:
-                return jsonify({"error": f"Unknown preset '{preset}'."}), 400
-            resolved_clip_key = DEMO_CLIPS[preset]["clip_key"]
-            video_path = DEMO_CLIPS[preset]["video"]
-        elif clip_key:
-            if _score_source.get(clip_key) is None:
-                return (
-                    jsonify(
-                        {
-                            "error": (
-                                f"No precomputed temporal score exists for clip_key '{clip_key}' in "
-                                "temporal_risk/primary_window_scores.csv. Switch to mode=live to "
-                                "run the model on this video, or pick a clip_key from the browse "
-                                "list, which only lists clips that already have a real score."
-                            )
-                        }
-                    ),
-                    400,
-                )
-            resolved_clip_key = clip_key
-            if uploaded and uploaded.filename:
-                try:
-                    video_path = _save_upload(uploaded)
-                except ValueError as error:
-                    return jsonify({"error": str(error)}), 400
-            else:
-                video_path = _resolve_video_path(clip_key)
-                if video_path is None or not video_path.exists():
-                    return (
-                        jsonify({"error": (
-                            f"No video available for clip '{clip_key}' under the "
-                            "dataset root."
-                        )}),
-                        400,
-                    )
-        else:
-            return (
-                jsonify({"error": "Provide either 'preset' (fight/nonfight/fp) or a 'clip_key' from /api/clips."}),
-                400,
-            )
+    resolved = _resolve_analysis_target(mode, preset, clip_key, uploaded)
+    if resolved.get("error"):
+        return jsonify({"error": resolved["error"]}), 400
+    video_path = resolved["video_path"]
+    resolved_clip_key = resolved["resolved_clip_key"]
+    checkpoint = resolved["checkpoint"]
+    live_note = resolved["live_note"]
 
     try:
         with _analyze_lock:
@@ -637,6 +655,17 @@ def api_analyze():
     if mode == MODE_LIVE:
         _register_live_analysis(resolved_clip_key, Path(video_path))
 
+    return jsonify(_analysis_payload(summary, mode, resolved_clip_key, live_note))
+
+
+def _analysis_payload(summary, mode, resolved_clip_key, live_note):
+    """Build the analysis response from the artifacts the run just wrote.
+
+    Shared by POST /api/analyze (blocking) and the background job behind
+    POST /api/analysis, so there is exactly one definition of what an analysis
+    result looks like. Nothing is recomputed here: every field is read from the
+    summary run_demo returned or from the files it wrote.
+    """
     stem = Path(resolved_clip_key).stem
     risk_json_path = DEMO_OUTPUT_DIR / f"demo_{stem}_risk_assessment.json"
     explanation_path = DEMO_OUTPUT_DIR / f"demo_{stem}_explanation.md"
@@ -671,8 +700,7 @@ def api_analyze():
             for w in windows
         ]
 
-    return jsonify(
-        {
+    return {
             "summary": summary,
             "overall_risk": _overall_risk(summary, risk_assessments),
             "temporal_signal": temporal_signal,
@@ -694,8 +722,260 @@ def api_analyze():
             "explanation_url": f"/outputs/demo/{explanation_path.name}",
             "risk_status": risk_status,
             "provenance_legend": describe_provenance_legend(),
-        }
+    }
+
+
+# ---------------------------------------------------------------------------
+# Background analysis jobs.
+#
+# POST /api/analyze stays exactly as it was: one blocking call, still used and
+# still tested. The dashboard now uses POST /api/analysis instead, which runs
+# the SAME work on a worker thread so the processing screen can report real
+# progress by polling GET /api/analysis/<job_id>.
+#
+# WHAT THE PHASES ACTUALLY MEAN -- this matters more than the animation.
+# run_demo performs detection, tracking, spatial accumulation and temporal
+# windowing INTERLEAVED, once per decoded frame; they do not finish one after
+# another. Aggregation, fusion and risk run after that loop, inside the same
+# call. So the only boundaries this server can honestly observe are:
+#
+#   validating  resolving mode, video and checkpoint -- done here
+#   analysing   run_demo executing (the per-frame loop, then the post-loop
+#               aggregation/fusion/risk); no finer boundary is visible
+#   finalising  reading the artifacts and building the response -- done here
+#   complete / failed
+#
+# The UI is told exactly this, including which stages run together, rather than
+# being handed a fabricated sequence. Nothing reports a percentage.
+# ---------------------------------------------------------------------------
+ANALYSIS_PHASES = ("queued", "validating", "analysing", "finalising", "complete", "failed")
+
+# Stages that run together inside run_demo's per-frame loop. Named here so the
+# client does not have to guess which of them are separately observable.
+INTERLEAVED_STAGES = ("yolo_detection", "object_tracking", "spatial_analysis",
+                      "temporal_analysis")
+POST_LOOP_STAGES = ("evidence_fusion", "risk_interpretation")
+
+_jobs: dict = {}
+_jobs_lock = threading.Lock()
+_JOB_LIMIT = 12
+
+
+def _job_update(job_id, **fields):
+    with _jobs_lock:
+        job = _jobs.get(job_id)
+        if job is not None:
+            job.update(fields)
+
+
+def _job_snapshot(job_id):
+    with _jobs_lock:
+        job = _jobs.get(job_id)
+        return dict(job) if job else None
+
+
+def _run_analysis_job(job_id, mode, video_path, resolved_clip_key, checkpoint, live_note):
+    """Worker body. Phase changes are recorded only when they actually happen."""
+    started = time.time()
+    try:
+        _job_update(job_id, phase="analysing", analysing_started=started)
+        with _analyze_lock:
+            summary = run_demo(
+                Path(video_path),
+                resolved_clip_key,
+                DEFAULT_MODEL_PATH,
+                DEMO_OUTPUT_DIR,
+                temporal_source=("live" if mode == MODE_LIVE else "csv"),
+                checkpoint=(checkpoint if mode == MODE_LIVE else None),
+            )
+        if mode == MODE_LIVE:
+            _register_live_analysis(resolved_clip_key, Path(video_path))
+        _job_update(job_id, phase="finalising")
+        payload = _analysis_payload(summary, mode, resolved_clip_key, live_note)
+        _job_update(job_id, phase="complete", result=payload,
+                    elapsed=round(time.time() - started, 2))
+    except SystemExit as exc:
+        _job_update(job_id, phase="failed", error=str(exc), status=400,
+                    elapsed=round(time.time() - started, 2))
+    except Exception as exc:  # logged in full server-side, sanitised for the UI
+        traceback.print_exc()
+        _job_update(job_id, phase="failed", error=f"{type(exc).__name__}: {exc}",
+                    status=500, elapsed=round(time.time() - started, 2))
+
+
+@app.route("/api/analysis", methods=["POST"])
+def api_analysis_start():
+    """Start an analysis on a worker thread and return a job id to poll."""
+    mode = (request.form.get("mode") or MODE_REPLAY).strip().lower()
+    if mode not in SUPPORTED_MODES:
+        return jsonify({"error": (
+            f"Unknown mode '{mode}'. Use 'replay' (precomputed research scores) "
+            "or 'live' (actual model inference)."
+        )}), 400
+
+    resolved = _resolve_analysis_target(
+        mode,
+        (request.form.get("preset") or "").strip(),
+        (request.form.get("clip_key") or "").strip(),
+        request.files.get("video"),
     )
+    if resolved.get("error"):
+        return jsonify({"error": resolved["error"]}), 400
+
+    job_id = uuid.uuid4().hex
+    with _jobs_lock:
+        # Keep the registry small; finished jobs are only needed until the
+        # client has collected the result.
+        if len(_jobs) >= _JOB_LIMIT:
+            for stale in sorted(_jobs, key=lambda k: _jobs[k]["created"])[:len(_jobs) - _JOB_LIMIT + 1]:
+                _jobs.pop(stale, None)
+        _jobs[job_id] = {
+            "job_id": job_id, "phase": "validating", "created": time.time(),
+            "mode": mode, "clip_key": resolved["resolved_clip_key"],
+            "interleaved_stages": list(INTERLEAVED_STAGES),
+            "post_loop_stages": list(POST_LOOP_STAGES),
+            "temporal_note": (
+                "Temporal R3D -- running R3D-18 inference" if mode == MODE_LIVE
+                else "Temporal R3D -- replaying committed window probabilities"
+            ),
+        }
+    worker = threading.Thread(
+        target=_run_analysis_job,
+        args=(job_id, mode, resolved["video_path"], resolved["resolved_clip_key"],
+              resolved["checkpoint"], resolved["live_note"]),
+        daemon=True,
+    )
+    worker.start()
+    return jsonify(_job_snapshot(job_id)), 202
+
+
+@app.route("/api/analysis/<job_id>")
+def api_analysis_status(job_id):
+    """Poll one job. Returns the phase, and the result once it exists."""
+    job = _job_snapshot(job_id)
+    if job is None:
+        return jsonify({"error": "Unknown or expired analysis job."}), 404
+    job.pop("created", None)
+    if job.get("phase") == "analysing" and job.get("analysing_started"):
+        job["elapsed"] = round(time.time() - job.pop("analysing_started"), 1)
+    job.pop("analysing_started", None)
+    return jsonify(job)
+
+
+# ---------------------------------------------------------------------------
+# Browser-compatible presentation copy of the annotated video.
+#
+# run_demo writes the annotated video with OpenCV's "mp4v" fourcc -- MPEG-4
+# Part 2 -- which no major browser decodes. That artifact is NOT modified: this
+# re-encodes the exact same decoded frames into a browser-native codec beside
+# it, under a different name, and serves that for preview only.
+#
+# Codec candidates are restricted to formats browsers actually play, tried in
+# order, and each attempt is verified by decoding the result back before it is
+# accepted. If none works the endpoint says so and the UI falls back to
+# offering the original file.
+# ---------------------------------------------------------------------------
+BROWSER_PREVIEW_SUFFIX = "_browser"
+BROWSER_CODECS = (("avc1", ".mp4", "H.264/MP4"), ("VP90", ".webm", "VP9/WebM"),
+                  ("VP80", ".webm", "VP8/WebM"))
+_preview_lock = threading.Lock()
+
+
+def _browser_preview_for(source: Path):
+    """Return (path, codec_label) for a playable copy, or (None, reason)."""
+    import cv2
+
+    source = Path(source)
+    if not source.is_file():
+        return None, "the annotated video is not on disk"
+
+    for _fourcc, ext, label in BROWSER_CODECS:
+        candidate = source.with_name(source.stem + BROWSER_PREVIEW_SUFFIX + ext)
+        if candidate.is_file() and candidate.stat().st_mtime >= source.stat().st_mtime:
+            return candidate, label
+
+    capture = cv2.VideoCapture(str(source))
+    if not capture.isOpened():
+        return None, "the annotated video could not be reopened for conversion"
+    fps = capture.get(cv2.CAP_PROP_FPS) or 25.0
+    width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    frames = []
+    while True:
+        ok, frame = capture.read()
+        if not ok:
+            break
+        frames.append(frame)
+    capture.release()
+    if not frames:
+        return None, "the annotated video contained no decodable frames"
+
+    for fourcc, ext, label in BROWSER_CODECS:
+        target = source.with_name(source.stem + BROWSER_PREVIEW_SUFFIX + ext)
+        try:
+            writer = cv2.VideoWriter(str(target), cv2.VideoWriter_fourcc(*fourcc),
+                                     fps, (width, height))
+            if not writer.isOpened():
+                writer.release()
+                continue
+            for frame in frames:
+                writer.write(frame)
+            writer.release()
+            # An encoder can report success and still produce nothing usable,
+            # so the output is decoded back before it is trusted.
+            check = cv2.VideoCapture(str(target))
+            written = 0
+            while True:
+                ok, _ = check.read()
+                if not ok:
+                    break
+                written += 1
+            check.release()
+            if written >= len(frames) - 1 and target.stat().st_size > 1024:
+                return target, label
+            target.unlink(missing_ok=True)
+        except Exception:
+            traceback.print_exc()
+            continue
+    return None, ("no browser-playable encoder is available in this OpenCV build "
+                  "(H.264 and VP8/VP9 all failed)")
+
+
+@app.route("/api/preview_video", methods=["POST"])
+def api_preview_video():
+    """On-demand browser-playable copy of an annotated video already produced."""
+    payload = request.get_json(silent=True) or {}
+    name = payload.get("video_name")
+    if not isinstance(name, str) or not name.strip():
+        return jsonify({"available": False, "reason": "bad_request",
+                        "detail": "video_name is required and must be a string."}), 400
+
+    # Contained by construction: only a bare filename inside the demo output
+    # directory is ever considered.
+    safe = Path(secure_filename(name)).name
+    source = (DEMO_OUTPUT_DIR / safe).resolve()
+    if DEMO_OUTPUT_DIR.resolve() not in source.parents:
+        return jsonify({"available": False, "reason": "not_permitted",
+                        "detail": "That file is not in the demo output directory."}), 400
+    if not source.is_file():
+        return jsonify({"available": False, "reason": "missing",
+                        "detail": f"No annotated video named '{safe}' has been produced."}), 404
+
+    with _preview_lock:
+        preview, info = _browser_preview_for(source)
+    if preview is None:
+        return jsonify({
+            "available": False, "reason": "conversion_unavailable", "detail": info,
+            "original_url": f"/outputs/demo/{source.name}",
+        })
+    return jsonify({
+        "available": True,
+        "url": f"/outputs/demo/{preview.name}",
+        "codec": info,
+        "original_url": f"/outputs/demo/{source.name}",
+        "note": ("A browser-playable copy re-encoded from the same annotated "
+                 "frames. The original artifact is unchanged."),
+    })
 
 
 @app.route("/outputs/demo/<path:filename>")

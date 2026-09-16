@@ -58,7 +58,7 @@
           offline; nothing is uploaded anywhere.
         </p>
         <div class="hero-actions">
-          <button class="btn btn-primary" id="startNewAnalysis" type="button">
+          <button class="btn btn-primary" id="startNewAnalysis" data-reset="session" type="button">
             New Analysis
           </button>
           <button class="btn btn-ghost" id="startReplayDemo" type="button">
@@ -302,15 +302,35 @@
              whole chain reads "processing" during a run and is marked complete
              from the fields the response genuinely contains. -->
         <ol class="pipeline" id="stageStrip" aria-label="Pipeline stages">
-          <li data-stage="video"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Video Input</span></li>
-          <li data-stage="yolo"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">YOLO Detection</span></li>
-          <li data-stage="tracking"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Object Tracking</span></li>
-          <li data-stage="spatial"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Spatial Analysis</span></li>
-          <li data-stage="temporal"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Temporal R3D</span></li>
-          <li data-stage="fusion"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Evidence Fusion</span></li>
-          <li data-stage="risk"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Risk Interpretation</span></li>
-          <li data-stage="explanation"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Explanation Ready</span></li>
+          <li data-stage="video_input"><span class="stage-mark" aria-hidden="true"></span>
+            <span class="stage-name">Video Input<span class="stage-detail">Resolved and validated</span></span></li>
+          <li data-stage="yolo_detection" class="grouped"><span class="stage-mark" aria-hidden="true"></span>
+            <span class="stage-name">YOLO Detection<span class="stage-detail">Person detection, per frame</span></span></li>
+          <li data-stage="object_tracking" class="grouped"><span class="stage-mark" aria-hidden="true"></span>
+            <span class="stage-name">Object Tracking<span class="stage-detail">Identity association, per frame</span></span></li>
+          <li data-stage="spatial_analysis" class="grouped"><span class="stage-mark" aria-hidden="true"></span>
+            <span class="stage-name">Spatial Analysis<span class="stage-detail">Rules and motion feature, per frame</span></span></li>
+          <li data-stage="temporal_analysis" class="grouped"><span class="stage-mark" aria-hidden="true"></span>
+            <span class="stage-name">Temporal R3D<span class="stage-detail">Sliding 16-frame windows</span></span></li>
+          <li data-stage="evidence_fusion"><span class="stage-mark" aria-hidden="true"></span>
+            <span class="stage-name">Evidence Fusion<span class="stage-detail">After the frame loop</span></span></li>
+          <li data-stage="risk_interpretation"><span class="stage-mark" aria-hidden="true"></span>
+            <span class="stage-name">Risk Interpretation<span class="stage-detail">Configured severity mapping</span></span></li>
+          <li data-stage="explanation_ready"><span class="stage-mark" aria-hidden="true"></span>
+            <span class="stage-name">Explanation Ready<span class="stage-detail">Evidence available for inspection &mdash; no saliency is generated automatically</span></span></li>
         </ol>
+
+        <!-- Stated rather than animated away: these four stages genuinely run
+             together, once per decoded frame. Showing them completing in
+             sequence would be a picture of a pipeline this project does not
+             have. -->
+        <p class="interleaved-note hidden" id="interleavedNote">
+          Detection, tracking, spatial analysis and temporal windowing run
+          <strong>together, once per decoded frame</strong> &mdash; they do not
+          complete one after another, so they are shown active as a group.
+          Fusion and risk run after the frame loop.
+        </p>
+        <p class="processing-elapsed" id="processingElapsed"></p>
 
         <p class="muted processing-note" id="processingNote">
           The backend reports a completed analysis rather than incremental
@@ -334,7 +354,7 @@
         </div>
         <div class="view-actions">
           <div id="modeBanner" class="mode-banner">--</div>
-          <button class="btn btn-ghost btn-sm" data-goto="setup" type="button">New Analysis</button>
+          <button class="btn btn-ghost btn-sm" data-goto="setup" data-reset="session" type="button">New Analysis</button>
         </div>
       </div>
 
@@ -359,6 +379,7 @@
               <div class="video-fallback hidden" id="videoFallback"></div>
             </div>
             <div class="video-caption" id="videoCaption"></div>
+            <div class="video-provenance" id="videoProvenance"></div>
           </div>
 
           <div class="result-headline">
@@ -508,11 +529,18 @@
         </div>
         <div class="view-actions">
           <button class="btn btn-ghost btn-sm" data-goto="explain" type="button">&larr; Explain</button>
-          <button class="btn btn-ghost btn-sm" data-goto="setup" type="button">New Analysis</button>
+          <button class="btn btn-ghost btn-sm" data-goto="setup" data-reset="session" type="button">New Analysis</button>
         </div>
       </div>
 
-      <section class="panel">
+      <section class="panel report-sheet">
+        <header class="report-letterhead">
+          <div>
+            <span class="rl-brand">SENTINEL VISION</span>
+            <span class="rl-title">Incident Analysis Report</span>
+          </div>
+          <dl class="rl-meta" id="reportMeta"></dl>
+        </header>
         <h3 class="panel-title compact">Report contents</h3>
         <div id="reportPreview" class="report-preview"></div>
         <div class="report-actions">
