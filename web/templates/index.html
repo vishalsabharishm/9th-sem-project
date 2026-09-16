@@ -8,14 +8,14 @@
 </head>
 <body>
   <!-- ===================================================================
-       Application shell.
+       Sentinel Vision -- a guided, multi-step surveillance analysis app.
 
-       "Sentinel Vision" is the INTERFACE/product label for this dashboard.
-       The academic project keeps its own title, shown in the footer and used
-       in all project documentation; nothing here renames it.
+       Client-side views over ONE Flask template: the backend routes, request
+       shapes and response fields are untouched. "Sentinel Vision" is the
+       interface label; the academic project keeps its own title, in the footer.
        =================================================================== -->
   <header class="topbar">
-    <div class="brand">
+    <button class="brand" id="brandHome" type="button" aria-label="Sentinel Vision home">
       <span class="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 32 32" width="30" height="30" fill="none" stroke="currentColor"
              stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -28,185 +28,335 @@
         <strong>Sentinel Vision</strong>
         <small>Explainable AI Surveillance Intelligence</small>
       </span>
-    </div>
+    </button>
+
+    <nav class="stepper" id="stepper" aria-label="Analysis progress">
+      <button class="step" data-goto="setup"      type="button" disabled><span>1</span>Setup</button>
+      <button class="step" data-goto="processing" type="button" disabled><span>2</span>Processing</button>
+      <button class="step" data-goto="results"    type="button" disabled><span>3</span>Results</button>
+      <button class="step" data-goto="explain"    type="button" disabled><span>4</span>Explain</button>
+      <button class="step" data-goto="report"     type="button" disabled><span>5</span>Report</button>
+    </nav>
 
     <div class="topbar-status" id="preflightChips" role="status" aria-live="polite">
       <span class="chip chip-idle">Checking system&hellip;</span>
     </div>
   </header>
 
-  <main class="shell">
-    <!-- ============================ CONTROL RAIL ==================== -->
-    <aside class="rail" aria-label="Analysis controls">
+  <main class="app" id="app">
 
-      <section class="panel" aria-labelledby="modeHeading">
-        <h2 id="modeHeading" class="panel-title">
-          <span class="step-num">1</span> Inference mode
-        </h2>
-
-        <div class="mode-select" id="modeSelect" role="radiogroup" aria-labelledby="modeHeading">
-          <label class="mode-option selected" data-mode="replay">
-            <input type="radio" name="mode" value="replay" checked />
-            <span class="mode-head">
-              <span class="dot dot-replay" aria-hidden="true"></span>
-              <span class="mode-title">REPLAY &mdash; precomputed research evidence</span>
-            </span>
-            <span class="mode-desc">
-              Temporal probabilities are replayed from the committed CSV for the
-              394 primary-split clips. <strong>No temporal model runs.</strong>
-              This is the deterministic path used for the research presentation.
-            </span>
-          </label>
-          <label class="mode-option" data-mode="live">
-            <input type="radio" name="mode" value="live" />
-            <span class="mode-head">
-              <span class="dot dot-live" aria-hidden="true"></span>
-              <span class="mode-title">LIVE MODEL &mdash; actual video inference</span>
-            </span>
-            <span class="mode-desc">
-              R3D-18 runs on the frames of the video you supply. Works on a video
-              that has never been scored. <strong>Offline, not real time</strong>
-              &mdash; roughly 0.65&nbsp;s of inference per 16-frame window on CPU.
-            </span>
-          </label>
+    <!-- ==================== PAGE 1 — HOME / OVERVIEW ==================== -->
+    <section class="view" data-view="home" id="viewHome">
+      <div class="hero">
+        <p class="eyebrow">Explainable abnormal-event detection</p>
+        <h1>Analyse surveillance footage with evidence you can inspect.</h1>
+        <p class="hero-sub">
+          Sentinel Vision runs person detection, tracking, spatial motion
+          analysis and a temporal violence model over a video, then shows the
+          evidence behind every decision &mdash; including what the system is
+          <strong>not</strong> entitled to claim. All processing is local and
+          offline; nothing is uploaded anywhere.
+        </p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" id="startNewAnalysis" type="button">
+            New Analysis
+          </button>
+          <button class="btn btn-ghost" id="startReplayDemo" type="button">
+            Replay Demo
+          </button>
         </div>
-      </section>
+      </div>
 
-      <section class="panel" aria-labelledby="sourceHeading">
-        <h2 id="sourceHeading" class="panel-title">
-          <span class="step-num">2</span> Video source
-        </h2>
+      <h2 class="section-head">Pipeline capabilities</h2>
+      <div class="capability-grid">
+        <article class="cap-card">
+          <span class="cap-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+              <path d="M14 7h7M17.5 3.5v7"/></svg>
+          </span>
+          <h3>Detection</h3>
+          <p>YOLOv8s person detection on every decoded frame, at the same
+             confidence the research pipeline used.</p>
+        </article>
+        <article class="cap-card">
+          <span class="cap-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="7" cy="7" r="3"/><circle cx="17" cy="17" r="3"/><path d="M9.5 9.5 14.5 14.5"/></svg>
+          </span>
+          <h3>Tracking</h3>
+          <p>Identities maintained across frames, with retained-but-unmatched
+             tracks filtered out before any rule sees them.</p>
+        </article>
+        <article class="cap-card">
+          <span class="cap-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 20h18M6 20V9M11 20V4M16 20v-7M21 20v-4"/></svg>
+          </span>
+          <h3>Spatial Analysis</h3>
+          <p>Stationarity, proximity, crowding and restricted-area rules, plus a
+             measured motion feature. Undefined stays undefined.</p>
+        </article>
+        <article class="cap-card">
+          <span class="cap-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12h3l2.5-7 3.5 14 3-9 2 2h4"/></svg>
+          </span>
+          <h3>Temporal Analysis</h3>
+          <p>R3D-18 scores overlapping 16-frame windows at stride 8; a frozen
+             rule aggregates them into one clip decision.</p>
+        </article>
+        <article class="cap-card">
+          <span class="cap-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3.2"/><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/></svg>
+          </span>
+          <h3>Explainability</h3>
+          <p>Gradient-based temporal saliency for a chosen window &mdash; a
+             localisation diagnostic, not a causal explanation.</p>
+        </article>
+        <article class="cap-card">
+          <span class="cap-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 4v6M17 4v6M7 10a5 5 0 0 0 10 0M12 15v5"/></svg>
+          </span>
+          <h3>Evidence Fusion</h3>
+          <p>A configured layer combining temporal and spatial evidence under
+             thresholds read from the frozen protocol.</p>
+        </article>
+      </div>
 
-        <div class="tabs" role="tablist" aria-label="Video source">
-          <button class="tab-btn active" data-tab="presets" type="button" role="tab"
-                  aria-selected="true">Built-in</button>
-          <button class="tab-btn" data-tab="browse" type="button" role="tab"
-                  aria-selected="false">Browse</button>
-          <button class="tab-btn" data-tab="upload" type="button" role="tab"
-                  aria-selected="false">Upload</button>
+      <h2 class="section-head">System readiness</h2>
+      <div class="panel panel-preflight" aria-labelledby="preflightHeading">
+        <h3 id="preflightHeading" class="panel-title compact">Preflight</h3>
+        <div id="preflightDetail" class="preflight-detail">
+          <div class="skeleton-row"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 2 — ANALYSIS SETUP ==================== -->
+    <section class="view hidden" data-view="setup" id="viewSetup">
+      <div class="view-head">
+        <div>
+          <h2>Analysis setup</h2>
+          <p class="muted">Choose how the analysis runs and which video it runs on.</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" data-goto="home" type="button">&larr; Home</button>
+      </div>
+
+      <div class="setup-grid">
+        <div class="setup-col">
+          <section class="panel" aria-labelledby="modeHeading">
+            <h3 id="modeHeading" class="panel-title">
+              <span class="step-num">1</span> Inference mode
+            </h3>
+            <div class="mode-select" id="modeSelect" role="radiogroup" aria-labelledby="modeHeading">
+              <label class="mode-option selected" data-mode="replay">
+                <input type="radio" name="mode" value="replay" checked />
+                <span class="mode-head">
+                  <span class="dot dot-replay" aria-hidden="true"></span>
+                  <span class="mode-title">REPLAY &mdash; precomputed research evidence</span>
+                </span>
+                <span class="mode-desc">
+                  Temporal probabilities are replayed from the committed CSV for the
+                  394 primary-split clips. <strong>No temporal model runs.</strong>
+                  This is the deterministic path used for the research presentation.
+                </span>
+              </label>
+              <label class="mode-option" data-mode="live">
+                <input type="radio" name="mode" value="live" />
+                <span class="mode-head">
+                  <span class="dot dot-live" aria-hidden="true"></span>
+                  <span class="mode-title">LIVE MODEL &mdash; actual video inference</span>
+                </span>
+                <span class="mode-desc">
+                  R3D-18 runs on the frames of the video you supply. Works on a video
+                  that has never been scored. <strong>Offline, not real time</strong>
+                  &mdash; roughly 0.65&nbsp;s of inference per 16-frame window on CPU.
+                </span>
+              </label>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="sourceHeading">
+            <h3 id="sourceHeading" class="panel-title">
+              <span class="step-num">2</span> Video source
+            </h3>
+
+            <div class="tabs" role="tablist" aria-label="Video source">
+              <button class="tab-btn active" data-tab="presets" type="button" role="tab"
+                      aria-selected="true">Built-in demo</button>
+              <button class="tab-btn" data-tab="browse" type="button" role="tab"
+                      aria-selected="false">Browse</button>
+              <button class="tab-btn" data-tab="upload" type="button" role="tab"
+                      aria-selected="false">Upload</button>
+            </div>
+
+            <div class="tab-panel" data-panel="presets">
+              <p class="hint">Three real RWF-2000 clips used to build and verify this pipeline.</p>
+              <div id="presetList" class="preset-list">
+                <div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div>
+              </div>
+            </div>
+
+            <div class="tab-panel hidden" data-panel="browse">
+              <p class="hint">
+                All 394 primary-split evaluation clips already have a real,
+                precomputed temporal score
+                (<code>temporal_risk/primary_window_scores.csv</code>). Pick any of
+                them &mdash; the video is loaded straight from the local dataset.
+              </p>
+              <input id="clipSearch" list="clipDataList" placeholder="Search clip_key, e.g. val/Val_Fight/..." autocomplete="off" aria-label="Clip key" />
+              <datalist id="clipDataList"></datalist>
+              <div id="clipSearchInfo" class="hint"></div>
+            </div>
+
+            <div class="tab-panel hidden" data-panel="upload">
+              <p class="hint" id="uploadHintReplay">
+                <strong>In REPLAY mode</strong> an uploaded video cannot get a
+                temporal score of its own, because replay reads probabilities from
+                the committed CSV. Upload here only works if you also pick the
+                <code>clip_key</code> of a primary-split clip that already has one
+                &mdash; ideally by uploading that exact file. YOLO detection,
+                tracking and the Phase-4 rules still run live on whatever you upload.
+                <br />
+                To analyse a genuinely new video, switch to <strong>LIVE MODEL</strong>
+                mode above.
+              </p>
+              <p class="hint hidden" id="uploadHintLive">
+                <strong>In LIVE MODEL mode</strong> the video you upload is processed
+                end to end: YOLO detection, tracking, the spatial fusion feature, and
+                an actual R3D-18 forward pass for every complete 16-frame window. No
+                <code>clip_key</code> is needed and no precomputed score is read.
+                A video shorter than 16 frames yields no temporal window, which is
+                reported rather than guessed.
+              </p>
+
+              <div id="dropZone" class="dropzone" tabindex="0" role="button"
+                   aria-label="Drag a video here or press Enter to browse">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor"
+                     stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5" />
+                  <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
+                </svg>
+                <span class="dz-primary">Drag &amp; drop a video</span>
+                <span class="dz-secondary">or click to browse &mdash; .mp4 .avi .mov .mkv .webm</span>
+              </div>
+              <input id="videoUpload" type="file" accept="video/*" class="visually-hidden" />
+              <div id="uploadMeta" class="upload-meta hidden"></div>
+              <input id="uploadClipSearch" list="clipDataList" placeholder="Matching clip_key (required in replay)" autocomplete="off" aria-label="Matching clip key" />
+            </div>
+          </section>
         </div>
 
-        <div class="tab-panel" data-panel="presets">
-          <p class="hint">Three real RWF-2000 clips used to build and verify this pipeline.</p>
-          <div id="presetList" class="preset-list">
-            <div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div>
-          </div>
-        </div>
+        <div class="setup-col">
+          <section class="panel panel-summary">
+            <h3 class="panel-title">
+              <span class="step-num">3</span> Analysis summary
+            </h3>
 
-        <div class="tab-panel hidden" data-panel="browse">
-          <p class="hint">
-            All 394 primary-split evaluation clips already have a real,
-            precomputed temporal score
-            (<code>temporal_risk/primary_window_scores.csv</code>). Pick any of
-            them &mdash; the video is loaded straight from the local dataset.
+            <div class="preview-frame" id="previewFrame">
+              <video id="previewVideo" controls playsinline preload="metadata"></video>
+              <div class="preview-empty" id="previewEmpty">
+                <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor"
+                     stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M10 9.5v5l4.5-2.5z"/></svg>
+                <span>No video selected yet</span>
+              </div>
+            </div>
+
+            <dl class="summary-list" id="summaryList"></dl>
+
+            <p class="muted" id="summaryPath"></p>
+
+            <button id="analyzeBtn" class="btn btn-primary btn-block" type="button" disabled>
+              <span class="btn-label">Start Analysis</span>
+            </button>
+            <div id="status" class="status" role="status" aria-live="polite"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 3 — PROCESSING ==================== -->
+    <section class="view hidden" data-view="processing" id="viewProcessing">
+      <div class="view-head">
+        <div>
+          <h2>Running analysis</h2>
+          <p class="muted" id="processingSub">
+            Processing locally on CPU. This is not real time.
           </p>
-          <input id="clipSearch" list="clipDataList" placeholder="Search clip_key, e.g. val/Val_Fight/..." autocomplete="off" aria-label="Clip key" />
-          <datalist id="clipDataList"></datalist>
-          <div id="clipSearchInfo" class="hint"></div>
         </div>
+      </div>
 
-        <div class="tab-panel hidden" data-panel="upload">
-          <p class="hint" id="uploadHintReplay">
-            <strong>In REPLAY mode</strong> an uploaded video cannot get a
-            temporal score of its own, because replay reads probabilities from
-            the committed CSV. Upload here only works if you also pick the
-            <code>clip_key</code> of a primary-split clip that already has one
-            &mdash; ideally by uploading that exact file. YOLO detection,
-            tracking and the Phase-4 rules still run live on whatever you upload.
-            <br />
-            To analyse a genuinely new video, switch to <strong>LIVE MODEL</strong>
-            mode above.
-          </p>
-          <p class="hint hidden" id="uploadHintLive">
-            <strong>In LIVE MODEL mode</strong> the video you upload is processed
-            end to end: YOLO detection, tracking, the spatial fusion feature, and
-            an actual R3D-18 forward pass for every complete 16-frame window. No
-            <code>clip_key</code> is needed and no precomputed score is read.
-            A video shorter than 16 frames yields no temporal window, which is
-            reported rather than guessed.
-          </p>
-
-          <div id="dropZone" class="dropzone" tabindex="0" role="button"
-               aria-label="Drag a video here or press Enter to browse">
-            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor"
-                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5" />
-              <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
-            </svg>
-            <span class="dz-primary">Drag &amp; drop a video</span>
-            <span class="dz-secondary">or click to browse &mdash; .mp4 .avi .mov .mkv .webm</span>
-          </div>
-          <input id="videoUpload" type="file" accept="video/*" class="visually-hidden" />
-          <div id="uploadMeta" class="upload-meta hidden"></div>
-          <input id="uploadClipSearch" list="clipDataList" placeholder="Matching clip_key (required in replay)" autocomplete="off" aria-label="Matching clip key" />
-        </div>
-      </section>
-
-      <section class="panel panel-action">
-        <button id="analyzeBtn" class="analyze-btn" type="button" disabled>
-          <span class="btn-label">Analyze Video</span>
-        </button>
-        <div id="status" class="status" role="status" aria-live="polite"></div>
-
+      <div class="processing-wrap">
         <!-- Stage strip. Only states the client actually knows are shown: the
              backend returns a final result, not incremental progress, so the
              whole chain reads "processing" during a run and is marked complete
              from the fields the response genuinely contains. -->
-        <ol class="stage-strip" id="stageStrip" aria-label="Pipeline stages">
-          <li data-stage="video"><span class="stage-mark" aria-hidden="true"></span>Video</li>
-          <li data-stage="yolo"><span class="stage-mark" aria-hidden="true"></span>YOLO</li>
-          <li data-stage="tracking"><span class="stage-mark" aria-hidden="true"></span>Tracking</li>
-          <li data-stage="spatial"><span class="stage-mark" aria-hidden="true"></span>Spatial</li>
-          <li data-stage="temporal"><span class="stage-mark" aria-hidden="true"></span>Temporal</li>
-          <li data-stage="fusion"><span class="stage-mark" aria-hidden="true"></span>Fusion</li>
-          <li data-stage="explanation"><span class="stage-mark" aria-hidden="true"></span>Explanation</li>
+        <ol class="pipeline" id="stageStrip" aria-label="Pipeline stages">
+          <li data-stage="video"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Video Input</span></li>
+          <li data-stage="yolo"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">YOLO Detection</span></li>
+          <li data-stage="tracking"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Object Tracking</span></li>
+          <li data-stage="spatial"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Spatial Analysis</span></li>
+          <li data-stage="temporal"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Temporal R3D</span></li>
+          <li data-stage="fusion"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Evidence Fusion</span></li>
+          <li data-stage="risk"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Risk Interpretation</span></li>
+          <li data-stage="explanation"><span class="stage-mark" aria-hidden="true"></span><span class="stage-name">Explanation Ready</span></li>
         </ol>
-      </section>
 
-      <section class="panel panel-preflight" aria-labelledby="preflightHeading">
-        <h2 id="preflightHeading" class="panel-title compact">System status</h2>
-        <div id="preflightDetail" class="preflight-detail">
-          <div class="skeleton-row"></div>
+        <p class="muted processing-note" id="processingNote">
+          The backend reports a completed analysis rather than incremental
+          progress, so this shows an honest indeterminate state rather than a
+          fabricated percentage.
+        </p>
+
+        <button class="btn btn-primary hidden" id="viewResultsBtn" type="button">
+          View Results
+        </button>
+        <div class="processing-error hidden" id="processingError"></div>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 4 — RESULTS ==================== -->
+    <section class="view hidden" data-view="results" id="viewResults">
+      <div class="view-head">
+        <div>
+          <h2>Analysis result</h2>
+          <p class="muted" id="resultsSub"></p>
         </div>
-      </section>
-    </aside>
-
-    <!-- ============================ WORKSPACE ======================= -->
-    <div class="workspace">
-
-      <!-- Empty state, replaced by the results panel after a run. -->
-      <section class="panel empty-hero" id="emptyHero">
-        <div class="empty-inner">
-          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor"
-               stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="2.5" y="5" width="19" height="14" rx="2.5" />
-            <path d="M10 9.5v5l4.5-2.5z" />
-          </svg>
-          <h2>Upload a surveillance video to begin</h2>
-          <p>
-            Choose an inference mode and a video source on the left, then run
-            the analysis. Detection, tracking, temporal scoring, evidence
-            fusion and explanation all run locally on this machine.
-          </p>
-        </div>
-      </section>
-
-      <section class="panel panel-results hidden" id="resultsPanel">
-        <div class="results-head">
-          <h2 class="panel-title compact">
-            <span class="step-num">3</span> Analysis result
-          </h2>
+        <div class="view-actions">
           <div id="modeBanner" class="mode-banner">--</div>
+          <button class="btn btn-ghost btn-sm" data-goto="setup" type="button">New Analysis</button>
         </div>
+      </div>
+
+      <div id="emptyHero" class="empty-note hidden">
+        No analysis has run yet. Start one from the setup page.
+      </div>
+
+      <section class="panel panel-results" id="resultsPanel">
         <div id="liveNote" class="notice hidden"></div>
 
         <div class="result-grid">
           <div class="result-video">
             <div class="video-frame">
-              <video id="resultVideo" controls playsinline></video>
+              <video id="resultVideo" controls playsinline preload="metadata"></video>
               <div class="video-hud" aria-hidden="true">
                 <span class="hud-state" id="hudState">MONITORING</span>
               </div>
+              <!-- Shown only if the browser cannot decode the annotated file.
+                   The file is written by OpenCV as MPEG-4 Part 2, which Chrome
+                   does not decode; this states that plainly and offers the
+                   file rather than leaving a dead player on screen. -->
+              <div class="video-fallback hidden" id="videoFallback"></div>
             </div>
             <div class="video-caption" id="videoCaption"></div>
           </div>
@@ -232,12 +382,6 @@
 
             <h3 class="sub">Temporal evidence</h3>
             <table class="kv-table" id="temporalTable"></table>
-
-            <h3 class="sub">Phase-4 rule-engine events</h3>
-            <table class="events-table" id="eventsTable">
-              <thead><tr><th>Event type</th><th>Risk level</th><th>Occurrences</th></tr></thead>
-              <tbody></tbody>
-            </table>
           </div>
         </div>
 
@@ -269,6 +413,12 @@
         </p>
         <div id="spatialPanel" class="spatial-panel"></div>
 
+        <h3>Phase-4 rule-engine events</h3>
+        <table class="events-table" id="eventsTable">
+          <thead><tr><th>Event type</th><th>Risk level</th><th>Occurrences</th></tr></thead>
+          <tbody></tbody>
+        </table>
+
         <h3>Evidence fusion</h3>
         <p class="muted">
           A <strong>configured</strong> fusion layer combining the temporal
@@ -288,8 +438,38 @@
           system, <em>not</em> because it performs better.
         </p>
 
-        <h3>Gradient-based temporal saliency</h3>
-        <div class="saliency-panel" id="saliencyPanel">
+        <div class="view-nav">
+          <button class="btn btn-primary" data-goto="explain" type="button">Explain a window &rarr;</button>
+          <button class="btn btn-ghost" data-goto="report" type="button">Incident report</button>
+        </div>
+      </section>
+    </section>
+
+    <!-- ==================== PAGE 5 — EXPLAINABILITY ==================== -->
+    <section class="view hidden" data-view="explain" id="viewExplain">
+      <div class="view-head">
+        <div>
+          <h2>Explainability</h2>
+          <p class="muted">Gradient-based temporal saliency for one completed window.</p>
+        </div>
+        <div class="view-actions">
+          <button class="btn btn-ghost btn-sm" data-goto="results" type="button">&larr; Results</button>
+          <button class="btn btn-ghost btn-sm" data-goto="report" type="button">Report &rarr;</button>
+        </div>
+      </div>
+
+      <div class="explain-grid">
+        <section class="panel">
+          <h3 class="panel-title compact">1 &middot; Select a temporal window</h3>
+          <p class="hint">
+            Only windows this run actually scored are offered, so a selected
+            window can always be reconstructed from source frames.
+          </p>
+          <div class="window-picker" id="explainWindowList"></div>
+        </section>
+
+        <section class="panel saliency-panel" id="saliencyPanel">
+          <h3 class="panel-title compact">2 &middot; Generate saliency</h3>
           <p class="muted">
             Saliency is computed <strong>on demand for one completed 16-frame
             window</strong>, not for every frame: it needs a backward pass as well
@@ -301,7 +481,7 @@
             <span id="selectedWindow" class="selected-window">
               Select a window in the timeline above.
             </span>
-            <button id="explainBtn" type="button" disabled>Explain this window</button>
+            <button id="explainBtn" class="btn btn-primary btn-sm" type="button" disabled>Explain this window</button>
           </div>
           <div id="saliencyResult"></div>
           <p class="caveat" id="saliencyCaveat">
@@ -312,27 +492,42 @@
             <em>Not proof of causality, not a faithfulness-tested explanation, not
             attention, and not ground-truth localization.</em>
           </p>
+        </section>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 6 — INCIDENT REPORT ==================== -->
+    <section class="view hidden" data-view="report" id="viewReport">
+      <div class="view-head">
+        <div>
+          <h2>Incident report</h2>
+          <p class="muted">
+            Built from this run's artifacts. Nothing is recomputed &mdash; the
+            report describes the analysis you just looked at.
+          </p>
         </div>
+        <div class="view-actions">
+          <button class="btn btn-ghost btn-sm" data-goto="explain" type="button">&larr; Explain</button>
+          <button class="btn btn-ghost btn-sm" data-goto="setup" type="button">New Analysis</button>
+        </div>
+      </div>
 
-        <h3>Explanation report</h3>
-        <div id="explanation" class="explanation"></div>
-
-        <h3>Incident report</h3>
-        <p class="muted">
-          Exports what this analysis actually found, including the limitations.
-          The severity label is carried with its validation status, and nothing is
-          recomputed &mdash; the report describes the run shown above.
-        </p>
+      <section class="panel">
+        <h3 class="panel-title compact">Report contents</h3>
         <div id="reportPreview" class="report-preview"></div>
         <div class="report-actions">
-          <button id="reportJsonBtn" type="button">Export JSON</button>
-          <button id="reportTextBtn" type="button">Export text</button>
+          <button id="reportJsonBtn" class="btn btn-primary btn-sm" type="button">Export JSON</button>
+          <button id="reportTextBtn" class="btn btn-ghost btn-sm" type="button">Export TXT</button>
         </div>
         <div id="reportStatus" class="status" role="status" aria-live="polite"></div>
+      </section>
 
+      <section class="panel">
+        <h3 class="panel-title compact">Explanation report</h3>
+        <div id="explanation" class="explanation"></div>
         <div class="artifact-links" id="artifactLinks"></div>
       </section>
-    </div>
+    </section>
   </main>
 
   <footer class="appfoot">

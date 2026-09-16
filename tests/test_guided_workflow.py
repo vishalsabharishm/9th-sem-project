@@ -1,0 +1,212 @@
+"""Tests for the guided multi-step workflow.
+
+The dashboard is now six client-side views over ONE Flask template. These tests
+protect the properties that a re-layout could quietly break:
+
+  * every view the router can reach actually exists in the markup;
+  * the workflow cannot be skipped -- later steps start locked;
+  * analysis starts ONLY on an explicit button press;
+  * the processing screen never fabricates progress;
+  * the scientific disclosures survived being moved between pages;
+  * no backend contract moved with the UI.
+
+They assert structure and wording, not appearance.
+"""
+import re
+import sys
+import unittest
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT / "src"))
+sys.path.insert(0, str(REPO_ROOT / "tools"))
+sys.path.insert(0, str(REPO_ROOT / "web"))
+
+TEMPLATE = REPO_ROOT / "web" / "templates" / "index.html"
+APP_JS = REPO_ROOT / "web" / "static" / "app.js"
+STYLE = REPO_ROOT / "web" / "static" / "style.css"
+SERVER = REPO_ROOT / "web" / "server.py"
+
+MARKUP = TEMPLATE.read_text(encoding="utf-8")
+SCRIPT = APP_JS.read_text(encoding="utf-8")
+FLAT = " ".join(MARKUP.split())
+
+VIEWS = ("home", "setup", "processing", "results", "explain", "report")
+
+
+class ViewStructureTests(unittest.TestCase):
+    def test_every_routed_view_exists_in_the_markup(self):
+        for view in VIEWS:
+            self.assertIn(f'data-view="{view}"', MARKUP, f"view '{view}' is missing")
+
+    def test_the_router_knows_exactly_these_views(self):
+        match = re.search(r"const VIEW_ORDER = \[(.*?)\];", SCRIPT, re.S)
+        self.assertIsNotNone(match, "VIEW_ORDER not found")
+        declared = re.findall(r'"([a-z]+)"', match.group(1))
+        self.assertEqual(tuple(declared), VIEWS)
+
+    def test_only_home_is_visible_before_anything_happens(self):
+        for view in VIEWS:
+            block = re.search(r'<section class="([^"]*)" data-view="%s"' % view, MARKUP)
+            self.assertIsNotNone(block, view)
+            classes = block.group(1)
+            if view == "home":
+                self.assertNotIn("hidden", classes, "home must be the landing view")
+            else:
+                self.assertIn("hidden", classes, f"{view} must start hidden")
+
+    def test_stepper_covers_every_step_after_home(self):
+        for view in VIEWS[1:]:
+            self.assertIn(f'data-goto="{view}"', MARKUP, f"no stepper entry for {view}")
+
+    def test_later_steps_start_locked(self):
+        """The workflow cannot be skipped before an analysis exists."""
+        for step in re.findall(r"<button class=\"step\"[^>]*>", MARKUP):
+            self.assertIn("disabled", step, f"step not initially locked: {step}")
+
+    def test_single_template_and_no_new_dependency(self):
+        templates = list((REPO_ROOT / "web" / "templates").glob("*.html"))
+        self.assertEqual([p.name for p in templates], ["index.html"])
+        self.assertFalse((REPO_ROOT / "package.json").exists(),
+                         "a frontend build system must not have been introduced")
+
+    def test_no_external_resources(self):
+        """The demo must work on a laptop with no internet."""
+        for path in (TEMPLATE, STYLE, APP_JS):
+            text = path.read_text(encoding="utf-8")
+            for hit in re.findall(r'(?:src|href)="(https?://[^"]+)"', text):
+                self.fail(f"{path.name} loads an external resource: {hit}")
+
+
+class ExplicitStartTests(unittest.TestCase):
+    def test_analysis_starts_only_on_an_explicit_click(self):
+        self.assertIn('els.analyzeBtn.addEventListener("click", runAnalyze);', SCRIPT)
+        # The Replay-demo shortcut arms the mode; it must not run anything.
+        shortcut = SCRIPT.split("startReplayDemo")[1].split("});")[0]
+        self.assertNotIn("runAnalyze", shortcut,
+                         "the home shortcut must not start an analysis by itself")
+
+    def test_start_button_is_disabled_until_a_video_is_chosen(self):
+        tag = re.search(r"<button id=\"analyzeBtn\"[^>]*>", MARKUP)
+        self.assertIsNotNone(tag)
+        self.assertIn("disabled", tag.group(0))
+
+    def test_results_unlock_only_after_a_successful_response(self):
+        body = SCRIPT[SCRIPT.index("async function runAnalyze"):]
+        ok_branch = body.index('setStatus("Analysis complete."')
+        self.assertLess(body.index('unlockStep("results")') - ok_branch, 400,
+                        "results must unlock on the success path only")
+        self.assertIn("lockStepsAfter(\"processing\")", body,
+                      "a new run must re-lock the steps a previous run unlocked")
+
+
+class ProcessingHonestyTests(unittest.TestCase):
+    def test_pipeline_lists_the_real_stages(self):
+        for stage in ("video", "yolo", "tracking", "spatial", "temporal",
+                      "fusion", "risk", "explanation"):
+            self.assertIn(f'data-stage="{stage}"', MARKUP, f"missing stage {stage}")
+
+    def test_processing_screen_promises_no_percentage(self):
+        block = MARKUP[MARKUP.index('data-view="processing"'):MARKUP.index('data-view="results"')]
+        self.assertNotIn("%", block, "the processing view must not show a progress percentage")
+        self.assertIn("indeterminate", block)
+
+    def test_stage_states_come_from_response_fields(self):
+        fn = SCRIPT[SCRIPT.index("function setStagesFromResult"):]
+        fn = fn[:fn.index("\n}")]
+        for field in ("frames_processed", "spatial_fusion_feature", "window_scores", "fusion"):
+            self.assertIn(field, fn, f"{field} must drive its stage state")
+        self.assertNotIn("Math.random", fn)
+
+    def test_a_failed_run_shows_an_actionable_error(self):
+        self.assertIn("function showProcessingError", SCRIPT)
+        self.assertIn("Analysis did not complete.", SCRIPT)
+        self.assertIn("Back to setup", SCRIPT)
+        # The server's own message is shown, escaped, rather than a generic one.
+        fn = SCRIPT[SCRIPT.index("function showProcessingError"):]
+        fn = fn[:fn.index("\n}")]
+        self.assertIn("escapeHtml(message)", fn)
+
+
+class DisclosuresSurviveTheReorganisationTests(unittest.TestCase):
+    """Every scientific caveat must still be on a page the examiner sees."""
+
+    def test_mode_distinction_is_intact(self):
+        self.assertIn("REPLAY &mdash; precomputed research evidence", MARKUP)
+        self.assertIn("LIVE MODEL &mdash; actual video inference", MARKUP)
+        self.assertIn("No temporal model runs.", MARKUP)
+        self.assertIn("Offline, not real time", MARKUP)
+        self.assertIn('id="modeBanner"', MARKUP)
+
+    def test_risk_disclaimer_is_intact(self):
+        self.assertIn('id="riskStatus"', MARKUP)
+        self.assertIn("data.risk_status", SCRIPT)
+        self.assertIn("risk_level_is_validated", SCRIPT)
+
+    def test_saliency_disclaimers_are_intact(self):
+        self.assertIn("not a causal or ground-truth explanation", FLAT)
+        self.assertIn("Not proof of causality", FLAT)
+        self.assertIn("not attention", FLAT)
+        self.assertIn("not ground-truth localization", FLAT)
+
+    def test_fusion_is_not_sold_as_an_improvement(self):
+        self.assertIn(
+            "fusion did <strong>not</strong> produce a statistically "
+            "significant improvement over the temporal-only baseline", FLAT)
+        for forbidden in ("fusion improves", "fusion is superior", "outperforms"):
+            self.assertNotIn(forbidden, FLAT.lower())
+
+    def test_no_risk_probability_language_anywhere(self):
+        for path in (TEMPLATE, APP_JS):
+            text = path.read_text(encoding="utf-8").lower()
+            for forbidden in ("risk probability", "risk confidence", "risk score"):
+                self.assertNotIn(forbidden, text, f"{path.name} contains {forbidden!r}")
+
+
+class VideoPlaybackTests(unittest.TestCase):
+    def test_both_players_exist_with_controls(self):
+        for player in ("resultVideo", "previewVideo"):
+            tag = re.search(r"<video[^>]*\bid=\"%s\"[^>]*>" % player, MARKUP)
+            self.assertIsNotNone(tag, f"{player} is missing")
+            self.assertIn("controls", tag.group(0), f"{player} has no controls")
+
+    def test_an_undecodable_annotated_video_is_reported_not_hidden(self):
+        """The backend writes mp4v, which browsers do not decode."""
+        self.assertIn('id="videoFallback"', MARKUP)
+        self.assertIn("els.resultVideo.onerror", SCRIPT)
+        self.assertIn("cannot play the annotated video", SCRIPT)
+        # It must offer the file rather than merely apologising.
+        self.assertIn("Open annotated video", SCRIPT)
+
+    def test_leaving_a_view_pauses_its_video(self):
+        self.assertIn("if (owner && owner.dataset.view !== name && !v.paused) v.pause();", SCRIPT)
+
+
+class BackendContractUnchangedTests(unittest.TestCase):
+    """The productization must not have moved a single API contract."""
+
+    def test_endpoints_are_unchanged(self):
+        source = SERVER.read_text(encoding="utf-8")
+        for route in ("/api/analyze", "/api/explain", "/api/report",
+                      "/api/preflight", "/api/presets", "/api/clips"):
+            self.assertIn(f'@app.route("{route}"', source)
+
+    def test_client_still_posts_the_same_fields(self):
+        self.assertIn('formData.append("mode", state.mode)', SCRIPT)
+        self.assertIn('formData.append("preset"', SCRIPT)
+        self.assertIn('formData.append("clip_key"', SCRIPT)
+        self.assertIn('formData.append("video"', SCRIPT)
+
+    def test_windows_still_come_only_from_the_response(self):
+        self.assertIn("renderWindowChart(data.window_scores", SCRIPT)
+        self.assertNotIn("for (let i = 0; i < 17", SCRIPT)
+
+    def test_the_explain_picker_reuses_the_same_windows_and_selection(self):
+        fn = SCRIPT[SCRIPT.index("function renderExplainPicker"):]
+        fn = fn[:fn.index("\nfunction selectWindow")]
+        self.assertIn("selectWindow(w)", fn, "the picker must share one selection path")
+        self.assertNotIn("fetch(", fn, "selecting a window must not call the backend")
+
+
+if __name__ == "__main__":
+    unittest.main()

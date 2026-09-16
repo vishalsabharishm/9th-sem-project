@@ -455,9 +455,19 @@ class TimelineTests(unittest.TestCase):
         self.assertIn('id="windowTable"', markup)
 
     def test_explain_button_starts_disabled(self):
+        """Reads the whole <button> tag, not a fixed character window.
+
+        This used to slice 60 characters either side of the id, which made the
+        assertion depend on how many other attributes the element carries --
+        adding a class attribute pushed `disabled` out of the window and failed
+        a test about initial state. The tag itself is what matters.
+        """
+        import re
+
         markup = TEMPLATE.read_text(encoding="utf-8")
-        button = markup[markup.index('id="explainBtn"') - 60:markup.index('id="explainBtn"') + 60]
-        self.assertIn("disabled", button)
+        tag = re.search(r"<button[^>]*\bid=\"explainBtn\"[^>]*>", markup)
+        self.assertIsNotNone(tag, "explainBtn is not a <button> element")
+        self.assertIn("disabled", tag.group(0))
 
     def test_client_uses_the_selected_window_not_a_typed_number(self):
         script = APP_JS.read_text(encoding="utf-8")

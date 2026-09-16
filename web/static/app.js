@@ -10,6 +10,9 @@ const state = {
   selectedPreset: null,
   mode: "replay", // "replay" | "live" -- always sent explicitly, never inferred
   clips: [], // [{clip_key, true_label}]
+  presets: [],
+  view: "home",
+  reached: ["home"],
 };
 
 const els = {
@@ -52,7 +55,101 @@ const els = {
   spatialPanel: document.getElementById("spatialPanel"),
   reportPreview: document.getElementById("reportPreview"),
   toast: document.getElementById("toast"),
+  // Guided-workflow shell
+  stepper: document.getElementById("stepper"),
+  previewVideo: document.getElementById("previewVideo"),
+  previewEmpty: document.getElementById("previewEmpty"),
+  summaryList: document.getElementById("summaryList"),
+  summaryPath: document.getElementById("summaryPath"),
+  processingSub: document.getElementById("processingSub"),
+  processingError: document.getElementById("processingError"),
+  viewResultsBtn: document.getElementById("viewResultsBtn"),
+  resultsSub: document.getElementById("resultsSub"),
+  explainWindowList: document.getElementById("explainWindowList"),
+  videoFallback: document.getElementById("videoFallback"),
 };
+
+// ---------------------------------------------------------------------------
+// View router.
+//
+// Client-side only: one Flask template, six views. The backend routes, request
+// shapes and response fields are untouched -- this changes how the examiner
+// moves through the application, not what the application computes.
+// ---------------------------------------------------------------------------
+const VIEW_ORDER = ["home", "setup", "processing", "results", "explain", "report"];
+
+function showView(name) {
+  if (!VIEW_ORDER.includes(name)) return;
+  state.view = name;
+  document.querySelectorAll(".view").forEach(function (section) {
+    section.classList.toggle("hidden", section.dataset.view !== name);
+  });
+  document.querySelectorAll("#stepper .step").forEach(function (btn) {
+    const target = btn.dataset.goto;
+    btn.classList.toggle("active", target === name);
+    btn.classList.toggle("done", state.reached.indexOf(target) !== -1 && target !== name);
+  });
+  // Pause any playing video when leaving a view so audio never follows the
+  // examiner around the application.
+  document.querySelectorAll("video").forEach(function (v) {
+    const owner = v.closest(".view");
+    if (owner && owner.dataset.view !== name && !v.paused) v.pause();
+  });
+  window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function unlockStep(name) {
+  if (state.reached.indexOf(name) === -1) state.reached.push(name);
+  document.querySelectorAll("#stepper .step").forEach(function (btn) {
+    if (state.reached.indexOf(btn.dataset.goto) !== -1) btn.disabled = false;
+  });
+}
+
+function lockStepsAfter(name) {
+  const cut = VIEW_ORDER.indexOf(name);
+  state.reached = state.reached.filter(function (v) { return VIEW_ORDER.indexOf(v) <= cut; });
+  document.querySelectorAll("#stepper .step").forEach(function (btn) {
+    btn.disabled = state.reached.indexOf(btn.dataset.goto) === -1;
+    if (btn.disabled) btn.classList.remove("done", "active");
+  });
+}
+
+// Any element carrying data-goto navigates, including the stepper itself.
+document.addEventListener("click", function (event) {
+  const target = event.target.closest("[data-goto]");
+  if (!target || target.disabled) return;
+  showView(target.dataset.goto);
+});
+
+const brandHome = document.getElementById("brandHome");
+if (brandHome) brandHome.addEventListener("click", function () { showView("home"); });
+
+const startNew = document.getElementById("startNewAnalysis");
+if (startNew) startNew.addEventListener("click", function () {
+  unlockStep("setup");
+  showView("setup");
+});
+
+const startReplay = document.getElementById("startReplayDemo");
+if (startReplay) startReplay.addEventListener("click", function () {
+  // Pre-arms the deterministic research demo, but never starts it: analysis
+  // begins only when the examiner presses Start Analysis.
+  setMode("replay");
+  const radio = document.querySelector('.mode-option[data-mode="replay"] input');
+  if (radio) radio.checked = true;
+  switchTab("presets");
+  unlockStep("setup");
+  showView("setup");
+  showToast("Replay demo armed -- pick a built-in clip, then Start Analysis.");
+});
+
+if (els.viewResultsBtn) els.viewResultsBtn.addEventListener("click", function () {
+  showView("results");
+});
 
 // The frozen per-window operating point, used for the chart's threshold line.
 // decisionFor() below remains the single place the comparison is written.
@@ -135,6 +232,83 @@ function updateAnalyzeEnabled() {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Setup summary and video preview.
+//
+// Describes only what has actually been chosen. The "expected processing path"
+// is a statement about which code path will run, not a prediction of results.
+// ---------------------------------------------------------------------------
+function currentSelection() {
+  const file = els.videoUpload.files && els.videoUpload.files[0];
+  if (state.activeTab === "presets") {
+    const preset = state.selectedPreset;
+    const known = state.presets.find(function (x) { return x.id === preset; });
+    return preset
+      ? { label: "Built-in demo", name: preset, detail: known ? known.clip_key : "",
+          truth: known ? known.true_label : null, url: null }
+      : null;
+  }
+  if (state.activeTab === "browse") {
+    const key = els.clipSearch.value.trim();
+    if (!key) return null;
+    const known = state.clips.find(function (c) { return c.clip_key === key; });
+    return { label: "Dataset clip", name: key.split("/").pop(), detail: key,
+             truth: known ? known.true_label : null, url: null };
+  }
+  if (file) {
+    return { label: "Uploaded video", name: file.name,
+             detail: formatBytes(file.size) + (file.type ? " · " + file.type : ""),
+             truth: null, url: URL.createObjectURL(file) };
+  }
+  return null;
+}
+
+let previewUrl = null;
+
+function renderSummary() {
+  const pick = currentSelection();
+  const live = state.mode === "live";
+
+  // Preview: a local object URL for an upload, nothing for a server-side clip
+  // (the dataset video is not exposed for streaming before analysis).
+  if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
+  if (pick && pick.url) {
+    previewUrl = pick.url;
+    els.previewVideo.src = previewUrl;
+    els.previewVideo.classList.remove("hidden");
+    els.previewEmpty.classList.add("hidden");
+  } else {
+    els.previewVideo.removeAttribute("src");
+    els.previewVideo.load();
+    els.previewVideo.classList.add("hidden");
+    els.previewEmpty.classList.remove("hidden");
+    els.previewEmpty.querySelector("span").textContent = pick
+      ? "Preview available after analysis for dataset clips"
+      : "No video selected yet";
+  }
+
+  const rows = [
+    ["Mode", live ? "LIVE MODEL -- actual video inference"
+                  : "REPLAY -- precomputed research evidence"],
+    ["Video", pick ? pick.name : "Not selected"],
+    ["Source", pick ? pick.label : "—"],
+  ];
+  if (pick && pick.detail) rows.push(["Detail", pick.detail]);
+  if (pick && pick.truth) rows.push(["Ground truth", pick.truth]);
+
+  els.summaryList.innerHTML = rows.map(function (r) {
+    return "<dt>" + escapeHtml(r[0]) + "</dt><dd>" + escapeHtml(r[1]) + "</dd>";
+  }).join("");
+
+  els.summaryPath.innerHTML = live
+    ? "Expected path: decode &rarr; YOLO &rarr; tracking &rarr; spatial feature &rarr; " +
+      "<strong>R3D-18 forward pass per 16-frame window</strong> &rarr; frozen aggregation " +
+      "&rarr; configured fusion &rarr; risk. Offline, not real time."
+    : "Expected path: decode &rarr; YOLO &rarr; tracking &rarr; spatial feature &rarr; " +
+      "<strong>replayed window probabilities from the committed CSV</strong> &rarr; frozen " +
+      "aggregation &rarr; configured fusion &rarr; risk. No temporal model runs.";
+}
+
 function setMode(mode) {
   state.mode = mode;
   els.modeSelect.querySelectorAll(".mode-option").forEach((el) =>
@@ -145,6 +319,7 @@ function setMode(mode) {
   els.uploadHintLive.classList.toggle("hidden", !live);
   els.uploadClipSearch.classList.toggle("hidden", live);
   updateAnalyzeEnabled();
+  renderSummary();
 }
 
 els.modeSelect.addEventListener("change", (event) => {
@@ -160,6 +335,7 @@ function switchTab(tab) {
   els.tabBtns.forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
   els.tabPanels.forEach((p) => p.classList.toggle("hidden", p.dataset.panel !== tab));
   updateAnalyzeEnabled();
+  renderSummary();
 }
 
 els.tabBtns.forEach((btn) => btn.addEventListener("click", () => switchTab(btn.dataset.tab)));
@@ -167,6 +343,7 @@ els.tabBtns.forEach((btn) => btn.addEventListener("click", () => switchTab(btn.d
 async function loadPresets() {
   const res = await fetch("/api/presets");
   const presets = await res.json();
+  state.presets = presets;
   els.presetList.innerHTML = "";
   presets.forEach((p) => {
     const card = document.createElement("div");
@@ -182,6 +359,7 @@ async function loadPresets() {
       document.querySelectorAll(".preset-card").forEach((c) => c.classList.remove("selected"));
       card.classList.add("selected");
       updateAnalyzeEnabled();
+      renderSummary();
     };
     card.addEventListener("click", choose);
     card.addEventListener("keydown", (e) => {
@@ -277,6 +455,7 @@ function renderUploadMeta() {
     els.videoUpload.value = "";
     renderUploadMeta();
     updateAnalyzeEnabled();
+    renderSummary();
   });
 }
 
@@ -310,6 +489,7 @@ els.clipSearch.addEventListener("input", () => {
   const match = state.clips.find((c) => c.clip_key === els.clipSearch.value.trim());
   els.clipSearchInfo.textContent = match ? `Ground truth: ${match.true_label}` : "";
   updateAnalyzeEnabled();
+  renderSummary();
 });
 
 els.uploadClipSearch.addEventListener("input", updateAnalyzeEnabled);
@@ -325,6 +505,7 @@ els.videoUpload.addEventListener("change", () => {
   }
   renderUploadMeta();
   updateAnalyzeEnabled();
+  renderSummary();
 });
 
 els.analyzeBtn.addEventListener("click", runAnalyze);
@@ -346,6 +527,18 @@ async function runAnalyze() {
     }
     formData.append("video", els.videoUpload.files[0]);
   }
+
+  // Move to the dedicated processing view. Results become reachable only when
+  // the backend actually returns them.
+  lockStepsAfter("processing");
+  unlockStep("processing");
+  showView("processing");
+  els.processingError.classList.add("hidden");
+  els.processingError.textContent = "";
+  els.viewResultsBtn.classList.add("hidden");
+  els.processingSub.textContent = state.mode === "live"
+    ? "Running R3D-18 inference locally on CPU. This is not real time."
+    : "Replaying committed window probabilities. No temporal model runs.";
 
   els.analyzeBtn.disabled = true;
   els.analyzeBtn.classList.add("busy");
@@ -378,20 +571,42 @@ async function runAnalyze() {
     const res = await fetch("/api/analyze", { method: "POST", body: formData });
     const data = await res.json();
     if (!res.ok) {
-      setStatus(data.error || `Request failed (HTTP ${res.status}).`, true);
+      const message = data.error || `Request failed (HTTP ${res.status}).`;
+      setStatus(message, true);
       setStages("warning");
+      showProcessingError(message);
       return;
     }
     setStatus("Analysis complete.", false);
     showToast("Analysis complete.");
     renderResult(data);
+    unlockStep("results");
+    unlockStep("explain");
+    unlockStep("report");
+    els.viewResultsBtn.classList.remove("hidden");
+    els.processingSub.textContent = "Analysis complete.";
+    // Hand the examiner straight to the results rather than leaving them on a
+    // finished progress screen.
+    setTimeout(function () {
+      if (state.view === "processing") showView("results");
+    }, 700);
   } catch (err) {
-    setStatus(`Request failed: ${err}`, true);
+    const message = `Request failed: ${err}`;
+    setStatus(message, true);
     setStages("warning");
+    showProcessingError(message);
   } finally {
     els.analyzeBtn.classList.remove("busy");
     updateAnalyzeEnabled();
   }
+}
+
+function showProcessingError(message) {
+  els.processingError.innerHTML =
+    "<strong>Analysis did not complete.</strong><p>" + escapeHtml(message) + "</p>" +
+    '<button class="btn btn-ghost btn-sm" data-goto="setup" type="button">Back to setup</button>';
+  els.processingError.classList.remove("hidden");
+  els.processingSub.textContent = "The run stopped before producing a result.";
 }
 
 function renderResult(data) {
@@ -410,6 +625,11 @@ function renderResult(data) {
   renderSpatialEvidence(data);
   renderHud(data);
   renderReportPreview(data);
+
+  const summary = data.summary || {};
+  els.resultsSub.textContent =
+    (summary.clip_key || "") + " · " + (summary.frames_processed || 0) +
+    " frames · " + (data.window_scores || []).length + " scored window(s)";
 
   // The timeline caption must describe THIS run. Saying "replayed" above a
   // live timeline would misdescribe the one number an examiner cares most
@@ -435,6 +655,28 @@ function renderResult(data) {
       " | risk_level_is_validated: " + data.risk_status.risk_level_is_validated;
   }
 
+  // ---------------------------------------------------------------------
+  // Annotated video.
+  //
+  // run_demo writes it with OpenCV's "mp4v" fourcc, i.e. MPEG-4 Part 2, which
+  // Chrome and Firefox do not decode -- and this machine has no H.264 encoder
+  // available to OpenCV, so the backend cannot currently produce a
+  // browser-native codec. Rather than leave a dead player on screen, the
+  // failure is caught and stated plainly with the file offered for download.
+  // ---------------------------------------------------------------------
+  els.videoFallback.classList.add("hidden");
+  els.resultVideo.classList.remove("hidden");
+  els.resultVideo.onerror = function () {
+    els.resultVideo.classList.add("hidden");
+    els.videoFallback.classList.remove("hidden");
+    els.videoFallback.innerHTML =
+      "<strong>This browser cannot play the annotated video.</strong>" +
+      "<p>The file was written successfully and contains every annotated " +
+      "frame, but it uses the MPEG-4 Part 2 codec, which browsers do not " +
+      "decode. Open or download it to view the detections and track IDs.</p>" +
+      '<a class="btn btn-ghost btn-sm" href="' + data.video_url +
+      '" target="_blank" rel="noopener">Open annotated video</a>';
+  };
   els.resultVideo.src = data.video_url + "?t=" + Date.now();
   els.videoCaption.textContent = `${data.summary.clip_key} -- ${data.summary.frames_processed} frames processed`;
 
@@ -508,6 +750,41 @@ function decisionFor(probability) {
   return probability >= 0.14 ? "Fight" : "NonFight";
 }
 
+// The Explain view needs its own list of the SAME scored windows -- ids must
+// stay unique, so the timeline lives on Results and this is a second control
+// bound to the identical data and the identical selectWindow().
+function renderExplainPicker(windowScores) {
+  if (!els.explainWindowList) return;
+  const windows = windowScores || [];
+  if (!windows.length) {
+    els.explainWindowList.innerHTML =
+      '<p class="muted">No temporal windows are available to explain. ' +
+      "No 16-frame window completed for this video.</p>";
+    return;
+  }
+  const peak = windows.reduce(function (a, b) {
+    return b.fight_probability > a.fight_probability ? b : a;
+  });
+  els.explainWindowList.innerHTML = windows.map(function (w) {
+    const decision = decisionFor(w.fight_probability);
+    return '<button class="wp-item" type="button" data-index="' + w.window_index + '">' +
+      '<span class="wp-idx">#' + w.window_index +
+      (w.window_index === peak.window_index ? ' <em>peak</em>' : "") + "</span>" +
+      '<span class="wp-frames">frames ' + w.first_frame + "–" + w.last_frame + "</span>" +
+      '<span class="wp-prob">' + w.fight_probability.toFixed(4) + "</span>" +
+      '<span class="wp-dec' + (decision === "Fight" ? " is-fight" : "") + '">' + decision + "</span>" +
+      "</button>";
+  }).join("");
+  els.explainWindowList.querySelectorAll(".wp-item").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const w = windows.find(function (x) {
+        return x.window_index === Number(btn.dataset.index);
+      });
+      if (w) selectWindow(w);
+    });
+  });
+}
+
 function selectWindow(w) {
   selectedWindow = w;
   const label = document.getElementById("selectedWindow");
@@ -524,6 +801,9 @@ function selectWindow(w) {
   });
   document.querySelectorAll("#windowTable tbody tr").forEach((row) => {
     row.classList.toggle("selected", Number(row.dataset.index) === w.window_index);
+  });
+  document.querySelectorAll("#explainWindowList .wp-item").forEach((item) => {
+    item.classList.toggle("selected", Number(item.dataset.index) === w.window_index);
   });
 }
 
@@ -547,6 +827,7 @@ function renderWindowChart(windowScores, firedFrame) {
         "No scored windows, so saliency unavailable. Select a completed " +
         "temporal window to generate an explanation.";
     }
+    renderExplainPicker([]);
     return;
   }
 
@@ -640,6 +921,8 @@ function renderWindowChart(windowScores, firedFrame) {
   const contentHeight = els.windowChart.clientHeight - padTop - padBottom;
   threshold.style.bottom = `${padBottom + FROZEN_THRESHOLD * BAR_SCALE * contentHeight}px`;
 
+  renderExplainPicker(windows);
+
   // Default to the peak window: the one the frozen max rule actually used.
   selectWindow(peak);
 }
@@ -720,6 +1003,8 @@ function inline(s) {
 loadPresets();
 loadClips();
 loadPreflight();
+showView("home");
+renderSummary();
 
 // ---------------------------------------------------------------------------
 // Gradient-based temporal saliency, requested explicitly for ONE window.
