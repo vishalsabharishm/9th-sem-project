@@ -133,10 +133,22 @@ class NoMisleadingWordingTests(unittest.TestCase):
         self.assertIn("R3D-18 forward ", script)
 
     def test_fusion_is_never_presented_as_an_improvement(self):
-        markup = TEMPLATE.read_text(encoding="utf-8")
-        self.assertIn("did\n        <strong>not</strong> produce a statistically significant improvement",
-                      markup)
+        """Whitespace-normalised: the copy is line-wrapped in the template.
+
+        This previously matched the literal indentation, which made a pure
+        re-layout of the markup fail a test about wording. The property is the
+        sentence, not how far it is indented.
+        """
+        markup = " ".join(TEMPLATE.read_text(encoding="utf-8").split())
+        self.assertIn(
+            "fusion did <strong>not</strong> produce a statistically "
+            "significant improvement over the temporal-only baseline",
+            markup,
+        )
         self.assertIn("not</em> because it performs better", markup)
+        # And the affirmative claim must never appear.
+        for forbidden in ("fusion improves", "fusion is superior", "outperforms"):
+            self.assertNotIn(forbidden, markup.lower())
 
 
 class TwoResolutionLimitationIsVisibleTests(unittest.TestCase):

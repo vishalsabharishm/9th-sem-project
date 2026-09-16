@@ -41,11 +41,78 @@ const els = {
   uploadHintReplay: document.getElementById("uploadHintReplay"),
   uploadHintLive: document.getElementById("uploadHintLive"),
   timelineProvenance: document.getElementById("timelineProvenance"),
+  preflightChips: document.getElementById("preflightChips"),
+  preflightDetail: document.getElementById("preflightDetail"),
+  stageStrip: document.getElementById("stageStrip"),
+  dropZone: document.getElementById("dropZone"),
+  uploadMeta: document.getElementById("uploadMeta"),
+  emptyHero: document.getElementById("emptyHero"),
+  hudState: document.getElementById("hudState"),
+  riskCard: document.getElementById("riskCard"),
+  spatialPanel: document.getElementById("spatialPanel"),
+  reportPreview: document.getElementById("reportPreview"),
+  toast: document.getElementById("toast"),
 };
+
+// The frozen per-window operating point, used for the chart's threshold line.
+// decisionFor() below remains the single place the comparison is written.
+const FROZEN_THRESHOLD = 0.14;
+
+// Headroom so a p = 1.0 bar does not touch the top edge of the chart.
+const BAR_SCALE = 0.86;
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+let toastTimer = null;
+function showToast(message, isError) {
+  if (!els.toast) return;
+  els.toast.textContent = message;
+  els.toast.classList.toggle("error", Boolean(isError));
+  els.toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => els.toast.classList.remove("show"), 3600);
+}
+
+// The backend returns a final result, not incremental progress. So the strip
+// shows "processing" for the whole chain during a run and is marked complete
+// only from fields the response genuinely contains -- no fabricated timing.
+function setStages(state) {
+  if (!els.stageStrip) return;
+  els.stageStrip.querySelectorAll("li").forEach((li) => {
+    if (state === null) li.removeAttribute("data-state");
+    else li.dataset.state = state;
+  });
+}
+
+function setStagesFromResult(data) {
+  if (!els.stageStrip) return;
+  const summary = data.summary || {};
+  const feature = data.spatial_fusion_feature || null;
+  const fusion = data.fusion || null;
+  const known = {
+    video: summary.frames_processed > 0 ? "complete" : "warning",
+    yolo: "complete",
+    tracking: "complete",
+    // An undefined spatial feature is a warning, not a failure: it means no
+    // usable track pair existed, which the panel below states plainly.
+    spatial: feature && feature.defined ? "complete" : "warning",
+    temporal: (data.window_scores || []).length ? "complete" : "warning",
+    fusion: fusion && fusion.available ? "complete" : "warning",
+    explanation: "complete",
+  };
+  els.stageStrip.querySelectorAll("li").forEach((li) => {
+    li.dataset.state = known[li.dataset.stage] || "complete";
+  });
+}
 
 function setStatus(text, isError) {
   els.status.textContent = text || "";
   els.status.classList.toggle("error", Boolean(isError));
+  if (isError && text) showToast(text, true);
 }
 
 function updateAnalyzeEnabled() {
@@ -104,17 +171,21 @@ async function loadPresets() {
   presets.forEach((p) => {
     const card = document.createElement("div");
     card.className = "preset-card";
-    card.innerHTML = `
-      <div>
-        <strong>${p.id}</strong>
-        <span class="clip-key">${p.clip_key} -- ground truth: ${p.true_label}</span>
-      </div>
-    `;
-    card.addEventListener("click", () => {
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.innerHTML =
+      `<span class="pc-name">${escapeHtml(p.id)}</span>` +
+      `<span class="pc-meta">${escapeHtml(p.clip_key)} &middot; ground truth: ` +
+      `${escapeHtml(p.true_label)}</span>`;
+    const choose = () => {
       state.selectedPreset = p.id;
       document.querySelectorAll(".preset-card").forEach((c) => c.classList.remove("selected"));
       card.classList.add("selected");
       updateAnalyzeEnabled();
+    };
+    card.addEventListener("click", choose);
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(); }
     });
     els.presetList.appendChild(card);
   });
@@ -129,6 +200,109 @@ async function loadClips() {
     opt.value = c.clip_key;
     opt.label = `${c.clip_key} (${c.true_label})`;
     els.clipDataList.appendChild(opt);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Preflight. Reported, never interpreted: the three tiers come straight from
+// GET /api/preflight, and an unavailable capability is shown as unavailable
+// with the server's own remedy text rather than glossed over.
+// ---------------------------------------------------------------------------
+const PREFLIGHT_TIERS = [
+  ["replay_ready", "Replay", "replay"],
+  ["live_inference_ready", "Live Model", "live_inference"],
+  ["saliency_ready", "Saliency", "saliency"],
+];
+
+async function loadPreflight() {
+  try {
+    const result = await (await fetch("/api/preflight")).json();
+    const chips = PREFLIGHT_TIERS.map(([key, label]) => {
+      const ok = Boolean(result[key]);
+      return `<span class="chip ${ok ? "chip-ok" : "chip-warn"}">` +
+             `${label} ${ok ? "ready" : "unavailable"}</span>`;
+    }).join("");
+    els.preflightChips.innerHTML = chips;
+
+    els.preflightDetail.innerHTML = PREFLIGHT_TIERS.map(([key, label, tier]) => {
+      const ok = Boolean(result[key]);
+      let why = "";
+      if (!ok) {
+        const failed = (result.checks || []).filter((c) => c.tier === tier && !c.ok);
+        why = failed.map((c) => c.remedy || c.detail).filter(Boolean)[0] || "";
+      }
+      return `<div class="pf-row ${ok ? "ok" : "bad"}">` +
+             `<span class="pf-icon">${ok ? "✓" : "⚠"}</span>` +
+             `<span><span class="pf-name">${label}</span> ` +
+             `${ok ? "ready" : "not available"}` +
+             (why ? `<span class="pf-why">${escapeHtml(why)}</span>` : "") +
+             `</span></div>`;
+    }).join("");
+  } catch (err) {
+    els.preflightChips.innerHTML = '<span class="chip chip-warn">Status unavailable</span>';
+    els.preflightDetail.innerHTML =
+      '<div class="pf-row bad"><span class="pf-icon">⚠</span>' +
+      "<span>Could not reach the preflight endpoint.</span></div>";
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Drag-and-drop upload. The hidden file input remains the source of truth, so
+// nothing downstream has to know how the file arrived.
+// ---------------------------------------------------------------------------
+function formatBytes(bytes) {
+  if (!bytes && bytes !== 0) return "";
+  const units = ["B", "KB", "MB", "GB"];
+  let value = bytes, i = 0;
+  while (value >= 1024 && i < units.length - 1) { value /= 1024; i += 1; }
+  return `${value.toFixed(value < 10 && i > 0 ? 1 : 0)} ${units[i]}`;
+}
+
+function renderUploadMeta() {
+  const file = els.videoUpload.files && els.videoUpload.files[0];
+  if (!file) {
+    els.uploadMeta.classList.add("hidden");
+    els.uploadMeta.innerHTML = "";
+    els.dropZone.classList.remove("hidden");
+    return;
+  }
+  els.dropZone.classList.add("hidden");
+  els.uploadMeta.classList.remove("hidden");
+  els.uploadMeta.innerHTML =
+    `<span><span class="um-name">${escapeHtml(file.name)}</span>` +
+    `<br><span class="um-size">${formatBytes(file.size)}` +
+    (file.type ? ` &middot; ${escapeHtml(file.type)}` : "") + `</span></span>` +
+    '<button type="button" id="uploadClear" aria-label="Remove selected video">Remove</button>';
+  document.getElementById("uploadClear").addEventListener("click", () => {
+    els.videoUpload.value = "";
+    renderUploadMeta();
+    updateAnalyzeEnabled();
+  });
+}
+
+if (els.dropZone) {
+  els.dropZone.addEventListener("click", () => els.videoUpload.click());
+  els.dropZone.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); els.videoUpload.click(); }
+  });
+  ["dragenter", "dragover"].forEach((type) =>
+    els.dropZone.addEventListener(type, (e) => {
+      e.preventDefault();
+      els.dropZone.classList.add("dragover");
+    })
+  );
+  ["dragleave", "drop"].forEach((type) =>
+    els.dropZone.addEventListener(type, (e) => {
+      e.preventDefault();
+      els.dropZone.classList.remove("dragover");
+    })
+  );
+  els.dropZone.addEventListener("drop", (e) => {
+    const dropped = e.dataTransfer && e.dataTransfer.files;
+    if (dropped && dropped.length) {
+      els.videoUpload.files = dropped;
+      els.videoUpload.dispatchEvent(new Event("change"));
+    }
   });
 }
 
@@ -149,6 +323,7 @@ els.videoUpload.addEventListener("change", () => {
     const match = state.clips.find((c) => c.clip_key.endsWith("/" + file.name));
     if (match) els.uploadClipSearch.value = match.clip_key;
   }
+  renderUploadMeta();
   updateAnalyzeEnabled();
 });
 
@@ -173,6 +348,10 @@ async function runAnalyze() {
   }
 
   els.analyzeBtn.disabled = true;
+  els.analyzeBtn.classList.add("busy");
+  // Indeterminate: the backend reports a final result, not progress, so the
+  // whole chain reads "processing" rather than faking a percentage.
+  setStages("processing");
   setStatus(
     state.mode === "live"
       ? "LIVE MODEL: YOLO detection + tracking + spatial feature + an R3D-18 forward pass per 16-frame window. Offline, not real time -- expect roughly 0.5s per window plus detection, so a few minutes for a long video."
@@ -200,13 +379,17 @@ async function runAnalyze() {
     const data = await res.json();
     if (!res.ok) {
       setStatus(data.error || `Request failed (HTTP ${res.status}).`, true);
+      setStages("warning");
       return;
     }
-    setStatus("Done.", false);
+    setStatus("Analysis complete.", false);
+    showToast("Analysis complete.");
     renderResult(data);
   } catch (err) {
     setStatus(`Request failed: ${err}`, true);
+    setStages("warning");
   } finally {
+    els.analyzeBtn.classList.remove("busy");
     updateAnalyzeEnabled();
   }
 }
@@ -220,8 +403,13 @@ function renderResult(data) {
   window.__lastClipKey = data.summary.clip_key;
   if (window.__recordAnalysis) window.__recordAnalysis(data);
 
+  if (els.emptyHero) els.emptyHero.classList.add("hidden");
+  setStagesFromResult(data);
   renderModeBanner(data);
   renderFusion(data.fusion, data.spatial_fusion_feature);
+  renderSpatialEvidence(data);
+  renderHud(data);
+  renderReportPreview(data);
 
   // The timeline caption must describe THIS run. Saying "replayed" above a
   // live timeline would misdescribe the one number an examiner cares most
@@ -250,8 +438,9 @@ function renderResult(data) {
   els.resultVideo.src = data.video_url + "?t=" + Date.now();
   els.videoCaption.textContent = `${data.summary.clip_key} -- ${data.summary.frames_processed} frames processed`;
 
-  els.riskBadge.textContent = `Risk: ${data.overall_risk}`;
+  els.riskBadge.textContent = data.overall_risk;
   els.riskBadge.className = `badge risk-${data.overall_risk}`;
+  if (els.riskCard) els.riskCard.classList.toggle("is-high", data.overall_risk === "High");
   els.truthBadge.textContent = `Ground truth (dataset label, not used by the pipeline): ${data.summary.ground_truth_label}`;
 
   const isFalsePositive =
@@ -351,43 +540,107 @@ function renderWindowChart(windowScores, firedFrame) {
   if (!windows.length) {
     // An explicit unavailable state, never a silently empty strip.
     els.windowChart.innerHTML =
-      '<p class="error">No temporal windows available for this clip.</p>';
-    if (label) label.textContent = "No scored windows - saliency unavailable.";
+      '<p class="muted">No temporal windows available &mdash; no 16-frame ' +
+      "window completed for this video, so the temporal model never ran.</p>";
+    if (label) {
+      label.textContent =
+        "No scored windows, so saliency unavailable. Select a completed " +
+        "temporal window to generate an explanation.";
+    }
     return;
   }
+
+  // The frozen operating point, drawn so the per-window decisions are legible
+  // as a geometry rather than only as a column of text.
+  const threshold = document.createElement("div");
+  threshold.className = "chart-threshold";
+  threshold.innerHTML = `<span>threshold ${FROZEN_THRESHOLD}</span>`;
+  els.windowChart.appendChild(threshold);
+
+  const tip = document.createElement("div");
+  tip.className = "chart-tip";
+  els.windowChart.appendChild(tip);
+
+  const peak = windows.reduce((a, b) =>
+    b.fight_probability > a.fight_probability ? b : a);
 
   windows.forEach((w) => {
     const bar = document.createElement("div");
     const fired =
       firedFrame !== null && firedFrame !== undefined &&
       w.last_frame >= firedFrame && w.first_frame <= firedFrame;
-    bar.className = "window-bar" + (w.fight_probability >= 0.5 ? " fired" : "");
-    bar.style.height = `${Math.max(6, w.fight_probability * 100)}%`;
+    const decision = decisionFor(w.fight_probability);
+    bar.className = "window-bar" +
+      (decision === "Fight" ? " fired" : "") +
+      (w.window_index === peak.window_index ? " peak" : "");
+    bar.style.height = `${Math.max(6, w.fight_probability * 100 * BAR_SCALE)}%`;
     bar.dataset.index = w.window_index;
-    bar.title =
+    bar.tabIndex = 0;
+    bar.setAttribute("role", "button");
+    const description =
       `window ${w.window_index}: frames [${w.first_frame},${w.last_frame}] -> ` +
       `${w.fight_probability.toFixed(4)}` +
       (fired ? " (first alarm falls in this window)" : "") +
       " - click to select for saliency";
+    bar.setAttribute("aria-label", description);
+
+    const showTip = () => {
+      tip.innerHTML =
+        `<b>Window ${w.window_index}</b>${w.window_index === peak.window_index ? " (peak)" : ""}<br>` +
+        `frames ${w.first_frame}–${w.last_frame}<br>` +
+        `p = ${w.fight_probability.toFixed(4)}<br>` +
+        `<span class="${decision === "Fight" ? "tip-fight" : ""}">${decision}</span>` +
+        (fired ? "<br>first alarm" : "");
+      tip.classList.add("show");
+      const chartBox = els.windowChart.getBoundingClientRect();
+      const barBox = bar.getBoundingClientRect();
+      const left = Math.min(
+        Math.max(barBox.left - chartBox.left + barBox.width / 2 - tip.offsetWidth / 2, 4),
+        chartBox.width - tip.offsetWidth - 4
+      );
+      tip.style.left = `${left}px`;
+      tip.style.top = "6px";
+    };
+    const hideTip = () => tip.classList.remove("show");
+
+    bar.addEventListener("mouseenter", showTip);
+    bar.addEventListener("focus", showTip);
+    bar.addEventListener("mouseleave", hideTip);
+    bar.addEventListener("blur", hideTip);
     bar.addEventListener("click", () => selectWindow(w));
+    bar.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectWindow(w); }
+    });
     els.windowChart.appendChild(bar);
 
     if (table) {
       const row = document.createElement("tr");
       row.dataset.index = w.window_index;
+      row.tabIndex = 0;
       row.innerHTML =
         `<td>${w.window_index}</td>` +
-        `<td>${w.first_frame}-${w.last_frame}</td>` +
+        `<td>${w.first_frame}–${w.last_frame}</td>` +
         `<td>${w.fight_probability.toFixed(4)}</td>` +
-        `<td>${decisionFor(w.fight_probability)}</td>`;
+        `<td class="${decision === "Fight" ? "is-fight" : ""}">${decision}</td>`;
       row.addEventListener("click", () => selectWindow(w));
+      row.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectWindow(w); }
+      });
       table.appendChild(row);
     }
   });
 
+  // Position the threshold line against the SAME basis the bars use: a bar's
+  // percentage height resolves against the flex content box, so measuring it
+  // is the only way the line lands exactly where a bar of p = 0.14 would end.
+  // Computed after the bars are in the DOM so clientHeight is real.
+  const style = getComputedStyle(els.windowChart);
+  const padBottom = parseFloat(style.paddingBottom) || 0;
+  const padTop = parseFloat(style.paddingTop) || 0;
+  const contentHeight = els.windowChart.clientHeight - padTop - padBottom;
+  threshold.style.bottom = `${padBottom + FROZEN_THRESHOLD * BAR_SCALE * contentHeight}px`;
+
   // Default to the peak window: the one the frozen max rule actually used.
-  const peak = windows.reduce((a, b) =>
-    b.fight_probability > a.fight_probability ? b : a);
   selectWindow(peak);
 }
 
@@ -466,6 +719,7 @@ function inline(s) {
 
 loadPresets();
 loadClips();
+loadPreflight();
 
 // ---------------------------------------------------------------------------
 // Gradient-based temporal saliency, requested explicitly for ONE window.
@@ -713,4 +967,142 @@ function renderFusion(fusion, feature) {
     `<table class="fusion-table"><thead><tr><th>candidate</th><th>rule</th>` +
     `<th>score</th><th>decision</th></tr></thead><tbody>${rows}</tbody></table>` +
     `<p class="muted">${fusion.system_decision.why}</p>`;
+}
+
+
+// ---------------------------------------------------------------------------
+// HUD state.
+//
+// Three states only, each reflecting something the response actually says.
+// The alert state is entered ONLY when the frozen temporal rule fired; it is
+// never used decoratively, so seeing it always means the same thing.
+// ---------------------------------------------------------------------------
+function renderHud(data) {
+  if (!els.hudState) return;
+  const summary = data.summary || {};
+  const fired = Boolean(summary.temporal_violence_signal_fired);
+  const undetermined = summary.final_temporal_decision === "Undetermined";
+
+  els.hudState.classList.toggle("alert", fired);
+  els.hudState.classList.toggle("clear", !fired && !undetermined);
+  els.hudState.textContent = undetermined
+    ? "NO TEMPORAL EVIDENCE"
+    : fired
+    ? "ABNORMAL EVENT DETECTED"
+    : "NO ACTIVE THREAT";
+}
+
+// ---------------------------------------------------------------------------
+// Spatial evidence.
+//
+// Three groups kept deliberately apart, because conflating them is the single
+// most misleading thing this panel could do:
+//
+//   OBSERVED EVIDENCE  -- detections and measurements taken from this video
+//   MODEL PROBABILITY  -- the R3D output, the only learned quantity present
+//   CONFIGURED RISK    -- an engineer-declared mapping, not a probability
+//
+// An undefined measurement renders as "Unavailable", never as 0.
+// ---------------------------------------------------------------------------
+function evRow(key, value, unavailable) {
+  const cls = unavailable ? "ev-v unavailable" : "ev-v";
+  const shown = unavailable ? "Unavailable" : value;
+  return `<div class="ev-row"><span class="ev-k">${escapeHtml(key)}</span>` +
+         `<span class="${cls}">${escapeHtml(shown)}</span></div>`;
+}
+
+function renderSpatialEvidence(data) {
+  if (!els.spatialPanel) return;
+  const feature = data.spatial_fusion_feature || null;
+  const summary = data.summary || {};
+  const events = data.event_summary || [];
+
+  if (!feature && !events.length) {
+    els.spatialPanel.innerHTML =
+      '<p class="muted">No valid spatial evidence available for this video.</p>';
+    return;
+  }
+
+  const defined = Boolean(feature && feature.defined);
+  const observed =
+    '<div class="ev-group is-observed"><h4>Observed evidence</h4>' +
+    evRow("Frames processed", summary.frames_processed, summary.frames_processed == null) +
+    evRow("Mean persons / frame",
+          feature && feature.person_count_mean != null
+            ? Number(feature.person_count_mean).toFixed(2) : "",
+          !feature || feature.person_count_mean == null) +
+    evRow("Frames with no person",
+          feature ? `${feature.zero_person_frames} / ${feature.frames}` : "", !feature) +
+    evRow("Displacement samples",
+          feature ? feature.displacement_samples : "", !feature) +
+    evRow("Mean group diagonal",
+          feature && feature.group_diagonal_mean != null
+            ? `${Number(feature.group_diagonal_mean).toFixed(1)} px` : "",
+          !feature || feature.group_diagonal_mean == null) +
+    evRow("Spatial feature",
+          defined ? Number(feature.spatial_score).toFixed(6) : "", !defined) +
+    "</div>";
+
+  const rules = events.length
+    ? events.map((e) => evRow(`${e.event_type}`, `${e.occurrences} frame-events`, false)).join("")
+    : '<div class="ev-row"><span class="ev-k">Rule events</span>' +
+      '<span class="ev-v unavailable">None raised</span></div>';
+
+  const model =
+    '<div class="ev-group is-model"><h4>Model probability</h4>' +
+    evRow("Temporal max (R3D)",
+          summary.temporal_max_probability != null
+            ? Number(summary.temporal_max_probability).toFixed(6) : "",
+          summary.temporal_max_probability == null) +
+    evRow("Windows scored", (data.window_scores || []).length, false) +
+    evRow("Decision", summary.final_temporal_decision, !summary.final_temporal_decision) +
+    '<div class="ev-row"><span class="ev-k">Provenance</span>' +
+    '<span class="ev-v">measured_model_probability</span></div>' +
+    "</div>";
+
+  const configured =
+    '<div class="ev-group is-configured"><h4>Configured risk</h4>' +
+    evRow("Severity", data.overall_risk, !data.overall_risk) +
+    '<div class="ev-row"><span class="ev-k">Validated</span>' +
+    '<span class="ev-v unavailable">No</span></div>' +
+    '<div class="ev-row"><span class="ev-k">Provenance</span>' +
+    '<span class="ev-v">configured_interpretation</span></div>' +
+    rules +
+    "</div>";
+
+  els.spatialPanel.innerHTML = observed + model + configured;
+  if (feature && !defined && feature.note) {
+    els.spatialPanel.insertAdjacentHTML(
+      "beforeend", `<p class="caveat">${escapeHtml(feature.note)}</p>`);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Incident-report preview. Summarises what the export WILL contain, read from
+// the same payload the export sends -- it never describes a field the report
+// would not carry.
+// ---------------------------------------------------------------------------
+function renderReportPreview(data) {
+  if (!els.reportPreview) return;
+  const summary = data.summary || {};
+  const provenance = summary.temporal_provenance || {};
+  const fusion = data.fusion || {};
+  const items = [
+    ["Incident", summary.clip_key || "--"],
+    ["Mode", data.mode === "live" ? "Live inference" : "Replay (precomputed)"],
+    ["Temporal evidence", `${(data.window_scores || []).length} window(s)`],
+    ["Spatial evidence",
+      data.spatial_fusion_feature && data.spatial_fusion_feature.defined
+        ? "Measured" : "Unavailable"],
+    ["Fusion", fusion.available ? "Configured candidates" : "Not available"],
+    ["Risk", `${data.overall_risk} (configured)`],
+    ["Explanation", "On demand"],
+    ["Provenance", provenance.checkpoint_sha256
+      ? `checkpoint ${String(provenance.checkpoint_sha256).slice(0, 12)}…`
+      : "committed CSV"],
+  ];
+  els.reportPreview.innerHTML = items
+    .map(([k, v]) => `<div class="rp-item"><span class="rp-k">${escapeHtml(k)}</span>` +
+                     `<span class="rp-v">${escapeHtml(v)}</span></div>`)
+    .join("");
 }
