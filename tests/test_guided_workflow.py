@@ -469,5 +469,52 @@ class FaviconTests(unittest.TestCase):
         self.assertNotIn("http", icon.replace("http://www.w3.org/2000/svg", ""))
 
 
+class SaliencyBelongsToItsWindowTests(unittest.TestCase):
+    """A heatmap describes exactly one window and must not outlive the selection.
+
+    Found in browser testing: after generating saliency for window 11 and then
+    clicking window 3, the panel still showed frames 88-103 under a label
+    reading "Window 3" -- and the exported report paired that saliency block
+    with selected_window frames 24-39, putting a factual inconsistency into a
+    delivered artifact.
+    """
+
+    @staticmethod
+    def _fn(name):
+        """One top-level function body, ending at the next top-level line."""
+        start = SCRIPT.index("function " + name)
+        out = []
+        for i, line in enumerate(SCRIPT[start:].splitlines(keepends=True)):
+            if i and line.startswith("}"):
+                out.append(line)
+                break
+            out.append(line)
+        return "".join(out)
+
+    def test_changing_the_selection_clears_the_previous_saliency(self):
+        fn = self._fn("selectWindow(w)")
+        self.assertIn("clearSaliencyForNewWindow()", fn)
+        # Only on an actual change -- re-selecting the same window keeps it.
+        self.assertIn("selectedWindow.window_index !== w.window_index", fn)
+
+    def test_clearing_drops_the_payload_the_report_reads(self):
+        """Clearing only the panel would still export a mismatched report."""
+        fn = self._fn("clearSaliencyForNewWindow")
+        self.assertIn("__clearSaliency", fn)
+        self.assertIn("saliencyResult", fn)
+        self.assertIn("window.__clearSaliency = () =>", SCRIPT)
+
+    def test_the_cleared_state_explains_itself(self):
+        self.assertIn("Saliency cleared", SCRIPT)
+        self.assertIn("described the previously", SCRIPT)
+        self.assertIn("Generate it again for this window", SCRIPT)
+
+    def test_a_stale_badge_was_not_used_instead(self):
+        """A heatmap labelled stale is still one an examiner can misread, and
+        the exported report has no way to render a badge at all."""
+        fn = self._fn("clearSaliencyForNewWindow")
+        self.assertNotIn("stale", fn.lower())
+
+
 if __name__ == "__main__":
     unittest.main()

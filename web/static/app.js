@@ -828,6 +828,14 @@ function renderExplainPicker(windowScores, keepSelection) {
 }
 
 function selectWindow(w) {
+  // A heatmap belongs to one window. Moving the selection elsewhere must drop
+  // it: otherwise the panel showed frames 88-103 under a label reading
+  // "Window 3", and -- worse -- the exported report paired that saliency block
+  // with a selected_window of frames 24-39, which is a factual inconsistency
+  // in a delivered artifact. Re-selecting the SAME window keeps its result.
+  const changed = !selectedWindow || selectedWindow.window_index !== w.window_index;
+  if (changed) clearSaliencyForNewWindow();
+
   selectedWindow = w;
   const label = document.getElementById("selectedWindow");
   if (label) {
@@ -847,6 +855,25 @@ function selectWindow(w) {
   document.querySelectorAll("#explainWindowList .wp-item").forEach((item) => {
     item.classList.toggle("selected", Number(item.dataset.index) === w.window_index);
   });
+}
+
+
+// ---------------------------------------------------------------------------
+// Saliency belongs to the window it was computed for.
+//
+// Clearing is deliberately total: the panel, the recorded payload the report
+// export reads, and nothing else. A "stale" badge was considered and rejected
+// -- a heatmap labelled stale is still a heatmap an examiner can misread, and
+// the report has no way to show a badge at all.
+// ---------------------------------------------------------------------------
+function clearSaliencyForNewWindow() {
+  const target = document.getElementById("saliencyResult");
+  if (target && target.innerHTML) {
+    target.innerHTML =
+      '<p class="muted">Saliency cleared: it described the previously ' +
+      "selected window. Generate it again for this window.</p>";
+  }
+  if (window.__clearSaliency) window.__clearSaliency();
 }
 
 function renderWindowChart(windowScores, firedFrame) {
@@ -1140,6 +1167,9 @@ renderSummary();
   window.__recordAnalysis = (data) => { lastAnalysis = data; lastSaliency = null; };
   window.__clearAnalysis = () => { lastAnalysis = null; lastSaliency = null; };
   window.__recordSaliency = (data) => { lastSaliency = data; };
+  // Dropped when the selection moves, so an export can never pair one window's
+  // saliency with a different window's selected_window.
+  window.__clearSaliency = () => { lastSaliency = null; };
 
   async function download(format) {
     const status = document.getElementById("reportStatus");

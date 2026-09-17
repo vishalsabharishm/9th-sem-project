@@ -232,22 +232,35 @@ output means and how to read it during the review.
 
 ### Web demo UI (browser)
 
-A local browser front end for the same pipeline above -- video selection,
-an **Analyze** action, the processed video, risk classification, confidence,
-temporal evidence/peak window, and the explanation report, all in one page.
-It calls `tools/run_demo.py`'s own `run_demo()` function directly; it does
-not reimplement or change any detection/tracking/temporal/risk logic. See
-`docs/web_ui.md` for the full architecture.
+A local browser front end for the same pipeline above, as a guided six-step
+workflow -- Home, Setup, Processing, Results, Explain, Report. It calls
+`tools/run_demo.py`'s own `run_demo()` function directly; it does not
+reimplement or change any detection/tracking/temporal/risk logic.
+
+Note the wording: the dashboard shows the **measured model probability**, the
+observed spatial evidence, and a **configured severity/risk interpretation**
+that is explicitly not a validated risk model. It does not show a "risk
+confidence" or a risk probability, because no such calibrated quantity exists
+in this project.
+
+See `docs/web_ui.md` for the architecture and
+**`docs/FINAL_REVIEW_CHECKLIST.md`** for the review-day runbook.
 
 ```bash
 .venv\Scripts\activate
 python web\server.py
 ```
 
-Then open <http://127.0.0.1:5000> in a browser, pick a clip (built-in preset,
-any of the 394 primary-split clips, or an uploaded video paired with a known
-`clip_key`), and click **Analyze**. A run takes the same ~30-90s on CPU as
-the command-line demo, because it is the same code.
+Then open <http://127.0.0.1:5000> in a browser. Choose an inference mode
+(REPLAY or LIVE MODEL), pick a video (built-in preset, any of the 394
+primary-split clips, or an upload), and click **Start Analysis**. A replay run
+takes the same ~30-90s on CPU as the command-line demo, because it is the same
+code; a live run additionally spends roughly 0.65s per 16-frame window on
+R3D-18 inference.
+
+The server checks its own environment before serving and refuses to start if
+the standard replay demo cannot run. A missing R3D checkpoint blocks live
+inference and saliency only -- replay needs no checkpoint and keeps working.
 
 **Startup preflight.** The server checks its own environment before serving and
 prints the result in three tiers. The distinction matters: the standard demo is
