@@ -686,8 +686,12 @@ button {
 }
 .video-frame video { display: block; width: 100%; max-height: 62vh; background: #000; }
 
+/* Top-RIGHT on purpose: run_demo burns its own HUD (windowed probability and
+   frame number) into the top-left of every annotated frame, and the badge sat
+   on top of it. The overlay belongs to the research pipeline and is not ours
+   to move, so the badge moves instead. */
 .video-hud {
-  position: absolute; top: 10px; left: 10px;
+  position: absolute; top: 10px; right: 10px;
   display: flex; gap: 7px; pointer-events: none;
 }
 .hud-state {
@@ -1191,3 +1195,105 @@ button {
   border-top-color: var(--accent);
   animation: spin .8s linear infinite;
 }
+
+/* ===========================================================================
+   Final presentation pass: demo library, headline stats, progressive
+   disclosure. Semantics only -- amber marks the deliberate failure case,
+   never decoration.
+   =========================================================================== */
+
+/* ------------------------------------------------------------ demo library */
+
+.preset-card { padding: 11px 13px; }
+.pc-role {
+  display: block; font-size: 9.6px; font-weight: 700; letter-spacing: .14em;
+  color: var(--muted); margin-bottom: 3px;
+}
+.preset-card.tone-ok .pc-role   { color: #7fbfa5; }
+.preset-card.tone-warn .pc-role { color: var(--warn); }
+.preset-card .pc-name { display: block; font-weight: 600; font-size: 13.4px; text-transform: none; }
+.pc-blurb { display: block; margin-top: 3px; font-size: 11.8px; color: var(--text-2); line-height: 1.5; }
+.preset-card .pc-meta {
+  display: block; margin-top: 5px; font-family: var(--mono);
+  font-size: 10.6px; color: var(--faint); word-break: break-all;
+}
+.pc-truth { display: block; margin-top: 4px; font-size: 11.2px; color: var(--muted); }
+.pc-truth strong { color: var(--text-2); font-weight: 600; }
+.pc-truth .is-alarm { color: var(--alert); }
+
+.preset-card.tone-warn { border-left: 2px solid rgba(217,164,65,.45); }
+.preset-card.tone-warn.selected { border-color: rgba(217,164,65,.55); background: var(--warn-soft); }
+
+/* The false-positive explainer. Amber, not red: it is a documented limitation,
+   not an error the examiner needs to fix. */
+.preset-note {
+  margin-top: 11px; padding: 12px 13px; border-radius: var(--radius-sm);
+  border: 1px solid rgba(217,164,65,.3); background: var(--warn-soft);
+  animation: rise .3s var(--ease) both;
+}
+.preset-note strong { display: block; font-size: 12.4px; color: #ecd9b0; margin-bottom: 5px; }
+.preset-note p { margin: 0; font-size: 11.8px; line-height: 1.6; color: var(--text-2); }
+
+/* ------------------------------------------------------- headline statistics */
+
+.stat-row {
+  display: grid; gap: 10px; margin: 10px 0 12px;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+}
+.stat {
+  padding: 10px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: rgba(255,255,255,.018);
+}
+.stat-k {
+  display: block; font-size: 10.2px; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--muted);
+}
+.stat-v {
+  display: block; margin-top: 3px; font-size: 17px; font-weight: 600;
+  letter-spacing: -.01em; color: var(--text);
+}
+.stat-v.is-alarm { color: var(--alert); }
+.stat-note { display: block; margin-top: 2px; font-size: 10.4px; color: var(--faint); line-height: 1.45; }
+
+/* --------------------------------------------------- progressive disclosure */
+
+.disclose {
+  margin: 8px 0 14px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); background: rgba(255,255,255,.012);
+}
+.disclose > summary {
+  padding: 8px 12px; cursor: pointer; list-style: none;
+  font-size: 12px; color: var(--text-2);
+  display: flex; align-items: center; gap: 8px;
+  transition: color .16s var(--ease), background .16s var(--ease);
+}
+.disclose > summary::-webkit-details-marker { display: none; }
+.disclose > summary::before {
+  content: ""; width: 0; height: 0; flex: none;
+  border-left: 5px solid currentColor;
+  border-top: 4px solid transparent; border-bottom: 4px solid transparent;
+  transition: transform .18s var(--ease);
+}
+.disclose[open] > summary::before { transform: rotate(90deg); }
+.disclose > summary:hover { color: var(--text); background: rgba(255,255,255,.03); }
+.disclose > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.disclose[open] > summary { border-bottom: 1px solid var(--border); }
+.disclose > *:not(summary) { padding: 10px 12px; }
+.disclose.compact { margin: 6px 0 0; background: none; border-color: transparent; }
+.disclose.compact > summary { padding: 4px 0; font-size: 11.2px; color: var(--faint); }
+.disclose.compact > summary:hover { background: none; color: var(--text-2); }
+.disclose.compact[open] > summary { border-bottom: none; }
+.disclose.compact > *:not(summary) { padding: 4px 0 0; }
+
+/* --------------------------------------------------------------- peak badge */
+
+.peak-badge {
+  display: inline-block; margin-left: 5px; padding: 1px 5px;
+  border-radius: 4px; border: 1px solid var(--accent-line);
+  background: var(--accent-soft); color: var(--accent);
+  font-family: var(--sans); font-size: 8.8px; font-weight: 700; letter-spacing: .09em;
+  vertical-align: middle;
+}
+
+/* Details opened for print so the report is complete on paper. */
+@media print { .disclose > *:not(summary) { display: block !important; } }

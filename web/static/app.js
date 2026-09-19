@@ -20,6 +20,8 @@ const state = {
 };
 
 function resetSession() {
+  const note = document.getElementById("presetNote");
+  if (note) { note.classList.add("hidden"); note.innerHTML = ""; }
   state.session = null;
   state.fps = null;
   selectedWindow = null;
@@ -263,8 +265,11 @@ function currentSelection() {
   if (state.activeTab === "presets") {
     const preset = state.selectedPreset;
     const known = state.presets.find(function (x) { return x.id === preset; });
+    const meta = PRESET_META[preset];
     return preset
-      ? { label: "Built-in demo", name: preset, detail: known ? known.clip_key : "",
+      ? { label: meta ? "Demo library · " + meta.role : "Built-in demo",
+          name: meta ? meta.name : preset,
+          detail: known ? known.clip_key : "",
           truth: known ? known.true_label : null, url: null }
       : null;
   }
@@ -360,6 +365,59 @@ function switchTab(tab) {
 
 els.tabBtns.forEach((btn) => btn.addEventListener("click", () => switchTab(btn.dataset.tab)));
 
+
+// ---------------------------------------------------------------------------
+// Demo library.
+//
+// Presentation labels only. Every factual claim here is already documented and
+// already shown elsewhere in this UI: the ground-truth labels come from the
+// /api/presets response, and the false-positive characterisation is the same
+// one the results page has always carried in #fpNotice and that
+// docs/demo_instructions.md records. Nothing is asserted that the run will not
+// itself demonstrate.
+// ---------------------------------------------------------------------------
+const PRESET_META = {
+  fight: {
+    role: "TRUE POSITIVE",
+    name: "Fight",
+    blurb: "Known fight example. The temporal signal fires.",
+    tone: "ok",
+  },
+  nonfight: {
+    role: "TRUE NEGATIVE",
+    name: "NonFight",
+    blurb: "Known normal footage. The temporal signal does not fire.",
+    tone: "ok",
+  },
+  fp: {
+    role: "CHALLENGING CASE",
+    name: "False Positive",
+    blurb: "NonFight footage the system classifies as Fight.",
+    tone: "warn",
+    decision: "Fight",
+  },
+};
+
+// Shown only for the false-positive clip. It is kept in the demo deliberately:
+// a demonstration that only shows successes is not evidence.
+function renderPresetNote(presetId) {
+  const note = document.getElementById("presetNote");
+  if (!note) return;
+  if (presetId !== "fp") {
+    note.classList.add("hidden");
+    note.innerHTML = "";
+    return;
+  }
+  note.classList.remove("hidden");
+  note.innerHTML =
+    "<strong>Why show this case?</strong>" +
+    "<p>This clip is a known false-positive example. The ground-truth label " +
+    "is NonFight, while the system raises a Fight decision. It demonstrates " +
+    "that the detector can produce false alarms, and gives a concrete failure " +
+    "case to inspect \u2014 this project's own primary-split precision " +
+    "(0.788) predicts that some will occur.</p>";
+}
+
 async function loadPresets() {
   const res = await fetch("/api/presets");
   const presets = await res.json();
@@ -370,14 +428,25 @@ async function loadPresets() {
     card.className = "preset-card";
     card.tabIndex = 0;
     card.setAttribute("role", "button");
+    const meta = PRESET_META[p.id] || {
+      role: "DEMO CLIP", name: p.id, blurb: "", tone: "neutral",
+    };
+    card.classList.add("tone-" + meta.tone);
     card.innerHTML =
-      `<span class="pc-name">${escapeHtml(p.id)}</span>` +
-      `<span class="pc-meta">${escapeHtml(p.clip_key)} &middot; ground truth: ` +
-      `${escapeHtml(p.true_label)}</span>`;
+      `<span class="pc-role">${escapeHtml(meta.role)}</span>` +
+      `<span class="pc-name">${escapeHtml(meta.name)}</span>` +
+      (meta.blurb ? `<span class="pc-blurb">${escapeHtml(meta.blurb)}</span>` : "") +
+      `<span class="pc-meta">${escapeHtml(p.clip_key)}</span>` +
+      `<span class="pc-truth">Ground truth: <strong>${escapeHtml(p.true_label)}</strong>` +
+      (meta.decision
+        ? ` &middot; system decision: <strong class="is-alarm">${escapeHtml(meta.decision)}</strong>`
+        : "") +
+      "</span>";
     const choose = () => {
       state.selectedPreset = p.id;
       document.querySelectorAll(".preset-card").forEach((c) => c.classList.remove("selected"));
       card.classList.add("selected");
+      renderPresetNote(p.id);
       updateAnalyzeEnabled();
       renderSummary();
     };
@@ -727,6 +796,7 @@ function renderResult(data) {
     data.summary.temporal_violence_signal_fired && data.summary.ground_truth_label === "NonFight";
   els.fpNotice.classList.toggle("hidden", !isFalsePositive);
 
+  renderTemporalHeadline(data);
   renderTemporalTable(data.temporal_signal, data.summary);
   renderEventsTable(data.event_summary);
   renderWindowChart(data.window_scores, data.summary.temporal_signal_first_frame);
@@ -737,6 +807,51 @@ function renderResult(data) {
     <a href="${data.risk_json_url}" target="_blank" rel="noopener">Risk assessment JSON</a>
     <a href="${data.explanation_url}" target="_blank" rel="noopener">Explanation report (.md)</a>
   `;
+}
+
+
+// ---------------------------------------------------------------------------
+// Temporal evidence headline.
+//
+// The four figures an examiner asks for first, lifted out of the provenance
+// table so they are readable from across a room. Every value is read from the
+// analysis response; the frame-to-seconds conversion uses the frame rate
+// MEASURED from the preview, and is simply omitted when that is unavailable.
+// ---------------------------------------------------------------------------
+function renderTemporalHeadline(data) {
+  const target = document.getElementById("temporalHeadline");
+  if (!target) return;
+  const summary = data.summary || {};
+  const windows = data.window_scores || [];
+  const peak = windows.length
+    ? windows.reduce(function (a, b) {
+        return b.fight_probability > a.fight_probability ? b : a;
+      })
+    : null;
+
+  const alarmFrame = summary.temporal_signal_first_frame;
+  const alarmText = alarmFrame == null
+    ? "Did not fire"
+    : (state.fps
+        ? (alarmFrame / state.fps).toFixed(2) + " s (frame " + alarmFrame + ")"
+        : "frame " + alarmFrame);
+
+  const decision = summary.final_temporal_decision || "\u2014";
+  const stats = [
+    ["Peak fight probability",
+     peak ? (peak.fight_probability * 100).toFixed(2) + "%" : "Unavailable",
+     "measured model probability"],
+    ["Decision", decision, "frozen rule: max \u2265 0.14"],
+    ["First alarm", alarmText, "earliest window over threshold"],
+    ["Windows scored", String(windows.length), "16 frames, stride 8"],
+  ];
+  target.innerHTML = stats.map(function (row) {
+    const alarm = row[0] === "Decision" && row[1] === "Fight" ? " is-alarm" : "";
+    return '<div class="stat">' +
+      '<span class="stat-k">' + escapeHtml(row[0]) + "</span>" +
+      '<span class="stat-v' + alarm + '">' + escapeHtml(row[1]) + "</span>" +
+      '<span class="stat-note">' + escapeHtml(row[2]) + "</span></div>";
+  }).join("");
 }
 
 function renderTemporalTable(temporalSignal, summary) {
@@ -968,7 +1083,10 @@ function renderWindowChart(windowScores, firedFrame) {
       row.dataset.index = w.window_index;
       row.tabIndex = 0;
       row.innerHTML =
-        `<td>${w.window_index}</td>` +
+        `<td>${w.window_index}` +
+        (w.window_index === peak.window_index
+          ? ' <span class="peak-badge">PEAK</span>' : "") +
+        `</td>` +
         `<td>${w.first_frame}–${w.last_frame}</td>` +
         `<td>${w.fight_probability.toFixed(4)}</td>` +
         `<td class="${decision === "Fight" ? "is-fight" : ""}">${decision}</td>`;
@@ -1688,6 +1806,7 @@ function measureFps(data) {
     if (frames && duration && isFinite(duration) && duration > 0) {
       state.fps = frames / duration;
       renderExplainPicker((data.window_scores || []), true);
+      renderTemporalHeadline(data);
     }
   };
 }
@@ -1697,4 +1816,13 @@ function windowTimestamp(w) {
   const start = w.first_frame / state.fps;
   const end = (w.last_frame + 1) / state.fps;
   return start.toFixed(2) + "\u2013" + end.toFixed(2) + "s";
+}
+
+
+// Print uses the existing @media print stylesheet; no PDF dependency.
+const printBtn = document.getElementById("reportPrintBtn");
+if (printBtn) {
+  printBtn.addEventListener("click", function () {
+    window.print();
+  });
 }

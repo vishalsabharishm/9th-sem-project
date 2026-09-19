@@ -201,10 +201,15 @@
             </div>
 
             <div class="tab-panel" data-panel="presets">
-              <p class="hint">Three real RWF-2000 clips used to build and verify this pipeline.</p>
+              <p class="hint">
+                Three real RWF-2000 clips used to build and verify this pipeline,
+                including one the system gets wrong.
+              </p>
               <div id="presetList" class="preset-list">
                 <div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div>
               </div>
+              <!-- Filled only when the known false-positive clip is selected. -->
+              <div id="presetNote" class="preset-note hidden"></div>
             </div>
 
             <div class="tab-panel hidden" data-panel="browse">
@@ -393,7 +398,10 @@
               <div class="video-fallback hidden" id="videoFallback"></div>
             </div>
             <div class="video-caption" id="videoCaption"></div>
-            <div class="video-provenance" id="videoProvenance"></div>
+            <details class="disclose compact">
+              <summary>View preview provenance</summary>
+              <div class="video-provenance" id="videoProvenance"></div>
+            </details>
           </div>
 
           <div class="result-headline">
@@ -416,7 +424,13 @@
             </div>
 
             <h3 class="sub">Temporal evidence</h3>
-            <table class="kv-table" id="temporalTable"></table>
+            <!-- The four figures an examiner actually needs, before the full
+                 provenance table. Every one is read from the analysis. -->
+            <div class="stat-row" id="temporalHeadline"></div>
+            <details class="disclose">
+              <summary>View temporal provenance</summary>
+              <table class="kv-table" id="temporalTable"></table>
+            </details>
           </div>
         </div>
 
@@ -433,12 +447,15 @@
           Clicking a window does not run the model.
         </p>
         <div id="windowChart" class="window-chart"></div>
-        <div class="table-scroll">
-          <table class="window-table" id="windowTable">
-            <thead><tr><th>#</th><th>Frames</th><th>Probability</th><th>Decision</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
+        <details class="disclose">
+          <summary>Inspect all temporal windows</summary>
+          <div class="table-scroll">
+            <table class="window-table" id="windowTable">
+              <thead><tr><th>#</th><th>Frames</th><th>Probability</th><th>Decision</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </details>
 
         <h3>Spatial evidence</h3>
         <p class="muted">
@@ -448,11 +465,13 @@
         </p>
         <div id="spatialPanel" class="spatial-panel"></div>
 
-        <h3>Phase-4 rule-engine events</h3>
-        <table class="events-table" id="eventsTable">
-          <thead><tr><th>Event type</th><th>Risk level</th><th>Occurrences</th></tr></thead>
-          <tbody></tbody>
-        </table>
+        <details class="disclose">
+          <summary>Phase-4 rule-engine events</summary>
+          <table class="events-table" id="eventsTable">
+            <thead><tr><th>Event type</th><th>Risk level</th><th>Occurrences</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </details>
 
         <h3>Evidence fusion</h3>
         <p class="muted">
@@ -560,6 +579,7 @@
         <div class="report-actions">
           <button id="reportJsonBtn" class="btn btn-primary btn-sm" type="button">Export JSON</button>
           <button id="reportTextBtn" class="btn btn-ghost btn-sm" type="button">Export TXT</button>
+          <button id="reportPrintBtn" class="btn btn-ghost btn-sm" type="button">Print</button>
         </div>
         <div id="reportStatus" class="status" role="status" aria-live="polite"></div>
       </section>
