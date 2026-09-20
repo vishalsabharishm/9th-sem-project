@@ -370,8 +370,8 @@ function renderSummary() {
   }
 
   const rows = [
-    ["Mode", live ? "LIVE MODEL -- actual video inference"
-                  : "REPLAY -- precomputed research evidence"],
+    ["Mode", live ? "LIVE MODEL \u2014 actual video inference"
+                  : "REPLAY \u2014 precomputed research evidence"],
     ["Video", pick ? pick.name : "Not selected"],
     ["Source", pick ? pick.label : "—"],
   ];
@@ -850,7 +850,8 @@ function renderResult(data) {
   els.videoFallback.classList.add("hidden");
   els.resultVideo.classList.remove("hidden");
   loadBrowserPreview(data);
-  els.videoCaption.textContent = `${data.summary.clip_key} -- ${data.summary.frames_processed} frames processed`;
+  els.videoCaption.textContent =
+    `${data.summary.clip_key} \u00b7 ${data.summary.frames_processed} frames processed`;
 
   els.riskBadge.textContent = data.overall_risk;
   els.riskBadge.className = `badge risk-${data.overall_risk}`;

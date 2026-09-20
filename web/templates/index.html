@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sentinel Vision &mdash; Explainable AI Surveillance Intelligence</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%230a0c0f%27/%3E%3Cpath d=%27M16 5 7 8.7v6.7c0 5.2 3.7 9.3 9 10.9 5.3-1.6 9-5.7 9-10.9V8.7Z%27 fill=%27none%27 stroke=%27%233fbcd8%27 stroke-width=%272%27 stroke-linejoin=%27round%27/%3E%3Ccircle cx=%2716%27 cy=%2714.5%27 r=%273%27 fill=%27%233fbcd8%27/%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23f6f5f2%27/%3E%3Cpath d=%27M16 5 7 8.7v6.7c0 5.2 3.7 9.3 9 10.9 5.3-1.6 9-5.7 9-10.9V8.7Z%27 fill=%27none%27 stroke=%27%232d7d6d%27 stroke-width=%272%27 stroke-linejoin=%27round%27/%3E%3Ccircle cx=%2716%27 cy=%2714.5%27 r=%273%27 fill=%27%232d7d6d%27/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
@@ -50,26 +50,32 @@
     <section class="view" data-view="home" id="viewHome">
       <div class="hero">
         <p class="eyebrow">Explainable abnormal-event detection</p>
-        <h1>Analyse surveillance footage with evidence you can inspect.</h1>
+        <h1>Evidence you can inspect.</h1>
         <p class="hero-sub">
           Sentinel Vision runs person detection, tracking, spatial motion
           analysis and a temporal violence model over a video, then shows the
           evidence behind every decision &mdash; including what the system is
-          <strong>not</strong> entitled to claim. All processing is local and
-          offline; nothing is uploaded anywhere.
+          <strong>not</strong> entitled to claim.
         </p>
         <div class="hero-actions">
           <button class="btn btn-primary" id="startNewAnalysis" data-reset="session" type="button">
-            New Analysis
+            Start analysis
           </button>
           <button class="btn btn-ghost" id="startReplayDemo" type="button">
-            Replay Demo
+            Replay demo
           </button>
         </div>
+        <p class="hero-note">
+          <span>Local processing</span>
+          <span class="sep" aria-hidden="true">&middot;</span>
+          <span>Evidence-first</span>
+          <span class="sep" aria-hidden="true">&middot;</span>
+          <span>Nothing is uploaded anywhere</span>
+        </p>
       </div>
 
-      <h2 class="section-head">Pipeline capabilities</h2>
-      <div class="capability-grid">
+      <h2 class="section-head">How Sentinel Vision works</h2>
+      <div class="flow">
         <article class="cap-card">
           <span class="cap-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
@@ -115,21 +121,21 @@
           <span class="cap-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
                  stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3.2"/><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/></svg>
-          </span>
-          <h3>Explainability</h3>
-          <p>Gradient-based temporal saliency for a chosen window &mdash; a
-             localisation diagnostic, not a causal explanation.</p>
-        </article>
-        <article class="cap-card">
-          <span class="cap-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M7 4v6M17 4v6M7 10a5 5 0 0 0 10 0M12 15v5"/></svg>
           </span>
           <h3>Evidence Fusion</h3>
           <p>A configured layer combining temporal and spatial evidence under
              thresholds read from the frozen protocol.</p>
+        </article>
+        <article class="cap-card">
+          <span class="cap-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                 stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3.2"/><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/></svg>
+          </span>
+          <h3>Explainability</h3>
+          <p>Gradient-based temporal saliency for a chosen window &mdash; a
+             localisation diagnostic, not a causal explanation.</p>
         </article>
       </div>
 
@@ -384,6 +390,11 @@
       <section class="panel panel-results" id="resultsPanel">
         <div id="liveNote" class="notice hidden"></div>
 
+        <!-- The verdict leads the page. The four figures an examiner needs
+             first, above the evidence rather than beside it; every one is
+             read from the analysis response. -->
+        <div class="headline" id="temporalHeadline"></div>
+
         <div class="result-grid">
           <div class="result-video">
             <div class="video-frame">
@@ -423,10 +434,6 @@
               that only shows successes would not be honest evidence.
             </div>
 
-            <h3 class="sub">Temporal evidence</h3>
-            <!-- The four figures an examiner actually needs, before the full
-                 provenance table. Every one is read from the analysis. -->
-            <div class="headline" id="temporalHeadline"></div>
             <details class="disclose">
               <summary>View temporal provenance</summary>
               <table class="kv-table" id="temporalTable"></table>

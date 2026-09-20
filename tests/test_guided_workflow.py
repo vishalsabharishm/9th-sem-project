@@ -671,5 +671,79 @@ class HierarchyKeepsEveryFigureTests(unittest.TestCase):
         self.assertIn(".saliency-controls button:not(.btn)", css)
 
 
+class DesignSystemTests(unittest.TestCase):
+    """What the redesign must keep true, independent of taste.
+
+    These do not pin colours or spacing -- those are meant to change. They pin
+    the properties that stop the interface from regressing into something that
+    needs a network, breaks on a small screen, or animates for people who have
+    asked it not to.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.css = STYLE.read_text(encoding="utf-8")
+
+    def test_no_external_font_or_asset_is_requested(self):
+        """The demo machine may have no internet at review time."""
+        for forbidden in ("@import", "url(http", "fonts.googleapis", "cdn."):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, self.css)
+
+    def test_every_colour_comes_from_the_token_set(self):
+        """One coherent system, not dozens of unrelated literals."""
+        import re
+        root = self.css[self.css.index(":root {"):self.css.index("* { box-sizing")]
+        declared = set(re.findall(r"^\s*(--[\w-]+):", root, re.M))
+        used = set(re.findall(r"var\((--[\w-]+)", self.css))
+        self.assertTrue(declared, "no tokens declared")
+        # Nothing may reference a token that does not exist, and nothing may be
+        # declared and then never used.
+        self.assertEqual(used - declared, set(), "token referenced but not declared")
+        self.assertEqual(declared - used, set(), "token declared but never used")
+
+    def test_reduced_motion_disables_movement_but_not_state(self):
+        block = self.css[self.css.index("@media (prefers-reduced-motion: reduce)"):]
+        block = block[:block.index("/* ====")]
+        self.assertIn("animation-duration", block)
+        self.assertIn("transition-duration", block)
+        self.assertIn("!important", block)
+        # State must still be visible, so opacity is forced ON rather than off.
+        self.assertIn("opacity: 1 !important", block)
+
+    def test_the_light_theme_is_the_default(self):
+        """The review-day interface is light; nothing gates that on a class."""
+        root = self.css[self.css.index(":root {"):self.css.index("* { box-sizing")]
+        self.assertIn("--bg:", root)
+        self.assertIn("--surface:", root)
+        # The multi-line body rule, not the "html, body { height: 100%; }" one.
+        marker = chr(10) + "body {" + chr(10)
+        body = self.css[self.css.index(marker):]
+        body = body[:body.index("}")]
+        self.assertIn("var(--bg)", body)
+        self.assertIn("var(--text)", body)
+
+    def test_print_keeps_the_report_complete(self):
+        block = self.css[self.css.index("@media print"):]
+        self.assertIn("display: block !important", block,
+                      "collapsed disclosures must open on paper")
+        self.assertIn(".table-scroll", block, "scrolling regions must expand")
+
+    def test_responsive_breakpoints_exist_for_the_verified_widths(self):
+        for width in ("1080px", "900px", "700px"):
+            with self.subTest(width=width):
+                self.assertIn("max-width: " + width, self.css)
+
+    def test_focus_is_always_visible(self):
+        """Keyboard users must never lose the caret position."""
+        self.assertIn(":focus-visible", self.css)
+        self.assertGreaterEqual(self.css.count("outline: 2px solid var(--accent)"), 8)
+
+    def test_the_concurrent_block_is_one_surface(self):
+        """Four separate pills would read as four separate jobs."""
+        self.assertIn(".pipeline.group-active li.grouped", self.css)
+        self.assertIn("groupScan", self.css)
+
+
 if __name__ == "__main__":
     unittest.main()
