@@ -947,12 +947,19 @@ function renderTemporalHeadline(data) {
   // before -- only the order of the eye changes.
   const tone = decision === "Fight" ? " is-alarm"
     : decision === "NonFight" ? " is-clear" : "";
+  // The eyebrow states what the decision MEANS, derived from the decision
+  // itself -- the same wording the burned-in video badge already uses. It
+  // introduces no new claim and no new value.
+  const headline = decision === "Fight" ? "Incident detected"
+    : decision === "NonFight" ? "No abnormal event detected"
+    : "Decision unavailable";
+
   const hero =
     '<div class="decision-hero' + tone + '">' +
       '<div class="dh-main">' +
-        '<span class="dh-k">System decision</span>' +
+        '<span class="dh-k">' + escapeHtml(headline) + "</span>" +
         '<span class="dh-v">' + escapeHtml(decision) + "</span>" +
-        '<span class="dh-note">frozen rule: max \u2265 0.14</span>' +
+        '<span class="dh-note">system decision \u00b7 frozen rule: max \u2265 0.14</span>' +
       "</div>" +
       '<div class="dh-peak">' +
         '<span class="dh-pv">' + escapeHtml(peakText) + "</span>" +

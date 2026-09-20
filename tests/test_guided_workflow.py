@@ -613,9 +613,12 @@ class HierarchyKeepsEveryFigureTests(unittest.TestCase):
         return "".join(out)
 
     def test_all_four_figures_are_still_rendered(self):
-        fn = self._fn("renderTemporalHeadline")
-        for label in ("System decision", "Peak fight probability",
-                      "First alarm", "Windows scored"):
+        """Each figure must still carry a label. Casing is presentation: the
+        decision's label moved into the eyebrow and its note when the verdict
+        became the page's hero, so the check is on the words, not their case."""
+        fn = self._fn("renderTemporalHeadline").lower()
+        for label in ("system decision", "peak fight probability",
+                      "first alarm", "windows scored"):
             with self.subTest(label=label):
                 self.assertIn(label, fn)
 

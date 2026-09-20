@@ -173,8 +173,7 @@
       </div>
 
       <div class="setup-grid">
-        <div class="setup-col">
-          <section class="panel" aria-labelledby="modeHeading">
+          <section class="panel setup-mode" aria-labelledby="modeHeading">
             <h3 id="modeHeading" class="panel-title">
               <span class="step-num">1</span> Inference mode
             </h3>
@@ -206,7 +205,7 @@
             </div>
           </section>
 
-          <section class="panel" aria-labelledby="sourceHeading">
+          <section class="panel setup-source" aria-labelledby="sourceHeading">
             <h3 id="sourceHeading" class="panel-title">
               <span class="step-num">2</span> Video source
             </h3>
@@ -280,10 +279,8 @@
               <input id="uploadClipSearch" list="clipDataList" placeholder="Matching clip_key (required in replay)" autocomplete="off" aria-label="Matching clip key" />
             </div>
           </section>
-        </div>
 
-        <div class="setup-col">
-          <section class="panel panel-summary">
+          <section class="panel panel-summary setup-summary">
             <h3 class="panel-title">
               <span class="step-num">3</span> Analysis summary
             </h3>
@@ -307,7 +304,6 @@
             </button>
             <div id="status" class="status" role="status" aria-live="polite"></div>
           </section>
-        </div>
       </div>
     </section>
 
@@ -327,6 +323,11 @@
              backend returns a final result, not incremental progress, so the
              whole chain reads "processing" during a run and is marked complete
              from the fields the response genuinely contains. -->
+        <p class="proc-legend" aria-hidden="true">
+          <span class="pl-key"><i class="pl-dot is-run"></i>running</span>
+          <span class="pl-key"><i class="pl-dot is-done"></i>complete</span>
+          <span class="pl-key"><i class="pl-dot is-wait"></i>waiting</span>
+        </p>
         <ol class="pipeline" id="stageStrip" aria-label="Pipeline stages">
           <li data-stage="video_input"><span class="stage-mark" aria-hidden="true"></span>
             <span class="stage-name">Video Input<span class="stage-detail">Resolved and validated</span></span></li>
