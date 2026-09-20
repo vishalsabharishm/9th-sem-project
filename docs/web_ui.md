@@ -29,12 +29,14 @@ a live review.
   `src/temporal_event_adapter.py`) read-only, to list which of the 394
   primary-split clips have a real precomputed temporal score, and to look up
   ground-truth labels for display.
-- The R3D-18 checkpoint (`best.pt`) is still not on this machine. Uploading
-  an arbitrary new video therefore cannot get a live temporal score --
-  exactly the same limitation `tools/run_demo.py --video-path/--clip-key`
-  already has (see `docs/demo_instructions.md`). The UI never fabricates a
-  score for such a clip; `/api/analyze` returns a 400 with an explanation
-  instead.
+- The R3D-18 checkpoint (`best.pt`) is present at
+  `models/temporal_violence/best.pt`, so uploading an arbitrary new video can
+  get a real temporal score in **LIVE** mode, which runs an R3D-18 forward pass
+  per 16-frame window (offline, not real time). In **REPLAY** mode a clip with
+  no committed score still cannot be scored, and the UI never fabricates one:
+  `/api/analyze` returns a 400 explaining that the clip has no precomputed
+  score. The two modes are always chosen explicitly -- replay never silently
+  becomes live, and live never silently falls back to replay.
 - No file under `src/`, `tools/`, `temporal_risk/`, `tests/`, `models/`, or
   `data/` was changed to build this.
 

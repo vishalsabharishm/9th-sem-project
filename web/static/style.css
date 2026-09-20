@@ -666,33 +666,6 @@ code {
 
 button { font-family: inherit; }
 
-/* The analyse button is the one commitment on the setup page. */
-.analyze-btn {
-  width: 100%; margin-top: 4px; padding: 13px 18px;
-  border: 1px solid transparent; border-radius: 11px;
-  background: var(--accent);
-  color: #fff;
-  font: inherit; font-size: 14.5px; font-weight: 550; letter-spacing: -.008em;
-  cursor: pointer; position: relative;
-  box-shadow: 0 1px 2px rgba(54, 124, 120, .30);
-  transition: background var(--t-hover) var(--ease),
-              box-shadow var(--t-hover) var(--ease),
-              transform var(--t-press) var(--ease);
-}
-.analyze-btn:hover:not(:disabled) {
-  background: var(--accent-hover); box-shadow: 0 3px 12px rgba(54, 124, 120, .26);
-}
-.analyze-btn:active:not(:disabled) { transform: scale(.985); }
-.analyze-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.analyze-btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
-.analyze-btn.busy { color: transparent; pointer-events: none; }
-.analyze-btn.busy::after {
-  content: ""; position: absolute; inset: 0; margin: auto;
-  width: 16px; height: 16px; border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, .34); border-top-color: #fff;
-  animation: spin .7s linear infinite;
-}
-
 /* ===========================================================================
    Setup
    =========================================================================== */
@@ -2845,11 +2818,11 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .window-bar, .tl-dot { transition-duration: var(--t-select); }
 .disclose > summary { transition: color var(--t-hover) var(--ease),
                                   background var(--t-hover) var(--ease); }
-.btn, .analyze-btn { transition: background var(--t-hover) var(--ease),
-                                 border-color var(--t-hover) var(--ease),
-                                 box-shadow var(--t-hover) var(--ease),
-                                 transform var(--t-press) var(--ease),
-                                 color var(--t-hover) var(--ease); }
+.btn { transition: background var(--t-hover) var(--ease),
+                   border-color var(--t-hover) var(--ease),
+                   box-shadow var(--t-hover) var(--ease),
+                   transform var(--t-press) var(--ease),
+                   color var(--t-hover) var(--ease); }
 
 @media (prefers-reduced-motion: reduce) {
   .pipeline li[data-state="processing"] .stage-mark::before,

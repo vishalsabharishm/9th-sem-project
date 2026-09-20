@@ -144,12 +144,16 @@ an engineer's fixed weight for a calibrated model output, or vice versa.
 
 ## What is NOT yet true
 
-- Live inference (frames -> `TemporalInferenceEngine` -> window scores,
-  bypassing the CSV) is supported by `TemporalEventAdapter`'s interface (it
-  only needs a list of `WindowScore`-shaped values) but has not been
-  exercised end-to-end, because `best.pt` (132.74 MB) has not been
-  downloaded to this machine. `tools/run_demo.py` uses
-  `PrecomputedWindowScoreSource` instead, reading real scores from
+- ~~Live inference (frames -> `TemporalInferenceEngine` -> window scores,
+  bypassing the CSV) has not been exercised end-to-end, because `best.pt`
+  (132.74 MB) has not been downloaded to this machine.~~
+  **Superseded 2026-09-04.** `best.pt` was subsequently transferred and
+  verified (SHA-256 `a32271bf...`; see `docs/CHECKPOINT_INTEGRITY.md` and
+  `models/temporal_violence/checkpoint_records.json`). Live inference now runs
+  end-to-end through `tools/run_demo.py --temporal-source live --checkpoint
+  <path>` and through the web UI's LIVE mode; recorded live runs are under
+  `outputs/step7_live/`. Replay through `PrecomputedWindowScoreSource` remains
+  the default path, reading real scores from
   `temporal_risk/primary_window_scores.csv`.
 - The frozen aggregation rule was selected once, on one carve split
   (`carve_seed=42`). It has not been cross-validated across multiple carve

@@ -174,11 +174,15 @@ Phase 4 rule engine's fixed 0.9/0.95 confidences, tagged
 runs the full pipeline end-to-end on a real clip; see `docs/demo_instructions.md`.
 
 Live inference (frames -> `TemporalInferenceEngine` -> window scores, no CSV)
-is supported by the same adapter interface but not yet exercised end-to-end,
-because the clean-baseline checkpoint (132.74 MB) has not been downloaded to
-this machine -- the demo instead uses the real, precomputed window scores
-above, which is explicitly an acceptable substitute for a working final-review
-demo, not a shortcut that fabricates results.
+is supported by the same adapter interface and **is** exercised end-to-end. The
+clean-baseline checkpoint is present at `models/temporal_violence/best.pt`
+(132.74 MB, SHA-256 `a32271bf...`, recorded in
+`models/temporal_violence/checkpoint_records.json`), and
+`tools/run_demo.py --temporal-source live --checkpoint <path>` runs a real
+R3D-18 forward pass per 16-frame window. Live runs are **offline, not real
+time**. Replay remains the default path because it needs no checkpoint and
+reproduces the committed research scores exactly; a replayed probability is
+never presented as a live one, and live never silently falls back to replay.
 
 ## Installation
 

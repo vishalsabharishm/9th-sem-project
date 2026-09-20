@@ -16,15 +16,17 @@ Provenance discipline (see docs/temporal_risk_integration.md):
 
 Two ways to obtain a clip's window scores:
 
-- Live: ``TemporalInferenceEngine`` as frames stream in (the production path,
-  once a fine-tuned checkpoint is deployed on this machine). Feed its
-  per-window ``fight_probability`` values into
+- Live: ``TemporalInferenceEngine`` as frames stream in (the production path;
+  the fine-tuned checkpoint is deployed at
+  ``models/temporal_violence/best.pt``). Feed its per-window
+  ``fight_probability`` values into
   :class:`TemporalEventAdapter.evaluate_clip` the same way.
 - Precomputed: :class:`PrecomputedWindowScoreSource` reads a
-  ``temporal_risk/*_window_scores.csv`` file for a named clip. This is what
-  the current demo uses, since the clean-baseline checkpoint
-  (``best.pt``, 132.74 MB) has not been downloaded to this machine. Every
-  score returned this way is a real number transcribed from Kaggle notebook
+  ``temporal_risk/*_window_scores.csv`` file for a named clip. This is the
+  demo's default path because it needs no checkpoint and reproduces the
+  committed research scores exactly, not because the model is unavailable.
+  Every score returned this way is a real number transcribed from Kaggle
+  notebook
   ``notebookbce85b4c2b`` (see ``temporal_risk/window_scoring_manifest.json``)
   -- nothing here is fabricated or estimated.
 """

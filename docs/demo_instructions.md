@@ -53,12 +53,14 @@ python tools/run_demo.py --video-path path\to\some_clip.avi --clip-key "val/Val_
 ```
 
 `--clip-key` must match a `clip` value in
-`temporal_risk/primary_window_scores.csv` exactly (395 real primary-split
-clips are available; `--video-path` must point at the matching video file
-under `data/rwf2000/`). There is no support for scoring a clip that was not
-already scored in Phase B -- that would require the checkpoint itself,
-which is not on this machine (see `docs/temporal_risk_integration.md`,
-"What is NOT yet true").
+`temporal_risk/primary_window_scores.csv` exactly (394 real primary-split
+clips are available -- 6698 rows / 17 windows per clip; `--video-path` must
+point at the matching video file under `data/rwf2000/`). In **replay** mode
+there is no support for scoring a clip that was not already scored in Phase B:
+replay only ever replays a committed probability, and never invents one. To
+score a clip that has no committed score, use **live** mode:
+`--temporal-source live --checkpoint models/temporal_violence/best.pt`, which
+runs a real R3D-18 forward pass per 16-frame window (offline, not real time).
 
 ## If something looks wrong live
 

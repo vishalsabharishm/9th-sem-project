@@ -10,11 +10,14 @@ This demo uses REAL RWF-2000 evaluation clips (data/rwf2000/RWF-2000/val/...)
 and REAL, already-computed per-window violence probabilities
 (temporal_risk/primary_window_scores.csv), scored by the clean-baseline
 checkpoint on Kaggle -- see docs/clean_baseline_results.md and
-temporal_risk/window_scoring_manifest.json for exact provenance. The
-checkpoint itself (best.pt, 132.74 MB) has not been downloaded to this
-machine, so live temporal-model inference is not run here; everything else
-(YOLO detection, tracking, Phase-4 rules, frozen aggregation, risk mapping,
-explanation generation) runs live, on this machine, on this video, for real.
+temporal_risk/window_scoring_manifest.json for exact provenance. In the
+default replay mode the temporal model itself does not run here; everything
+else (YOLO detection, tracking, Phase-4 rules, frozen aggregation, risk
+mapping, explanation generation) runs live, on this machine, on this video,
+for real. Pass --temporal-source live --checkpoint
+models/temporal_violence/best.pt to additionally run a real R3D-18 forward
+pass per 16-frame window (offline, not real time); a failure in live mode
+raises rather than degrading to replay.
 
 The demo replays the precomputed window scores causally: the "TEMPORAL
 VIOLENCE SIGNAL" overlay only turns on once enough of the clip has been

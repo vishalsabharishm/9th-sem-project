@@ -109,10 +109,12 @@ clean_experiment/
   independence_post_training.json
 ```
 
-Checkpoint (`best.pt`) has **not yet been downloaded to the local machine** —
-it is 132.74 MB, over the file-transfer tooling's per-file limit for this
-recovery pass. The headline numbers, confusion matrix, and threshold-sweep
-table above are fully recovered and sufficient for documentation and for the
+Checkpoint (`best.pt`) was **not downloaded during this recovery pass** —
+it is 132.74 MB, over the file-transfer tooling's per-file limit at the time.
+*(Superseded: it was transferred on 2026-09-04 and verified — SHA-256
+`a32271bf...`; see `docs/CHECKPOINT_INTEGRITY.md` and
+`models/temporal_violence/checkpoint_records.json`.)* The headline numbers,
+confusion matrix, and threshold-sweep table above are fully recovered and sufficient for documentation and for the
 temporal-risk aggregation work (which consumes `carve_window_scores.csv` /
 `primary_window_scores.csv`, not the checkpoint directly). Downloading
 `best.pt` is only required if the demo needs to run live inference through
