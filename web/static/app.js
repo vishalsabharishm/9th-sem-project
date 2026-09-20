@@ -131,30 +131,9 @@ const els = {
 // ---------------------------------------------------------------------------
 const VIEW_ORDER = ["home", "setup", "processing", "results", "explain", "report"];
 
-// ---------------------------------------------------------------------------
-// Scenes.
-//
-// Home and Report are documents: ivory, editorial, the brand. Setup,
-// Processing, Results and Explain are the investigation, and they run on a
-// charcoal stage -- because the things that matter on those screens are
-// luminous objects (a surveillance frame, a probability curve, a saliency
-// map), and every one of them reads better against dark than against paper.
-//
-// The switch is a data attribute on <body>; the stylesheet redefines the
-// surface and text tokens beneath it, so every existing component follows
-// without being rewritten.
-// ---------------------------------------------------------------------------
-const DARK_SCENES = ["setup", "processing", "results", "explain"];
-
-function applyScene(name) {
-  const scene = DARK_SCENES.indexOf(name) !== -1 ? "dark" : "light";
-  if (document.body.dataset.scene !== scene) document.body.dataset.scene = scene;
-}
-
 function showView(name) {
   if (!VIEW_ORDER.includes(name)) return;
   state.view = name;
-  applyScene(name);
   document.querySelectorAll(".view").forEach(function (section) {
     section.classList.toggle("hidden", section.dataset.view !== name);
   });

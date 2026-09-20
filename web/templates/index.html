@@ -7,7 +7,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23f6f5f2%27/%3E%3Cpath d=%27M16 5 7 8.7v6.7c0 5.2 3.7 9.3 9 10.9 5.3-1.6 9-5.7 9-10.9V8.7Z%27 fill=%27none%27 stroke=%27%232d7d6d%27 stroke-width=%272%27 stroke-linejoin=%27round%27/%3E%3Ccircle cx=%2716%27 cy=%2714.5%27 r=%273%27 fill=%27%232d7d6d%27/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
-<body data-scene="light">
+<body>
   <!-- ===================================================================
        Sentinel Vision -- a guided, multi-step surveillance analysis app.
 
@@ -411,7 +411,11 @@
         <div class="headline" id="temporalHeadline"></div>
 
         <div class="result-grid">
-          <div class="result-video">
+          <div class="result-video evidence">
+            <div class="evidence-head">
+              <span class="evidence-label">Video evidence</span>
+              <span class="evidence-meta" id="evidenceMeta"></span>
+            </div>
             <div class="video-frame">
               <video id="resultVideo" controls playsinline preload="metadata"></video>
               <div class="video-hud" aria-hidden="true">
