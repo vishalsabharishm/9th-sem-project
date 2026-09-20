@@ -177,8 +177,12 @@ body {
 }
 .step:disabled { opacity: .42; cursor: not-allowed; }
 .step:not(:disabled):hover { color: var(--text-2); background: var(--glass); }
-.step.done { color: var(--ok); }
-.step.done span { background: var(--ok-soft); }
+/* Quiet on purpose: if every finished step is green, the one the examiner is
+   actually on stops standing out. Done reads as "settled", not "look here". */
+.step.done { color: var(--text-2); }
+.step.done span {
+  background: var(--ok-soft); border-color: rgba(76,195,138,.45); color: var(--ok);
+}
 .step.active {
   color: #dff4fa; background: var(--accent-soft); border-color: var(--accent-line);
 }
@@ -580,23 +584,29 @@ button {
 }
 
 .report-actions { display: flex; gap: 9px; flex-wrap: wrap; }
-.report-actions button,
-.saliency-controls button {
+
+/* :not(.btn) matters. These element-scoped rules outrank .btn-primary and
+   .btn-ghost on specificity, so without it every button in these two
+   containers rendered as the same neutral surface -- including "Explain this
+   window", which is the whole point of that panel. Buttons that opt into the
+   .btn system keep their variant; anything else still gets a sane default. */
+.report-actions button:not(.btn),
+.saliency-controls button:not(.btn) {
   padding: 8px 15px;
   border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
   background: var(--glass-strong); color: var(--text);
   font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer;
   transition: border-color .16s var(--ease), background .16s var(--ease), transform .14s var(--ease);
 }
-.report-actions button:hover:not(:disabled),
-.saliency-controls button:hover:not(:disabled) {
+.report-actions button:not(.btn):hover:not(:disabled),
+.saliency-controls button:not(.btn):hover:not(:disabled) {
   border-color: var(--accent-line); background: var(--accent-soft); color: #dff4fa;
 }
-.report-actions button:active:not(:disabled),
-.saliency-controls button:active:not(:disabled) { transform: translateY(1px); }
-.report-actions button:focus-visible,
-.saliency-controls button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.saliency-controls button:disabled { opacity: .4; cursor: not-allowed; }
+.report-actions button:not(.btn):active:not(:disabled),
+.saliency-controls button:not(.btn):active:not(:disabled) { transform: translateY(1px); }
+.report-actions button:not(.btn):focus-visible,
+.saliency-controls button:not(.btn):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.saliency-controls button:not(.btn):disabled { opacity: .4; cursor: not-allowed; }
 
 /* ------------------------------------------------------------ status/toast */
 
@@ -1297,3 +1307,135 @@ button {
 
 /* Details opened for print so the report is complete on paper. */
 @media print { .disclose > *:not(summary) { display: block !important; } }
+
+
+/* ===========================================================================
+   Polish pass.
+
+   Hierarchy and restraint only. Nothing here introduces a value, changes a
+   number, or hides a disclosure: it decides what the eye reaches first.
+   Motion is short and one-directional; prefers-reduced-motion is already
+   honoured globally above, so every animation added here inherits it.
+   =========================================================================== */
+
+/* ------------------------------------------------------- numeric alignment */
+
+/* Figures that sit in a column, or that change between runs, should not make
+   the layout twitch as digits change width. */
+.stat-v, .dh-v, .dh-pv, .sw-p,
+.window-table td, .kv-table td:last-child, .wp-prob, .wp-time {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ----------------------------------------------------- results: the verdict */
+
+/* The one thing an examiner should be able to read from across the room. The
+   decision dominates; the peak probability that produced it sits beside it;
+   everything else steps down to the supporting row. Restraint on purpose --
+   this is a research result, not a scoreboard. */
+.headline { margin: 10px 0 14px; }
+
+.decision-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+  gap: 18px 26px; align-items: end;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.028), rgba(255,255,255,.010));
+  transition: border-color .24s var(--ease), background .24s var(--ease);
+}
+
+.dh-k, .dh-pk {
+  display: block;
+  font-size: 10.4px; font-weight: 600; letter-spacing: .13em;
+  text-transform: uppercase; color: var(--muted);
+}
+.dh-v {
+  display: block; margin-top: 4px;
+  font-size: 34px; line-height: 1.08; font-weight: 600; letter-spacing: -.025em;
+  color: var(--text);
+}
+.dh-peak { text-align: right; }
+.dh-pv {
+  display: block;
+  font-size: 25px; line-height: 1.12; font-weight: 600; letter-spacing: -.02em;
+  color: var(--text);
+}
+.dh-pk { margin-top: 3px; }
+.dh-note {
+  display: block; margin-top: 5px;
+  font-size: 10.6px; line-height: 1.45; color: var(--faint);
+}
+
+/* Semantic, not decorative: alert tint only when the signal actually fired. */
+.decision-hero.is-alarm { border-color: rgba(226,114,91,.30); background: var(--alert-soft); }
+.decision-hero.is-alarm .dh-v { color: #f3bfb1; }
+.decision-hero.is-clear .dh-v { color: #b7e3cd; }
+
+@media (max-width: 700px) {
+  .decision-hero { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .dh-peak { text-align: left; }
+  .dh-v { font-size: 29px; }
+  .dh-pv { font-size: 22px; }
+}
+
+/* Supporting figures sit below the verdict, visibly secondary. */
+.headline .stat-row { margin: 10px 0 0; }
+.stat { transition: border-color .16s var(--ease), background .16s var(--ease); }
+
+/* --------------------------------------------- explain: the chosen window */
+
+.selected-window { display: block; }
+.selected-window.is-chosen {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 14px;
+}
+.sw-idx {
+  font-size: 17.5px; font-weight: 600; letter-spacing: -.015em; color: var(--text);
+}
+.sw-meta { font-size: 12.4px; color: var(--text-2); }
+.sw-p { font-family: var(--mono); font-size: 12.4px; color: var(--text-2); }
+.sw-peak {
+  font-size: 9px; font-weight: 700; letter-spacing: .1em;
+  padding: 1px 6px; border-radius: 4px;
+  border: 1px solid var(--accent-line); background: var(--accent-soft); color: var(--accent);
+}
+
+/* ------------------------------------------------------- timeline legibility */
+
+/* The window list is read row by row, so the rows need room to breathe and a
+   selection that is obvious without shouting. */
+.window-table td, .window-table th { padding: 7px 10px; }
+.window-table tbody tr {
+  transition: background .15s var(--ease), box-shadow .15s var(--ease);
+}
+.window-table tbody tr.selected {
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+.wp-item { transition: border-color .16s var(--ease), background .16s var(--ease),
+                       transform .16s var(--ease); }
+.wp-item:hover:not(.selected) { transform: translateX(1px); }
+
+/* ------------------------------------------------------ selection feedback */
+
+/* A selected demo card lifts by one pixel. Enough to confirm the click,
+   little enough that nothing jumps. */
+.preset-card { transition: border-color .16s var(--ease), background .16s var(--ease),
+                           transform .16s var(--ease), box-shadow .16s var(--ease); }
+.preset-card.selected { transform: translateY(-1px); box-shadow: var(--shadow); }
+
+/* ---------------------------------------------------------- view transition */
+
+/* Applied by showView() on the section being revealed, then left in place.
+   One short fade and rise, no exit animation: the outgoing view is already
+   gone, and animating it out would only delay the new one. */
+.view-enter { animation: viewIn .26s var(--ease) both; }
+@keyframes viewIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* The verdict re-renders on every run; a brief settle marks it as new. */
+.decision-hero { animation: viewIn .28s var(--ease) both; }

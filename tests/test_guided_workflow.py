@@ -591,5 +591,85 @@ class NewRunLeavesNothingOfTheOldOneTests(unittest.TestCase):
         self.assertIn('priorElapsed.textContent = ""', window)
 
 
+class HierarchyKeepsEveryFigureTests(unittest.TestCase):
+    """Promoting the verdict must not quietly drop the numbers under it.
+
+    The results headline was four equal tiles; it is now one dominant decision
+    with its peak probability, over a supporting row. That is a presentation
+    change, so the test is that nothing was lost in the move: the same four
+    figures, each still carrying the provenance note that says where it came
+    from.
+    """
+
+    @staticmethod
+    def _fn(name):
+        start = SCRIPT.index("function " + name)
+        out = []
+        for i, line in enumerate(SCRIPT[start:].splitlines(keepends=True)):
+            if i and line.startswith("}"):
+                out.append(line)
+                break
+            out.append(line)
+        return "".join(out)
+
+    def test_all_four_figures_are_still_rendered(self):
+        fn = self._fn("renderTemporalHeadline")
+        for label in ("System decision", "Peak fight probability",
+                      "First alarm", "Windows scored"):
+            with self.subTest(label=label):
+                self.assertIn(label, fn)
+
+    def test_every_figure_keeps_its_provenance_note(self):
+        """A number without its provenance is exactly what this UI must not show."""
+        fn = self._fn("renderTemporalHeadline")
+        for note in ("frozen rule: max", "measured model probability",
+                     "earliest window over threshold", "16 frames, stride 8"):
+            with self.subTest(note=note):
+                self.assertIn(note, fn)
+
+    def test_the_decision_tone_is_derived_from_the_decision(self):
+        """Alert styling must track the actual decision, not be decorative."""
+        fn = self._fn("renderTemporalHeadline")
+        self.assertIn('decision === "Fight"', fn)
+        self.assertIn('decision === "NonFight"', fn)
+
+    def test_the_headline_reads_the_same_fields_as_before(self):
+        fn = self._fn("renderTemporalHeadline")
+        self.assertIn("summary.final_temporal_decision", fn)
+        self.assertIn("summary.temporal_signal_first_frame", fn)
+        self.assertIn("peak.fight_probability", fn)
+        self.assertIn("data.window_scores", fn)
+
+    def test_no_value_is_invented_when_a_figure_is_missing(self):
+        fn = self._fn("renderTemporalHeadline")
+        self.assertIn('"Unavailable"', fn)
+        self.assertIn('"Did not fire"', fn)
+
+    def test_the_timestamp_still_requires_a_measured_frame_rate(self):
+        """Seconds may only appear when fps was measured from the preview."""
+        fn = self._fn("renderTemporalHeadline")
+        self.assertIn("state.fps", fn)
+
+    def test_view_entry_animation_is_reapplied_rather_than_assumed(self):
+        """The section is reused, so the animation must be restarted by hand."""
+        fn = self._fn("showView")
+        self.assertIn("view-enter", fn)
+        self.assertIn("offsetWidth", fn)
+
+    def test_reduced_motion_is_honoured_globally(self):
+        css = STYLE.read_text(encoding="utf-8")
+        block = css[css.index("@media (prefers-reduced-motion: reduce)"):]
+        block = block[:block.index("}\n\n")]
+        self.assertIn("animation-duration", block)
+        self.assertIn("transition-duration", block)
+        self.assertIn("!important", block)
+
+    def test_the_button_system_is_not_overridden_by_container_rules(self):
+        """Element-scoped rules outrank .btn-primary, so they must exempt it."""
+        css = STYLE.read_text(encoding="utf-8")
+        self.assertIn(".report-actions button:not(.btn)", css)
+        self.assertIn(".saliency-controls button:not(.btn)", css)
+
+
 if __name__ == "__main__":
     unittest.main()

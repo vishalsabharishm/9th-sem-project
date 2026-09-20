@@ -47,7 +47,10 @@ function clearRunEvidence() {
   const saliency = document.getElementById("saliencyResult");
   if (saliency) saliency.innerHTML = "";
   const selection = document.getElementById("selectedWindow");
-  if (selection) selection.textContent = "Select a window in the timeline above.";
+  if (selection) {
+    selection.classList.remove("is-chosen");
+    selection.textContent = "Select a window in the timeline above.";
+  }
   const explain = document.getElementById("explainBtn");
   if (explain) explain.disabled = true;
   const elapsed = document.getElementById("processingElapsed");
@@ -134,6 +137,16 @@ function showView(name) {
   document.querySelectorAll(".view").forEach(function (section) {
     section.classList.toggle("hidden", section.dataset.view !== name);
   });
+  // A short fade-and-rise on the view being revealed. Restarted by hand
+  // because the element is reused rather than recreated, so the animation
+  // would otherwise only ever play once. Honoured by the global
+  // prefers-reduced-motion rule, which collapses its duration.
+  const shown = document.querySelector('.view[data-view="' + name + '"]');
+  if (shown) {
+    shown.classList.remove("view-enter");
+    void shown.offsetWidth;
+    shown.classList.add("view-enter");
+  }
   document.querySelectorAll("#stepper .step").forEach(function (btn) {
     const target = btn.dataset.goto;
     btn.classList.toggle("active", target === name);
@@ -711,7 +724,10 @@ async function runAnalyze() {
   const staleExplain = document.getElementById("explainBtn");
   if (staleExplain) staleExplain.disabled = true;
   const staleSelection = document.getElementById("selectedWindow");
-  if (staleSelection) staleSelection.textContent = "Select a window in the timeline above.";
+  if (staleSelection) {
+    staleSelection.classList.remove("is-chosen");
+    staleSelection.textContent = "Select a window in the timeline above.";
+  }
   const staleSaliency = document.getElementById("saliencyResult");
   if (staleSaliency) staleSaliency.innerHTML = "";
 
@@ -886,21 +902,41 @@ function renderTemporalHeadline(data) {
         : "frame " + alarmFrame);
 
   const decision = summary.final_temporal_decision || "\u2014";
+  const peakText = peak
+    ? (peak.fight_probability * 100).toFixed(2) + "%"
+    : "Unavailable";
+
+  // The verdict and the number that produced it lead; the rest steps down.
+  // Same four figures, same four provenance notes, same source fields as
+  // before -- only the order of the eye changes.
+  const tone = decision === "Fight" ? " is-alarm"
+    : decision === "NonFight" ? " is-clear" : "";
+  const hero =
+    '<div class="decision-hero' + tone + '">' +
+      '<div class="dh-main">' +
+        '<span class="dh-k">System decision</span>' +
+        '<span class="dh-v">' + escapeHtml(decision) + "</span>" +
+        '<span class="dh-note">frozen rule: max \u2265 0.14</span>' +
+      "</div>" +
+      '<div class="dh-peak">' +
+        '<span class="dh-pv">' + escapeHtml(peakText) + "</span>" +
+        '<span class="dh-pk">Peak fight probability</span>' +
+        '<span class="dh-note">measured model probability</span>' +
+      "</div>" +
+    "</div>";
+
   const stats = [
-    ["Peak fight probability",
-     peak ? (peak.fight_probability * 100).toFixed(2) + "%" : "Unavailable",
-     "measured model probability"],
-    ["Decision", decision, "frozen rule: max \u2265 0.14"],
     ["First alarm", alarmText, "earliest window over threshold"],
     ["Windows scored", String(windows.length), "16 frames, stride 8"],
   ];
-  target.innerHTML = stats.map(function (row) {
-    const alarm = row[0] === "Decision" && row[1] === "Fight" ? " is-alarm" : "";
+  const row = '<div class="stat-row">' + stats.map(function (item) {
     return '<div class="stat">' +
-      '<span class="stat-k">' + escapeHtml(row[0]) + "</span>" +
-      '<span class="stat-v' + alarm + '">' + escapeHtml(row[1]) + "</span>" +
-      '<span class="stat-note">' + escapeHtml(row[2]) + "</span></div>";
-  }).join("");
+      '<span class="stat-k">' + escapeHtml(item[0]) + "</span>" +
+      '<span class="stat-v">' + escapeHtml(item[1]) + "</span>" +
+      '<span class="stat-note">' + escapeHtml(item[2]) + "</span></div>";
+  }).join("") + "</div>";
+
+  target.innerHTML = hero + row;
 }
 
 function renderTemporalTable(temporalSignal, summary) {
@@ -1003,9 +1039,19 @@ function selectWindow(w) {
   selectedWindow = w;
   const label = document.getElementById("selectedWindow");
   if (label) {
-    label.textContent =
-      `Window ${w.window_index} - frames ${w.first_frame}-${w.last_frame}` +
-      ` (p = ${w.fight_probability.toFixed(4)})`;
+    // Same three facts as the sentence it replaces, ordered so the window
+    // being explained is what the eye lands on first.
+    const windows = state.lastWindows || [];
+    const isPeak = windows.length && windows.reduce(function (a, b) {
+      return b.fight_probability > a.fight_probability ? b : a;
+    }).window_index === w.window_index;
+    label.classList.add("is-chosen");
+    label.innerHTML =
+      '<span class="sw-idx">Window ' + escapeHtml(String(w.window_index)) + "</span>" +
+      (isPeak ? '<span class="sw-peak">PEAK</span>' : "") +
+      '<span class="sw-meta">Frames ' + escapeHtml(String(w.first_frame)) +
+        "\u2013" + escapeHtml(String(w.last_frame)) + "</span>" +
+      '<span class="sw-p">p = ' + escapeHtml(w.fight_probability.toFixed(4)) + "</span>";
   }
   const button = document.getElementById("explainBtn");
   if (button) button.disabled = false;
