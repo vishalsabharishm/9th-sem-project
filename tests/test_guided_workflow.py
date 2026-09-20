@@ -516,5 +516,80 @@ class SaliencyBelongsToItsWindowTests(unittest.TestCase):
         self.assertNotIn("stale", fn.lower())
 
 
+class NewRunLeavesNothingOfTheOldOneTests(unittest.TestCase):
+    """Starting a second analysis must not show the first one's evidence.
+
+    Found in review rehearsal. Three separate holes, all on the path an
+    examiner actually walks (run Fight, explain, report, then run the false
+    positive):
+
+    * the home "New Analysis" button declared data-reset="session" but the
+      delegated reset handler only fires for elements that also carry
+      data-goto, which that button does not -- so entering a new analysis from
+      the home page reset nothing and left results, explain and report
+      unlocked on the PREVIOUS clip;
+    * resetSession() dropped the exported state but not the pixels, so the old
+      video, heatmap and window selection stayed in the hidden views;
+    * the processing screen kept the previous run's "Completed in 29.84s"
+      label while a new run was starting, where it reads as this run's timing.
+    """
+
+    @staticmethod
+    def _fn(name):
+        start = SCRIPT.index("function " + name)
+        out = []
+        for i, line in enumerate(SCRIPT[start:].splitlines(keepends=True)):
+            if i and line.startswith("}"):
+                out.append(line)
+                break
+            out.append(line)
+        return "".join(out)
+
+    def test_reset_clears_the_previous_runs_visible_evidence(self):
+        fn = self._fn("resetSession")
+        self.assertIn("clearRunEvidence()", fn)
+
+    def test_clearing_covers_every_surface_that_showed_the_old_run(self):
+        fn = self._fn("clearRunEvidence")
+        for element in ("resultVideo", "saliencyResult", "selectedWindow",
+                        "explainBtn", "processingElapsed", "completionBanner",
+                        "modeBanner"):
+            with self.subTest(element=element):
+                self.assertIn(element, fn)
+
+    def test_the_old_video_is_detached_not_merely_hidden(self):
+        """A hidden <video> that keeps its src still holds the old clip."""
+        fn = self._fn("clearRunEvidence")
+        self.assertIn('removeAttribute("src")', fn)
+        self.assertIn("load()", fn)
+
+    def test_the_replay_live_distinction_does_not_survive_a_reset(self):
+        """A stale "LIVE MODEL" over a replay run would misdescribe the run."""
+        fn = self._fn("clearRunEvidence")
+        self.assertIn("modeBanner", fn)
+        self.assertIn('classList.remove("live", "replay")', fn)
+
+    def test_home_entry_point_resets_like_the_in_flow_buttons(self):
+        """The button carries data-reset="session"; that must be true of it."""
+        marker = 'document.getElementById("startNewAnalysis")'
+        handler = SCRIPT[SCRIPT.index(marker):]
+        handler = handler[:handler.index("});") + 3]
+        self.assertIn("resetSession()", handler)
+        self.assertIn('lockStepsAfter("setup")', handler)
+
+    def test_the_home_button_still_declares_the_reset_it_performs(self):
+        button = MARKUP[MARKUP.index('id="startNewAnalysis"'):]
+        button = button[:button.index(">") + 1]
+        self.assertIn('data-reset="session"', button)
+
+    def test_starting_a_run_clears_the_previous_runs_timing(self):
+        """applyJobPhase only overwrites this once the server answers; until
+        then the old duration would be on screen for the new run."""
+        start = SCRIPT.index('const priorBanner = document.getElementById("completionBanner")')
+        window = SCRIPT[start:start + 600]
+        self.assertIn("priorElapsed", window)
+        self.assertIn('priorElapsed.textContent = ""', window)
+
+
 if __name__ == "__main__":
     unittest.main()

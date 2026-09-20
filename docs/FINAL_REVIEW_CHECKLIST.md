@@ -41,12 +41,19 @@ scores for live inference.
 
 ### Demo clips (already on disk, nothing to prepare)
 
-| Preset | Clip | Ground truth | Why it is in the demo |
+The demo library shows each clip by what it demonstrates, not by its internal
+id. Look for the role in capitals; that is what you will click.
+
+| Card in the UI | Clip | Ground truth | Why it is in the demo |
 |---|---|---|---|
-| Fight | `val/Val_Fight/trtrhrt_1049.avi` | Fight | Clean positive. Signal fires, peak probability ~1.0 |
-| Nonfight | `val/Val_NonFight/ZCUy99AN_0.avi` | NonFight | Signal does not fire |
-| **Fp** | `val/Val_NonFight/39BFeYnbu-I_0.avi` | NonFight | **A real false positive.** Shown on purpose |
-| Live upload | `data/person_fixture.mp4` | Not available | Never had a precomputed score — proves live inference |
+| **TRUE POSITIVE — Fight** | `val/Val_Fight/trtrhrt_1049.avi` | Fight | Clean positive. Signal fires, peak probability ~1.0 |
+| **TRUE NEGATIVE — NonFight** | `val/Val_NonFight/ZCUy99AN_0.avi` | NonFight | Signal does not fire |
+| **CHALLENGING CASE — False Positive** | `val/Val_NonFight/39BFeYnbu-I_0.avi` | NonFight | **A real false positive.** Shown on purpose |
+| Live upload (Upload tab) | `data/person_fixture.mp4` | Not available | Never had a precomputed score — proves live inference |
+
+Selecting the challenging case opens an amber explainer on the setup page
+before you run it. Amber, not red: this is a known limitation being shown
+deliberately, not an error.
 
 ---
 
@@ -56,7 +63,7 @@ scores for live inference.
    evidence an examiner can inspect rather than a single opaque score.
 2. **Home page.** Point at the six pipeline capabilities and the readiness
    chips. Click **New Analysis**.
-3. **Setup.** Choose **REPLAY** and the **Fight** preset. Read the summary
+3. **Setup.** Choose **REPLAY** and the **TRUE POSITIVE — Fight** card. Read the summary
    panel aloud: it states the mode, the clip, its ground truth and the exact
    processing path that is about to run. Click **Start Analysis**.
 4. **Processing** (~35–60 s). Say what the screen is showing: detection,
@@ -91,8 +98,10 @@ scores for live inference.
    mode, frames processed and evidence status — all from the run. Export
    **JSON** and **TXT**.
 9. **The honest failure.** Click **New Analysis**, choose **REPLAY** and the
-   **Fp** preset. The system decides *Fight*; ground truth is *NonFight*; the
-   UI shows an explicit false-positive notice. Say why it is in the demo: the
+   **CHALLENGING CASE — False Positive** card. Its card already states
+   *"Ground truth: NonFight · system decision: Fight"* before you run it. The
+   system decides *Fight*; ground truth is *NonFight*; the results page shows
+   an explicit false-positive notice. Say why it is in the demo: the
    project's own primary-split precision is 0.788, so false positives are
    predicted, and showing one is stronger evidence than hiding it.
 10. **Live inference (optional, ~2 min).** **New Analysis** → **LIVE MODEL** →
@@ -105,12 +114,16 @@ scores for live inference.
 
 ## Measured timings (this machine, CPU)
 
+Re-measured in the 2026-09-20 review rehearsal, on this machine, with a
+browser attached (which competes for the same CPU — expect the faster end of
+each range when nothing else is running).
+
 | Operation | Time |
 |---|---|
-| Replay analysis (150-frame clip) | 35–60 s |
-| Live analysis (204-frame clip, 24 windows) | 60–115 s |
-| R3D inference alone | ~0.65 s per 16-frame window |
-| Grad-CAM, one window | 3–7 s |
+| Replay analysis (150-frame clip) | 28–55 s (four runs: 28.0, 28.2, 28.8, 29.8 s of server time) |
+| Live analysis (204-frame clip, 24 windows) | ~51 s end to end |
+| R3D inference alone, live run | 13.6 s total for 24 windows ≈ 0.57 s per window |
+| Grad-CAM, one window | 2–7 s (2.3 s measured in the rehearsal) |
 | Browser preview conversion | ~3 s first view, ~0.01 s cached |
 
 Live inference is **offline** processing. No real-time claim is made anywhere.
@@ -127,9 +140,11 @@ Live inference is **offline** processing. No real-time claim is made anywhere.
 | Explanation unavailable | window incomplete, or no checkpoint | pick a window with 16 full frames |
 | Report says "Run Analyze first" | no analysis for that clip yet | run the analysis before exporting |
 | Page looks stale | browser refresh resets to a clean Home state | re-run the analysis; nothing is corrupted |
+| Typed clip key does nothing | the Browse box accepts free text and only confirms keys it knows | if no *"Ground truth: ..."* line appears under the box, the key is not in the 394-clip list; pick one from the dropdown |
+| Port 5000 already in use | an earlier server is still running | close the old terminal, or `taskkill /F /PID <pid>` from `netstat -ano | findstr :5000` |
 
 **Backup plan.** If live inference misbehaves on the day, the entire review can
-be given in REPLAY mode on the Fight and Fp presets — that path needs no
+be given in REPLAY mode on the Fight and False Positive cards — that path needs no
 checkpoint, is deterministic, and exercises every part of the UI except live
 R3D.
 

@@ -136,6 +136,12 @@ class GeneratedFileTests(unittest.TestCase):
     @unittest.skipUnless(TABLES.is_file(), "tables not generated")
     def test_regenerates_deterministically_apart_from_the_timestamp(self):
         before = TABLES.read_text(encoding="utf-8")
+        # The generator writes docs/PAPER_TABLES.md in place, and that file is
+        # a COMMITTED research artifact. Without this the suite leaves the
+        # working tree dirty on a protected path -- every run rewrites the
+        # "Regenerated" line -- which is how timestamp churn gets committed by
+        # accident. The file is restored byte-for-byte whatever this test does.
+        self.addCleanup(TABLES.write_text, before, encoding="utf-8")
         result = subprocess.run(
             [sys.executable, str(REPO_ROOT / "tools" / "generate_paper_tables.py")],
             capture_output=True, text=True, cwd=str(REPO_ROOT), timeout=300,

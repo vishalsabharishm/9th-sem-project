@@ -27,6 +27,42 @@ function resetSession() {
   selectedWindow = null;
   if (window.__clearAnalysis) window.__clearAnalysis();
   window.__lastClipKey = null;
+  clearRunEvidence();
+}
+
+// Drop what the PREVIOUS run put on screen.
+//
+// __clearAnalysis already drops the exported state, which is what stops a
+// stale report being written. This drops the pixels: without it a new
+// configuration can still be read against the old run's video, heatmap,
+// window selection and timing, because those live in views that are merely
+// hidden rather than cleared.
+function clearRunEvidence() {
+  const video = document.getElementById("resultVideo");
+  if (video) {
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+  }
+  const saliency = document.getElementById("saliencyResult");
+  if (saliency) saliency.innerHTML = "";
+  const selection = document.getElementById("selectedWindow");
+  if (selection) selection.textContent = "Select a window in the timeline above.";
+  const explain = document.getElementById("explainBtn");
+  if (explain) explain.disabled = true;
+  const elapsed = document.getElementById("processingElapsed");
+  if (elapsed) elapsed.textContent = "";
+  const banner = document.getElementById("completionBanner");
+  if (banner) banner.classList.add("hidden");
+  // Replay vs live is the one distinction this system most needs to keep
+  // straight, so a stale "LIVE MODEL" must never sit above a new run's
+  // results. renderModeBanner always rewrites this from the server's own
+  // field; this only covers the gap before a result exists.
+  const mode = document.getElementById("modeBanner");
+  if (mode) {
+    mode.textContent = "--";
+    mode.classList.remove("live", "replay");
+  }
 }
 
 const els = {
@@ -151,6 +187,14 @@ if (brandHome) brandHome.addEventListener("click", function () { showView("home"
 
 const startNew = document.getElementById("startNewAnalysis");
 if (startNew) startNew.addEventListener("click", function () {
+  // This button carries data-reset="session" like the in-flow "New Analysis"
+  // buttons, but the delegated reset handler only fires for elements that
+  // ALSO carry data-goto, which this one does not. Resetting here is what
+  // makes the declared attribute true, so entering a new analysis from the
+  // home page leaves exactly as little behind as entering it from results.
+  resetSession();
+  lockStepsAfter("setup");
+  setStages(null);
   unlockStep("setup");
   showView("setup");
 });
@@ -634,6 +678,11 @@ async function runAnalyze() {
   }
   const priorBanner = document.getElementById("completionBanner");
   if (priorBanner) priorBanner.classList.add("hidden");
+  // The previous run's duration must not sit on the processing screen while a
+  // new run is starting: for the moment before the server reports its first
+  // phase it would read as this run's timing.
+  const priorElapsed = document.getElementById("processingElapsed");
+  if (priorElapsed) priorElapsed.textContent = "";
   els.processingSub.textContent = state.mode === "live"
     ? "Running R3D-18 inference locally on CPU. This is not real time."
     : "Replaying committed window probabilities. No temporal model runs.";
