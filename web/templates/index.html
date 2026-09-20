@@ -444,8 +444,10 @@
         <h3>Temporal window timeline (16-frame windows, stride 8)</h3>
         <p class="muted">
           The temporal branch does not score the clip as a whole: it scores
-          overlapping 16-frame windows and takes the maximum. Each bar is one
-          scored window &mdash; click one to select it for saliency.
+          overlapping 16-frame windows and takes the maximum. Each point is one
+          scored window; the segments between them only help the eye travel, and
+          are not probabilities the model produced. Click a window to select it
+          for saliency.
           <span id="timelineProvenance">
             In REPLAY mode these probabilities are
             <strong>replayed from the committed scores</strong>; in LIVE MODEL

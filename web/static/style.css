@@ -25,6 +25,8 @@
   --surface:        #ffffff;
   --surface-hover:  #faf9f7;
   --surface-inset:  #f4f2ee;
+  /* Level 2: content that is currently the subject. A tint, not a colour. */
+  --surface-active: #f1f6f4;
 
   /* text ---------------------------------------------------------------- */
   --text:           #1d1d1f;
@@ -82,9 +84,9 @@
   --ease-out: cubic-bezier(.33, 1, .68, 1);
   --t-press:  .12s;
   --t-hover:  .18s;
-  --t-select: .24s;
-  --t-panel:  .42s;
-  --t-view:   .46s;
+  --t-select: .28s;
+  --t-panel:  .44s;
+  --t-view:   .40s;
 }
 
 * { box-sizing: border-box; }
@@ -339,6 +341,15 @@ code {
   transition: background var(--t-hover) var(--ease);
 }
 .cap-card:hover { background: var(--surface-hover); }
+/* A hairline that draws itself under the hovered step. Purely a reading aid:
+   it says "this one", and it is the only motion on this page after load. */
+.cap-card::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+  background: var(--accent);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--t-select) var(--ease);
+}
+.cap-card:hover::before, .cap-card:focus-within::before { transform: scaleX(1); }
 .cap-icon {
   display: grid; place-items: center;
   width: 30px; height: 30px; margin-bottom: 14px;
@@ -1021,12 +1032,19 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, auto);
   gap: 18px 26px; align-items: end;
-  padding: 26px 28px;
+  padding: 28px 30px;
   border-radius: var(--r-lg);
   background: var(--surface-inset);
   border: 1px solid transparent;
+  box-shadow: var(--shadow-xs);
   transition: background var(--t-select) var(--ease), border-color var(--t-select) var(--ease);
   animation: rise var(--t-panel) var(--ease) both;
+}
+/* A hairline rule under the verdict, so the provenance notes read as a
+   footer to it rather than as more of the same. */
+.decision-hero .dh-note {
+  padding-top: 9px;
+  border-top: 1px solid var(--border);
 }
 .dh-k, .dh-pk {
   display: block;
@@ -1168,61 +1186,104 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 
 /* ===========================================================================
    Temporal timeline
+
+   One point per scored window, joined by straight segments. Not a smoothed
+   curve: a spline would draw probability between windows that the model never
+   produced. The dots are the measurements; the line only helps the eye
+   travel. Everything else -- the selected band, the peak chip, the first-alarm
+   hairline -- is drawn from state by CSS, so the selection logic in JS has no
+   knowledge of this drawing.
    =========================================================================== */
 
 .window-chart {
   position: relative;
-  display: flex; align-items: flex-end; gap: 3px;
-  height: 152px; padding: 16px 14px 10px;
-  margin: 4px 0 16px;
+  padding: 20px 18px 10px;
+  margin: 4px 0 18px;
   border-radius: var(--r-lg);
   background: var(--surface);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-xs);
-  overflow: hidden;
 }
 
+.tl-plot {
+  position: relative;
+  display: flex; align-items: stretch;
+  height: 132px;
+}
+
+.tl-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.tl-stop-a { stop-color: var(--accent); stop-opacity: .16; }
+.tl-stop-b { stop-color: var(--accent); stop-opacity: .01; }
+.tl-area { fill: url(#tlFill); }
+.tl-line { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+.tl-threshold { stroke: var(--danger-line); stroke-width: 1; stroke-dasharray: 3 4; }
+
+.tl-thr-label {
+  position: absolute; right: 0; transform: translateY(-50%);
+  padding: 1px 7px; border-radius: 5px;
+  background: var(--surface);
+  font-family: var(--mono); font-size: 9.6px; letter-spacing: .01em;
+  color: var(--danger-text);
+  pointer-events: none; white-space: nowrap;
+}
+
+/* The hit column. Invisible until it is hovered, selected or the peak. */
 .window-bar {
-  flex: 1 1 0; min-width: 5px;
-  border-radius: 4px 4px 2px 2px;
-  background: var(--success);
-  opacity: .5;
-  cursor: pointer; position: relative;
-  transition: opacity var(--t-hover) var(--ease),
-              background var(--t-select) var(--ease),
-              box-shadow var(--t-select) var(--ease),
-              transform var(--t-select) var(--ease);
+  position: relative; flex: 1 1 0; min-width: 0;
+  background: transparent; border: none; padding: 0;
+  cursor: pointer;
+  border-radius: 7px;
+  transition: background var(--t-select) var(--ease);
 }
-.window-bar:hover { opacity: .85; }
-.window-bar.fired { background: var(--danger); opacity: .55; }
-.window-bar.fired:hover { opacity: .9; }
-.window-bar.selected {
-  opacity: 1;
-  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--accent);
-  transform: translateY(-2px);
-}
-.window-bar.peak::after {
-  content: ""; position: absolute; top: -9px; left: 50%;
-  width: 5px; height: 5px; margin-left: -2.5px;
-  border-radius: 50%;
-  background: var(--text-secondary);
-}
-.window-bar:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.window-bar:hover { background: rgba(22, 22, 26, .035); }
+.window-bar.selected { background: var(--accent-soft); }
+.window-bar:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
-.chart-threshold {
-  position: absolute; left: 0; right: 0; height: 0;
-  border-top: 1px dashed var(--danger-line);
+/* One measured probability. */
+.tl-dot {
+  position: absolute; left: 50%; width: 5px; height: 5px;
+  margin-left: -2.5px; margin-bottom: -2.5px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1.5px solid var(--accent);
+  transition: transform var(--t-select) var(--ease),
+              border-color var(--t-select) var(--ease),
+              background var(--t-select) var(--ease);
+}
+.window-bar.fired .tl-dot { border-color: var(--danger); }
+.window-bar:hover .tl-dot { transform: scale(1.35); }
+.window-bar.selected .tl-dot {
+  transform: scale(1.7);
+  background: var(--accent); border-color: var(--surface);
+}
+.window-bar.selected.fired .tl-dot { background: var(--danger); }
+
+/* The window the frozen max rule actually used. */
+.tl-peak {
+  position: absolute; left: 50%; top: -8px; transform: translateX(-50%);
+  padding: 1px 6px; border-radius: 5px;
+  background: var(--accent-soft); color: var(--accent-text);
+  font-size: 8.6px; font-weight: 700; letter-spacing: .08em;
+  pointer-events: none; white-space: nowrap;
+}
+
+/* Where the clip decision first became available. */
+.tl-alarm {
+  position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
+  margin-left: -.5px;
+  background: linear-gradient(180deg, transparent, var(--danger-line) 22%, var(--danger-line));
   pointer-events: none;
 }
-.chart-threshold span {
-  position: absolute; left: 12px; top: -15px;
-  font-family: var(--mono); font-size: 9.8px; letter-spacing: .01em;
-  color: var(--danger-text);
-  background: var(--surface); padding: 1px 6px; border-radius: 4px;
+
+.tl-axis {
+  display: flex; justify-content: space-between; gap: 12px;
+  margin-top: 9px;
+  font-family: var(--mono); font-size: 10px; color: var(--text-faint);
 }
+.tl-axis span:nth-child(2) { font-family: var(--sans); }
 
 .chart-tip {
-  position: absolute; z-index: 5; pointer-events: none;
+  position: absolute; z-index: 5; top: 14px; pointer-events: none;
   padding: 8px 11px; border-radius: var(--r-sm);
   background: rgba(28, 28, 32, .94);
   color: #fff;
@@ -1233,6 +1294,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 }
 .chart-tip.show { opacity: 1; transform: none; }
 .chart-tip b { font-weight: 600; }
+.tip-fight { color: #f0b3a8; }
 
 /* ===========================================================================
    Spatial evidence and fusion
@@ -1354,12 +1416,19 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
               border-color var(--t-select) var(--ease),
               box-shadow var(--t-select) var(--ease);
 }
-.wp-item:hover { background: var(--surface-hover); }
+.wp-item { position: relative; }
+.wp-item:hover { background: var(--surface-hover); transform: translateX(2px); }
 .wp-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .wp-item.selected {
-  background: var(--accent-soft);
-  border-color: var(--accent-line);
+  background: var(--surface-active);
+  border-color: transparent;
   box-shadow: var(--shadow-xs);
+  transform: none;
+}
+/* The rail marks the subject of the panel to its right. */
+.wp-item.selected::before {
+  content: ""; position: absolute; left: 0; top: 6px; bottom: 6px;
+  width: 2px; border-radius: 2px; background: var(--accent);
 }
 .wp-idx {
   font-family: var(--mono); font-size: 11.6px; font-weight: 600; color: var(--text-secondary);
@@ -1403,8 +1472,15 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   display: block; width: 100%; height: auto;
   border-radius: var(--r); border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
-  animation: rise var(--t-panel) var(--ease) both;
+  animation: heatIn .42s var(--ease) both;
 }
+/* Settles into place once. Never loops: a moving heatmap would suggest the
+   saliency itself is changing, and it is one static gradient map. */
+@keyframes heatIn {
+  from { opacity: 0; transform: scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+#saliencyResult .saliency-grid { animation: rise .42s var(--ease) both; animation-delay: .08s; }
 .saliency-grid {
   display: grid; gap: 16px;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -1437,13 +1513,16 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   background: var(--surface-inset);
 }
 .rl-brand {
-  display: block;
-  font-size: 11.4px; font-weight: 700; letter-spacing: .14em;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 10.6px; font-weight: 700; letter-spacing: .16em;
   color: var(--accent-text);
 }
+.rl-brand::before {
+  content: ""; width: 14px; height: 2px; border-radius: 2px; background: var(--accent);
+}
 .rl-title {
-  display: block; margin-top: 6px;
-  font-size: 22px; font-weight: 600; letter-spacing: -.022em; color: var(--text);
+  display: block; margin-top: 10px;
+  font-size: 25px; font-weight: 600; letter-spacing: -.026em; color: var(--text);
 }
 .rl-meta {
   display: grid; grid-template-columns: auto auto; gap: 5px 18px;
@@ -1456,10 +1535,19 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .report-preview { display: flex; flex-direction: column; gap: 1px; margin-bottom: 24px; }
 .rp-item {
   display: flex; align-items: baseline; justify-content: space-between;
-  gap: 18px; padding: 10px 0;
+  gap: 18px; padding: 11px 0;
   border-bottom: 1px solid var(--border);
   font-size: 13px;
+  transition: background var(--t-hover) var(--ease);
 }
+/* A faint leader between label and value, the way a printed schedule reads. */
+.rp-item::after {
+  content: ""; flex: 1 1 auto; order: 1;
+  margin: 0 -10px 4px; height: 1px;
+  background: repeating-linear-gradient(90deg, var(--border) 0 2px, transparent 2px 5px);
+}
+.rp-k { order: 0; }
+.rp-v { order: 2; }
 .rp-item:last-child { border-bottom: none; }
 .rp-k { color: var(--text-muted); font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
 .rp-v { color: var(--text); font-weight: 500; text-align: right; }
@@ -1562,7 +1650,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
    reused rather than recreated, so the animation is restarted in JS. */
 .view-enter { animation: viewIn var(--t-view) var(--ease) both; }
 @keyframes viewIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: none; }
 }
 
@@ -1603,12 +1691,18 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   .hero .hero-actions, .hero .hero-note,
   #viewHome .section-head, #viewHome .flow, #viewHome .panel,
   .view-enter .panel, .view-enter .flow, .view-enter .window-chart,
-  .decision-hero, .notice, .preset-note, .completion-banner, .saliency-img {
+  .decision-hero, .notice, .preset-note, .completion-banner, .saliency-img,
+  #saliencyResult .saliency-grid, .disclose > *:not(summary) {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
   }
-  .preset-card:hover, .window-bar.selected, .btn:active:not(:disabled) { transform: none !important; }
+  .preset-card:hover, .window-bar.selected, .btn:active:not(:disabled),
+  .wp-item:hover, .tl-dot, .window-bar:hover .tl-dot,
+  .window-bar.selected .tl-dot, .saliency-img { transform: none !important; }
+  .cap-card::before { transition: none !important; }
+  /* State still reads: the selected dot keeps its fill, it just does not grow. */
+  .window-bar.selected .tl-dot { background: var(--accent) !important; }
   .pipeline li[data-state="processing"] .stage-mark::after { animation: none !important; opacity: 1 !important; }
   .pipeline.group-active li.grouped::after { animation: none !important; opacity: .5 !important; top: 0 !important; }
   .pipeline li[data-state="complete"] .stage-mark { animation: none !important; }

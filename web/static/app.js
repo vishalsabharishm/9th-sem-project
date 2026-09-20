@@ -1103,6 +1103,7 @@ function renderWindowChart(windowScores, firedFrame) {
       '<p class="muted">No temporal windows available &mdash; no 16-frame ' +
       "window completed for this video, so the temporal model never ran.</p>";
     if (label) {
+      label.classList.remove("is-chosen");
       label.textContent =
         "No scored windows, so saliency unavailable. Select a completed " +
         "temporal window to generate an explanation.";
@@ -1111,68 +1112,122 @@ function renderWindowChart(windowScores, firedFrame) {
     return;
   }
 
-  // The frozen operating point, drawn so the per-window decisions are legible
-  // as a geometry rather than only as a column of text.
-  const threshold = document.createElement("div");
-  threshold.className = "chart-threshold";
-  threshold.innerHTML = `<span>threshold ${FROZEN_THRESHOLD}</span>`;
-  els.windowChart.appendChild(threshold);
+  const peak = windows.reduce((a, b) =>
+    b.fight_probability > a.fight_probability ? b : a);
+
+  // ---------------------------------------------------------------------
+  // Geometry.
+  //
+  // One point per SCORED window, joined by straight segments. Deliberately
+  // not a smoothed curve: a spline would draw probability values between
+  // windows that the model never produced. The dots are the measurements;
+  // the line only helps the eye travel between them.
+  //
+  // All of it is expressed in a 0-100 viewBox so the drawing survives a
+  // resize without measuring anything, and strokes stay hairline-thin
+  // through vector-effect rather than scaling with the box.
+  // ---------------------------------------------------------------------
+  const n = windows.length;
+  const xOf = (i) => ((i + 0.5) / n) * 100;
+  const yOf = (prob) => 100 - prob * BAR_SCALE * 100;
+
+  const points = windows.map((w, i) => [xOf(i), yOf(w.fight_probability)]);
+  const line = points.map(([x, y], i) =>
+    `${i ? "L" : "M"}${x.toFixed(3)},${y.toFixed(3)}`).join(" ");
+  const area =
+    `M${points[0][0].toFixed(3)},100 ` +
+    points.map(([x, y]) => `L${x.toFixed(3)},${y.toFixed(3)}`).join(" ") +
+    ` L${points[n - 1][0].toFixed(3)},100 Z`;
+  const thresholdY = yOf(FROZEN_THRESHOLD).toFixed(3);
+
+  const plot = document.createElement("div");
+  plot.className = "tl-plot";
+  plot.innerHTML =
+    '<svg class="tl-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
+      '<defs><linearGradient id="tlFill" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" class="tl-stop-a"/><stop offset="100%" class="tl-stop-b"/>' +
+      "</linearGradient></defs>" +
+      `<path class="tl-area" d="${area}" />` +
+      `<path class="tl-line" d="${line}" vector-effect="non-scaling-stroke" />` +
+      `<line class="tl-threshold" x1="0" x2="100" y1="${thresholdY}" y2="${thresholdY}" ` +
+        'vector-effect="non-scaling-stroke" />' +
+    "</svg>" +
+    `<span class="tl-thr-label" style="top:${thresholdY}%">` +
+      `frozen threshold ${FROZEN_THRESHOLD}</span>`;
+  els.windowChart.appendChild(plot);
 
   const tip = document.createElement("div");
   tip.className = "chart-tip";
   els.windowChart.appendChild(tip);
 
-  const peak = windows.reduce((a, b) =>
-    b.fight_probability > a.fight_probability ? b : a);
+  // ---------------------------------------------------------------------
+  // One hit column per window.
+  //
+  // These carry the class and data-index the rest of the app already uses,
+  // so selection, keyboard access and the saliency contract are unchanged.
+  // The selected band, the peak chip and the hover highlight are drawn from
+  // their state in CSS, which is why selectWindow() needs no knowledge of
+  // this drawing at all.
+  // ---------------------------------------------------------------------
+  // Overlapping windows mean the alarm frame falls inside more than one of
+  // them, which is true and is what the tooltip says. The hairline marks the
+  // moment once, on the earliest window containing it -- the one that made the
+  // decision available.
+  let alarmMarked = false;
 
-  windows.forEach((w) => {
-    const bar = document.createElement("div");
+  windows.forEach((w, i) => {
     const fired =
       firedFrame !== null && firedFrame !== undefined &&
       w.last_frame >= firedFrame && w.first_frame <= firedFrame;
+    const marksAlarm = fired && !alarmMarked;
+    if (marksAlarm) alarmMarked = true;
     const decision = decisionFor(w.fight_probability);
-    bar.className = "window-bar" +
+
+    const col = document.createElement("div");
+    col.className = "window-bar" +
       (decision === "Fight" ? " fired" : "") +
-      (w.window_index === peak.window_index ? " peak" : "");
-    bar.style.height = `${Math.max(6, w.fight_probability * 100 * BAR_SCALE)}%`;
-    bar.dataset.index = w.window_index;
-    bar.tabIndex = 0;
-    bar.setAttribute("role", "button");
-    const description =
+      (w.window_index === peak.window_index ? " peak" : "") +
+      (marksAlarm ? " alarm" : "");
+    col.dataset.index = w.window_index;
+    col.tabIndex = 0;
+    col.setAttribute("role", "button");
+    col.setAttribute("aria-label",
       `window ${w.window_index}: frames [${w.first_frame},${w.last_frame}] -> ` +
       `${w.fight_probability.toFixed(4)}` +
       (fired ? " (first alarm falls in this window)" : "") +
-      " - click to select for saliency";
-    bar.setAttribute("aria-label", description);
+      " - click to select for saliency");
+    col.innerHTML =
+      `<span class="tl-dot" style="bottom:${(w.fight_probability * BAR_SCALE * 100).toFixed(3)}%"></span>` +
+      (w.window_index === peak.window_index ? '<span class="tl-peak">PEAK</span>' : "") +
+      (marksAlarm ? '<span class="tl-alarm" aria-hidden="true"></span>' : "");
 
     const showTip = () => {
       tip.innerHTML =
         `<b>Window ${w.window_index}</b>${w.window_index === peak.window_index ? " (peak)" : ""}<br>` +
-        `frames ${w.first_frame}–${w.last_frame}<br>` +
+        `frames ${w.first_frame}\u2013${w.last_frame}<br>` +
         `p = ${w.fight_probability.toFixed(4)}<br>` +
         `<span class="${decision === "Fight" ? "tip-fight" : ""}">${decision}</span>` +
         (fired ? "<br>first alarm" : "");
       tip.classList.add("show");
-      const chartBox = els.windowChart.getBoundingClientRect();
-      const barBox = bar.getBoundingClientRect();
+      const chartBox = plot.getBoundingClientRect();
+      const colBox = col.getBoundingClientRect();
       const left = Math.min(
-        Math.max(barBox.left - chartBox.left + barBox.width / 2 - tip.offsetWidth / 2, 4),
+        Math.max(colBox.left - chartBox.left + colBox.width / 2 - tip.offsetWidth / 2, 4),
         chartBox.width - tip.offsetWidth - 4
       );
       tip.style.left = `${left}px`;
-      tip.style.top = "6px";
     };
     const hideTip = () => tip.classList.remove("show");
 
-    bar.addEventListener("mouseenter", showTip);
-    bar.addEventListener("focus", showTip);
-    bar.addEventListener("mouseleave", hideTip);
-    bar.addEventListener("blur", hideTip);
-    bar.addEventListener("click", () => selectWindow(w));
-    bar.addEventListener("keydown", (e) => {
+    col.addEventListener("mouseenter", showTip);
+    col.addEventListener("focus", showTip);
+    col.addEventListener("mouseleave", hideTip);
+    col.addEventListener("blur", hideTip);
+    col.addEventListener("click", () => selectWindow(w));
+    col.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectWindow(w); }
     });
-    els.windowChart.appendChild(bar);
+    plot.appendChild(col);
 
     if (table) {
       const row = document.createElement("tr");
@@ -1183,7 +1238,7 @@ function renderWindowChart(windowScores, firedFrame) {
         (w.window_index === peak.window_index
           ? ' <span class="peak-badge">PEAK</span>' : "") +
         `</td>` +
-        `<td>${w.first_frame}–${w.last_frame}</td>` +
+        `<td>${w.first_frame}\u2013${w.last_frame}</td>` +
         `<td>${w.fight_probability.toFixed(4)}</td>` +
         `<td class="${decision === "Fight" ? "is-fight" : ""}">${decision}</td>`;
       row.addEventListener("click", () => selectWindow(w));
@@ -1194,15 +1249,14 @@ function renderWindowChart(windowScores, firedFrame) {
     }
   });
 
-  // Position the threshold line against the SAME basis the bars use: a bar's
-  // percentage height resolves against the flex content box, so measuring it
-  // is the only way the line lands exactly where a bar of p = 0.14 would end.
-  // Computed after the bars are in the DOM so clientHeight is real.
-  const style = getComputedStyle(els.windowChart);
-  const padBottom = parseFloat(style.paddingBottom) || 0;
-  const padTop = parseFloat(style.paddingTop) || 0;
-  const contentHeight = els.windowChart.clientHeight - padTop - padBottom;
-  threshold.style.bottom = `${padBottom + FROZEN_THRESHOLD * BAR_SCALE * contentHeight}px`;
+  // Frame extent, so the horizontal axis means something.
+  const axis = document.createElement("div");
+  axis.className = "tl-axis";
+  axis.innerHTML =
+    `<span>frame ${windows[0].first_frame}</span>` +
+    `<span>${n} scored windows</span>` +
+    `<span>frame ${windows[n - 1].last_frame}</span>`;
+  els.windowChart.appendChild(axis);
 
   renderExplainPicker(windows);
 
