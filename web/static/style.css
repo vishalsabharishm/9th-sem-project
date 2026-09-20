@@ -2634,3 +2634,226 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
     background: var(--accent-line) !important;
   }
 }
+
+
+/* ===========================================================================
+   FINAL REFINEMENT
+   ===========================================================================
+   Character, hierarchy and craft on the system that already exists. No new
+   surfaces, no new information, no new colours.
+   =========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   1. PROCESSING -- the diagram becomes the subject of the screen.
+   --------------------------------------------------------------------------- */
+
+/* The composition is centred in the viewport rather than sitting under a
+   heading with a void beneath it. */
+#viewProcessing {
+  min-height: calc(100vh - 58px - 120px);
+  display: flex; flex-direction: column; justify-content: center;
+}
+#viewProcessing .view-head { margin-bottom: var(--s-4); }
+.processing-wrap { margin: 0 auto; }
+.proc-legend { margin-bottom: var(--s-4); }
+
+/* Bigger nodes, stronger names: the pipeline reads at a glance. */
+.stage-mark { width: 16px; height: 16px; border-width: 2px; }
+.pipeline li[data-state="complete"] .stage-mark::after {
+  left: 4.2px; top: 1.4px; width: 4px; height: 8px; border-width: 0 2px 2px 0;
+}
+.pipeline .stage-name {
+  font-size: 15px; font-weight: 600; letter-spacing: -.014em;
+}
+.pipeline .stage-detail { font-size: 11.6px; max-width: 20ch; color: var(--text-muted); }
+.pipeline li { padding: var(--s-5) var(--s-2); gap: var(--s-3); }
+
+/* Connector geometry: longer stubs, so the block reads as fed from above
+   and resolving downwards. */
+.pipeline li[data-stage="video_input"]::after { height: 28px; }
+.pipeline li.grouped::before { height: 30px; }
+.pipeline li.grouped { padding-top: var(--s-6); }
+
+/* The finalisation row resolves OUT of the block rather than starting a new
+   list: a centred stub down from the block, then the three stages. */
+.pipeline li[data-stage="evidence_fusion"],
+.pipeline li[data-stage="risk_interpretation"],
+.pipeline li[data-stage="explanation_ready"] { padding-top: var(--s-6); }
+.pipeline li[data-stage="risk_interpretation"]::before {
+  content: ""; position: absolute; left: 50%; top: -1px;
+  width: 1px; height: 26px; margin-left: -.5px;
+  background: var(--border-strong);
+}
+
+/* Active work: one quiet pulse on the node that is running. */
+.pipeline li[data-state="processing"] .stage-mark::before {
+  content: ""; position: absolute; inset: -6px; border-radius: 50%;
+  border: 1px solid var(--accent-line);
+  animation: nodePulse 2.2s var(--ease-out) infinite;
+}
+@keyframes nodePulse {
+  0%   { opacity: .8; transform: scale(.82); }
+  70%  { opacity: 0;  transform: scale(1.25); }
+  100% { opacity: 0;  transform: scale(1.25); }
+}
+
+/* Completion: the whole diagram settles instead of turning into a row of
+   ticks, and the banner becomes the thing you read. */
+.pipeline.settled li { opacity: .55; transition: opacity .5s var(--ease); }
+.pipeline.settled li .stage-detail { color: var(--text-faint); }
+.completion-banner {
+  margin-top: var(--s-5);
+  padding: var(--s-4) var(--s-5);
+  border-radius: var(--r-lg);
+  animation: resolveIn .5s var(--ease) both;
+}
+.completion-banner strong { font-size: 17px; letter-spacing: -.016em; }
+.completion-banner em { font-size: 13px; }
+@keyframes resolveIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   2. RESULTS -- footage and timeline are one instrument.
+   --------------------------------------------------------------------------- */
+
+.evidence-head-sub {
+  margin: var(--s-4) 0 var(--s-2);
+  padding-top: var(--s-3);
+  border-top: 1px solid rgba(242, 239, 232, .10);
+}
+
+/* The chart now lives on the charcoal surface, flush with the footage. */
+.evidence .window-chart {
+  background: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+}
+.evidence .tl-plot { height: 150px; }
+.evidence .tl-line { stroke: #63c9c0; }
+.evidence .tl-stop-a { stop-color: #63c9c0; stop-opacity: .22; }
+.evidence .tl-stop-b { stop-color: #63c9c0; stop-opacity: .02; }
+.evidence .tl-threshold { stroke: rgba(224, 138, 118, .55); }
+.evidence .tl-thr-label {
+  background: transparent; color: rgba(232, 168, 150, .92);
+}
+.evidence .tl-dot { background: #1b1d20; border-color: #63c9c0; }
+.evidence .window-bar.fired .tl-dot { border-color: #e08a76; }
+.evidence .window-bar:hover { background: rgba(242, 239, 232, .05); }
+.evidence .window-bar.selected {
+  background: linear-gradient(180deg, rgba(99, 201, 192, .16), rgba(99, 201, 192, .02));
+}
+.evidence .window-bar.selected .tl-dot { background: #63c9c0; border-color: #1b1d20; }
+.evidence .window-bar.selected.fired .tl-dot { background: #e08a76; }
+.evidence .tl-peak {
+  background: rgba(99, 201, 192, .16); color: #8fded6;
+}
+.evidence .tl-alarm {
+  background: linear-gradient(180deg, transparent, rgba(224, 138, 118, .5) 22%, rgba(224, 138, 118, .5));
+}
+.evidence .tl-guide { background: rgba(242, 239, 232, .22); }
+.evidence .tl-axis { color: rgba(242, 239, 232, .42); }
+
+/* ---------------------------------------------------------------------------
+   3. EXPLAIN -- two matched views of the same evidence.
+   --------------------------------------------------------------------------- */
+
+.saliency-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+
+/* The pair. Identical framing, identical aspect, side by side. */
+.ev-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4);
+}
+@media (max-width: 860px) { .ev-pair { grid-template-columns: minmax(0, 1fr); } }
+
+.ev-panel { min-width: 0; }
+.ev-panel-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--s-2);
+  margin-bottom: var(--s-2);
+}
+.ev-panel-title {
+  font-size: 10.4px; font-weight: 600; letter-spacing: .14em;
+  text-transform: uppercase; color: rgba(242, 239, 232, .5);
+}
+.ev-panel-meta {
+  font-family: var(--mono); font-size: 10.4px;
+  color: rgba(242, 239, 232, .4);
+}
+.ev-panel-figure {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r);
+  overflow: hidden;
+  background: #101114;
+  border: 1px solid rgba(242, 239, 232, .12);
+}
+.ev-panel-figure > img,
+.ev-panel-figure > canvas {
+  display: block; width: 100%; height: 100%;
+  object-fit: contain;
+  animation: fadeIn .4s var(--ease) both;
+}
+.ev-panel-note {
+  margin: var(--s-2) 0 0;
+  font-size: 11.2px; line-height: 1.55;
+  color: rgba(242, 239, 232, .5);
+}
+/* The saliency image inside the pair loses its standalone framing. */
+.ev-panel-figure .saliency-img {
+  border: none; border-radius: 0; box-shadow: none; height: 100%;
+}
+
+/* Temporal evidence becomes a quiet metadata strip beneath the pair. */
+.saliency-grid > div:not(.ev-pair) h4 { margin-top: var(--s-4); }
+#saliencyResult:not(:empty) .saliency-grid ul {
+  padding-left: 0; list-style: none;
+  display: grid; gap: var(--s-1);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  font-size: 12.4px;
+}
+
+/* ---------------------------------------------------------------------------
+   4. REPORT -- the incident is the thing you remember.
+   --------------------------------------------------------------------------- */
+
+.report-letterhead { padding-bottom: var(--s-4); }
+.rl-meta { gap: var(--s-1) var(--s-5); font-size: 12.4px; }
+.report-sheet .panel-title { margin-top: var(--s-5); }
+.report-preview { margin-bottom: var(--s-5); }
+.rp-item { padding: var(--s-3) 0; font-size: 13.2px; }
+.rp-k { font-size: 10.6px; letter-spacing: .12em; }
+.rp-v { font-size: 14px; font-weight: 600; letter-spacing: -.01em; }
+
+/* The verdict row carries the weight the rest of the document does not. */
+.rp-item:nth-child(6) .rp-v { color: var(--danger-text); }
+
+/* ---------------------------------------------------------------------------
+   5. Craft: hover, selection, press.
+   --------------------------------------------------------------------------- */
+
+.wp-item { transition: background var(--t-hover) var(--ease),
+                       border-color var(--t-select) var(--ease),
+                       box-shadow var(--t-select) var(--ease),
+                       transform var(--t-select) var(--ease); }
+.window-bar, .tl-dot { transition-duration: var(--t-select); }
+.disclose > summary { transition: color var(--t-hover) var(--ease),
+                                  background var(--t-hover) var(--ease); }
+.btn, .analyze-btn { transition: background var(--t-hover) var(--ease),
+                                 border-color var(--t-hover) var(--ease),
+                                 box-shadow var(--t-hover) var(--ease),
+                                 transform var(--t-press) var(--ease),
+                                 color var(--t-hover) var(--ease); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pipeline li[data-state="processing"] .stage-mark::before,
+  .completion-banner,
+  .ev-panel-figure > img,
+  .ev-panel-figure > canvas { animation: none !important; opacity: 1 !important; transform: none !important; }
+}

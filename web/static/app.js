@@ -1149,6 +1149,54 @@ function selectWindow(w) {
 // -- a heatmap labelled stale is still a heatmap an examiner can misread, and
 // the report has no way to show a badge at all.
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// The annotated frame beside the saliency.
+//
+// Nothing is fetched and nothing is computed: the browser preview of the
+// annotated video is already loaded on the results page, so the frame is
+// taken from it by seeking to peak_frame / fps and painting one video frame
+// to a canvas.
+//
+// Every part of that is measured -- the frame number comes from the saliency
+// response, the frame rate was measured off the preview itself. If either is
+// missing the panel simply stays empty rather than showing an approximation.
+// ---------------------------------------------------------------------------
+function paintPeakFrame(peakFrame) {
+  const host = document.getElementById("sourceFigure");
+  if (!host) return;
+  const video = document.getElementById("resultVideo");
+  if (!video || peakFrame == null || !state.fps || video.readyState < 2) return;
+
+  const width = video.videoWidth;
+  const height = video.videoHeight;
+  if (!width || !height) return;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const at = Math.min(peakFrame / state.fps, Math.max((video.duration || 0) - 0.01, 0));
+  const wasPaused = video.paused;
+  const restore = video.currentTime;
+
+  const draw = () => {
+    video.removeEventListener("seeked", draw);
+    try {
+      canvas.getContext("2d").drawImage(video, 0, 0, width, height);
+      host.innerHTML = "";
+      host.appendChild(canvas);
+    } catch (err) {
+      // A frame that cannot be read leaves the panel empty; it never
+      // substitutes a different frame.
+    }
+    video.currentTime = restore;
+    if (!wasPaused) video.play().catch(function () {});
+  };
+
+  video.addEventListener("seeked", draw);
+  video.pause();
+  video.currentTime = at;
+}
+
 function clearSaliencyForNewWindow() {
   const target = document.getElementById("saliencyResult");
   if (target && target.innerHTML) {
@@ -1473,8 +1521,45 @@ renderSummary();
       }
       const ev = data.temporal_evidence;
       const sal = data.saliency;
+      // Two matched panels: the annotated frame at the peak slice, and the
+      // saliency for the same window. Presentation only -- the panels are
+      // shown SIDE BY SIDE and never superimposed, because the heatmap is
+      // computed over the model's own 112x112 input and overlaying it would
+      // imply a pixel correspondence this project does not claim.
+      const peakFrame = (sal && sal.peak_frame != null) ? sal.peak_frame : null;
+      const pair =
+        '<div class="ev-pair">' +
+          '<div class="ev-panel">' +
+            '<div class="ev-panel-head">' +
+              '<span class="ev-panel-title">Annotated frame</span>' +
+              '<span class="ev-panel-meta">' +
+                (peakFrame != null ? "frame " + escapeHtml(String(peakFrame)) : "unavailable") +
+              "</span>" +
+            "</div>" +
+            '<div class="ev-panel-figure" id="sourceFigure"></div>' +
+            '<p class="ev-panel-note">The browser preview of the annotated ' +
+              "video, paused at the peak slice. Detection boxes are burned in " +
+              "by the pipeline; this is not the raw model input.</p>" +
+          "</div>" +
+          '<div class="ev-panel">' +
+            '<div class="ev-panel-head">' +
+              '<span class="ev-panel-title">Temporal saliency</span>' +
+              '<span class="ev-panel-meta">peak slice</span>' +
+            "</div>" +
+            '<div class="ev-panel-figure">' +
+              (sal && sal.peak_slice_png_base64
+                ? '<img class="saliency-img" alt="Gradient-based temporal saliency for the selected window" src="data:image/png;base64,' +
+                  sal.peak_slice_png_base64 + '" />'
+                : "") +
+            "</div>" +
+            '<p class="ev-panel-note">Gradient magnitude over the R3D task ' +
+              "logit, resized from the model's own input resolution. Shown " +
+              "beside the frame, never on top of it.</p>" +
+          "</div>" +
+        "</div>";
+
       target.innerHTML =
-        '<div class="saliency-grid">' +
+        '<div class="saliency-grid">' + pair +
         "<div><h4>Temporal evidence</h4><ul>" +
         "<li>Fight probability: <strong>" + (ev.fight_probability * 100).toFixed(1) +
         "%</strong> <span class=\"prov\">(measured model probability)</span></li>" +
@@ -1484,11 +1569,9 @@ renderSummary();
         ev.window_last_frame + "</strong></li>" +
         "<li>Model provenance: " + ev.model_provenance + "</li>" +
         "</ul></div>" +
-        "<div><h4>Saliency</h4>" +
-        (sal.peak_slice_png_base64
-          ? '<img class="saliency-img" alt="temporal saliency for the peak frame" src="data:image/png;base64,' +
-            sal.peak_slice_png_base64 + '">'
-          : "<p>(no image)</p>") +
+        // The image itself is now in the matched pair above; this block keeps
+        // the method and its limitations, which must stay with it.
+        "<div><h4>Method and limitations</h4>" +
         "<ul><li>Peak frame: <strong>" + sal.peak_frame + "</strong></li>" +
         "<li>Displayed slices: " + sal.displayed_temporal_slices +
         ", from <strong>" + sal.raw_temporal_positions +
@@ -1497,6 +1580,10 @@ renderSummary();
         "<li>Faithfulness tested: <strong>" + sal.faithfulness_tested + "</strong></li>" +
         "</ul></div></div>" +
         '<p class="muted">' + data.not_real_time + "</p>";
+
+      // The pair is in the DOM now, so the annotated frame can be painted
+      // into its panel.
+      paintPeakFrame(peakFrame);
     } catch (err) {
       target.innerHTML = '<p class="error">' + err + "</p>";
     } finally {

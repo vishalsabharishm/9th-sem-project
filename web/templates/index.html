@@ -428,6 +428,16 @@
               <div class="video-fallback hidden" id="videoFallback"></div>
             </div>
             <div class="video-caption" id="videoCaption"></div>
+
+            <!-- The timeline lives with the footage: the video is the
+                 evidence, and this is when it fired. Same surface, same
+                 edges, one instrument. -->
+            <div class="evidence-head evidence-head-sub">
+              <span class="evidence-label">Temporal signal</span>
+              <span class="evidence-meta">16-frame windows &middot; stride 8</span>
+            </div>
+            <div id="windowChart" class="window-chart"></div>
+
             <details class="disclose compact">
               <summary>View preview provenance</summary>
               <div class="video-provenance" id="videoProvenance"></div>
@@ -460,7 +470,7 @@
           </div>
         </div>
 
-        <h3>Temporal window timeline (16-frame windows, stride 8)</h3>
+        <h3>About the temporal windows</h3>
         <p class="muted">
           The temporal branch does not score the clip as a whole: it scores
           overlapping 16-frame windows and takes the maximum. Each point is one
@@ -474,7 +484,6 @@
           </span>
           Clicking a window does not run the model.
         </p>
-        <div id="windowChart" class="window-chart"></div>
         <details class="disclose">
           <summary>Inspect all temporal windows</summary>
           <div class="table-scroll">
