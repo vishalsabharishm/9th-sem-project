@@ -2857,3 +2857,53 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   .ev-panel-figure > img,
   .ev-panel-figure > canvas { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
+
+
+/* ===========================================================================
+   FORENSIC QA
+   =========================================================================== */
+
+/* The video viewport.
+   ---------------------------------------------------------------------
+   Measured defect: the frame was a full-width block with max-height 60vh,
+   so at 1366x768 the element box became 1136x461 (aspect 2.46) while the
+   footage is 16:9. object-fit: contain then painted the picture at 819x461
+   and filled 158px on EACH side with the element's own background -- 28% of
+   the width reading as a browser-default black rectangle. At 1920x1080 the
+   clamp never engaged, so the defect only appeared at the demo resolution.
+
+   The frame now shrink-wraps the picture, so the element box always equals
+   the picture box and no bars are generated at any source aspect ratio. The
+   footage is never stretched and never cropped: whatever space the picture
+   does not need is simply the evidence material it already sits on, which is
+   also why the frame's own fill is removed rather than being a third shade
+   of dark stacked under the second. */
+.evidence .video-frame {
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  background: transparent;
+}
+.evidence .video-frame video {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  /* A safety net for an unusually tall source, not the normal constraint.
+     At the surface's capped width the picture is always shorter than this,
+     so the height clamp never engages and never reintroduces bars. */
+  max-height: 72vh;
+  background: transparent;
+}
+
+/* The surface is capped so the footage fills its width. That is what makes
+   the picture and the timeline below it share edges: both are as wide as
+   the surface's content box, so they read as one instrument rather than two
+   centred objects of different sizes. */
+.evidence { max-width: 1000px; margin-inline: auto; }
+/* The fallback replaces the picture, so it needs a readable measure of its
+   own rather than shrink-wrapping to its longest line. */
+.evidence .video-frame .video-fallback { max-width: 52ch; }
+
+/* The badge now anchors to the picture's real corner rather than to a
+   corner that used to sit inside a bar. */
+.evidence .video-hud { top: 10px; right: 10px; }
