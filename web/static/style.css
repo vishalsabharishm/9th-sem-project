@@ -2187,3 +2187,517 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   .decision-hero { background: #fff; border: 1px solid #ccc; }
   * { animation: none !important; transition: none !important; }
 }
+
+
+/* ===========================================================================
+   THE INVESTIGATION STAGE
+   ===========================================================================
+
+   Home and Report are documents. Setup, Processing, Results and Explain are
+   the investigation, and they run on charcoal.
+
+   This is not a dark "theme". It is a change of place: the things that carry
+   meaning on these screens -- a surveillance frame, a probability curve, a
+   saliency map -- are luminous, and luminous objects read against dark. On
+   ivory they sit in a hole in the page; on charcoal they are the light in the
+   room. Everything else recedes so they can.
+
+   The switch redefines the surface and text tokens under <body>, so every
+   component written for the light scene follows without being rewritten.
+   =========================================================================== */
+
+body {
+  transition: background-color .5s var(--ease), color .5s var(--ease);
+}
+
+body[data-scene="dark"] {
+  --bg:             #16171a;
+  --bg-sunken:      #101114;
+  --surface:        #1d1f23;
+  --surface-raised: #24262b;
+  --surface-hover:  #24262b;
+  --surface-inset:  #1a1c1f;
+  --surface-active: #1e2a29;
+
+  --text:           #f2efe8;
+  --text-secondary: #b6b3ab;
+  --text-muted:     #8b8880;
+  --text-faint:     #6c6a64;
+
+  --border:        rgba(242, 239, 232, .10);
+  --border-strong: rgba(242, 239, 232, .22);
+
+  --accent:       #4fb3ab;
+  --accent-hover: #63c4bc;
+  --accent-text:  #7fd3cb;
+  --accent-soft:  rgba(79, 179, 171, .12);
+  --accent-line:  rgba(79, 179, 171, .38);
+
+  --danger:       #e07a62;
+  --danger-text:  #f0a48f;
+  --danger-soft:  rgba(224, 122, 98, .12);
+  --danger-line:  rgba(224, 122, 98, .38);
+
+  --success:      #6fae8a;
+  --success-text: #96c9ac;
+  --success-soft: rgba(111, 174, 138, .12);
+  --success-line: rgba(111, 174, 138, .34);
+
+  --warning:      #d9a94f;
+  --warning-soft: rgba(217, 169, 79, .12);
+  --warning-line: rgba(217, 169, 79, .34);
+
+  --info:         #8d99a6;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, .3);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .34), 0 2px 10px rgba(0, 0, 0, .28);
+  --shadow:    0 2px 6px rgba(0, 0, 0, .4), 0 14px 34px rgba(0, 0, 0, .4);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, .46), 0 30px 70px rgba(0, 0, 0, .55);
+  --shadow-nav: 0 1px 0 rgba(0, 0, 0, .5), 0 8px 22px rgba(0, 0, 0, .34);
+}
+
+/* A faint vignette so the stage has a centre rather than a flat fill. */
+body[data-scene="dark"]::before {
+  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(1100px 640px at 50% -8%, rgba(79, 179, 171, .055), transparent 70%),
+    radial-gradient(900px 520px at 88% 104%, rgba(224, 122, 98, .04), transparent 70%);
+}
+body[data-scene="dark"] .topbar,
+body[data-scene="dark"] .app,
+body[data-scene="dark"] .appfoot { position: relative; z-index: 1; }
+
+body[data-scene="dark"] .topbar { background: rgba(22, 23, 26, .74); }
+body[data-scene="dark"] .topbar.scrolled { background: rgba(22, 23, 26, .9); }
+body[data-scene="dark"] .brand:hover { background: rgba(242, 239, 232, .06); }
+body[data-scene="dark"] .step:not(:disabled):hover { background: rgba(242, 239, 232, .07); }
+body[data-scene="dark"] .btn-ghost:hover:not(:disabled) { background: rgba(242, 239, 232, .08); }
+body[data-scene="dark"] .window-bar:hover { background: rgba(242, 239, 232, .05); }
+body[data-scene="dark"] .stepper-pill { background: rgba(242, 239, 232, .09); box-shadow: none; }
+body[data-scene="dark"] .brand-mark { background: var(--accent-soft); }
+body[data-scene="dark"] .chip { background: rgba(242, 239, 232, .045); }
+
+/* The primary action keeps its weight against a dark ground. */
+body[data-scene="dark"] .btn-primary,
+body[data-scene="dark"] .analyze-btn {
+  background: linear-gradient(180deg, #55bfb6, #3d9a93);
+  color: #08110f;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 18px rgba(79, 179, 171, .22);
+}
+body[data-scene="dark"] .btn-primary:hover:not(:disabled),
+body[data-scene="dark"] .analyze-btn:hover:not(:disabled) {
+  background: linear-gradient(180deg, #63ccc3, #46a8a0);
+}
+
+/* Elements that were paper on ivory must not become paper on charcoal. */
+body[data-scene="dark"] .chart-tip { background: #0e0f11; border: 1px solid var(--border); }
+body[data-scene="dark"] .toast { background: #0e0f11; border: 1px solid var(--border); }
+body[data-scene="dark"] .tl-thr-label { background: var(--bg); }
+body[data-scene="dark"] .cap-icon,
+body[data-scene="dark"] .stage-mark { box-shadow: 0 0 0 4px var(--bg); }
+body[data-scene="dark"] .hud-state { background: rgba(0, 0, 0, .5); }
+body[data-scene="dark"] .video-frame { border-color: rgba(242, 239, 232, .12); }
+body[data-scene="dark"] code { background: rgba(242, 239, 232, .07); }
+
+/* On the stage, the saliency canvas is the room rather than an inset. */
+body[data-scene="dark"] #saliencyResult:not(:empty) {
+  background: linear-gradient(180deg, #101114, #0b0c0e);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(242, 239, 232, .05);
+}
+
+/* ---------------------------------------------------------------------------
+   RESULTS -- the verdict is type on the stage, the video is the hero.
+   --------------------------------------------------------------------------- */
+
+/* The verdict stops being a card. On the stage it is simply the largest
+   thing in the room, with a hairline under it instead of a container. */
+body[data-scene="dark"] .decision-hero {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 10px 0 26px;
+}
+body[data-scene="dark"] .decision-hero.is-alarm,
+body[data-scene="dark"] .decision-hero.is-clear { background: none; border-color: var(--border); }
+body[data-scene="dark"] .decision-hero .dh-note { border-top: none; padding-top: 6px; }
+
+.dh-v { font-variant-ligatures: none; }
+body[data-scene="dark"] .dh-v { font-size: 82px; letter-spacing: -.05em; line-height: .94; }
+@media (max-width: 1080px) { body[data-scene="dark"] .dh-v { font-size: 62px; } }
+@media (max-width: 700px)  { body[data-scene="dark"] .dh-v { font-size: 46px; } }
+body[data-scene="dark"] .dh-pv { font-size: 40px; letter-spacing: -.035em; }
+@media (max-width: 700px) { body[data-scene="dark"] .dh-pv { font-size: 28px; } }
+
+/* One column: the evidence gets the whole stage, and the interpretation
+   sits beneath it rather than competing beside it. */
+body[data-scene="dark"] .result-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 22px;
+}
+body[data-scene="dark"] .result-headline {
+  display: grid;
+  grid-template-columns: minmax(220px, .9fr) minmax(220px, 1fr) minmax(240px, 1.1fr);
+  gap: 22px 28px; align-items: start;
+}
+@media (max-width: 1080px) {
+  body[data-scene="dark"] .result-headline { grid-template-columns: minmax(0, 1fr); }
+}
+body[data-scene="dark"] .result-headline .badge-row { margin-top: 0; align-self: start; }
+body[data-scene="dark"] .result-headline #fpNotice { grid-column: 1 / -1; margin: 0; }
+body[data-scene="dark"] .result-headline .disclose { grid-column: 1 / -1; margin: 0; }
+
+/* The surveillance frame is the most important object on the screen. */
+body[data-scene="dark"] .video-frame {
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .6), 0 4px 16px rgba(0, 0, 0, .5);
+}
+body[data-scene="dark"] .video-frame video { max-height: 70vh; }
+
+/* ---------------------------------------------------------------------------
+   THE REVEAL
+   ---------------------------------------------------------------------------
+   Evidence arrives in the order an investigator reads it: the footage, then
+   what the system concluded, then the figures, then the instrument, then the
+   supporting detail. Plays once per analysis, not on every later visit.
+   --------------------------------------------------------------------------- */
+#viewResults.reveal .result-video   { animation: evidenceRise .62s var(--ease) both; }
+#viewResults.reveal .decision-hero  { animation: verdictIn .55s var(--ease) both; animation-delay: .18s; }
+#viewResults.reveal .dh-peak        { animation: rise .5s var(--ease) both; animation-delay: .34s; }
+#viewResults.reveal .headline .stat-row { animation: rise .5s var(--ease) both; animation-delay: .44s; }
+#viewResults.reveal .window-chart   { animation: rise .55s var(--ease) both; animation-delay: .54s; }
+#viewResults.reveal .result-headline { animation: rise .55s var(--ease) both; animation-delay: .64s; }
+
+@keyframes evidenceRise {
+  from { opacity: 0; transform: translateY(16px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes verdictIn {
+  from { opacity: 0; transform: translateY(12px); letter-spacing: -.07em; }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   EXPLAIN -- a forensic bench, not a list beside a picture.
+   --------------------------------------------------------------------------- */
+
+/* The window list becomes a horizontal rail you scrub along. */
+body[data-scene="dark"] .explain-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+body[data-scene="dark"] .window-picker {
+  flex-direction: row; flex-wrap: nowrap;
+  max-height: none; overflow-x: auto; overflow-y: hidden;
+  /* No negative margin here: on the stage the panel has no padding to sit
+     inside, so pulling outwards widens the whole grid by 12px. */
+  gap: 8px; padding: 4px 2px 12px; margin: 0;
+  scroll-snap-type: x proximity;
+}
+body[data-scene="dark"] .wp-item {
+  flex: 0 0 auto; width: 132px;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start; gap: 3px;
+  padding: 11px 13px;
+  scroll-snap-align: center;
+  background: var(--surface);
+  border-color: var(--border);
+}
+body[data-scene="dark"] .wp-item:hover { transform: translateY(-2px); }
+body[data-scene="dark"] .wp-item.selected {
+  background: var(--surface-active);
+  border-color: var(--accent-line);
+  box-shadow: 0 0 0 1px var(--accent-line), var(--shadow);
+  transform: translateY(-2px);
+}
+body[data-scene="dark"] .wp-item.selected::before { display: none; }
+body[data-scene="dark"] .wp-frames { font-size: 11.4px; }
+body[data-scene="dark"] .wp-time { font-size: 10px; }
+body[data-scene="dark"] .wp-prob { font-size: 13.5px; font-weight: 600; color: var(--text); }
+body[data-scene="dark"] .wp-dec { font-size: 10.6px; }
+
+body[data-scene="dark"] .saliency-controls {
+  background: none; border: none; border-bottom: 1px solid var(--border);
+  border-radius: 0; padding: 0 0 18px; margin: 4px 0 0;
+}
+body[data-scene="dark"] .sw-idx { font-size: 30px; letter-spacing: -.03em; }
+body[data-scene="dark"] .sw-meta, body[data-scene="dark"] .sw-p { font-size: 14px; }
+
+/* Method and limitations as metadata, not an essay block. */
+body[data-scene="dark"] .saliency-panel > .caveat,
+body[data-scene="dark"] #saliencyResult .caveat {
+  background: none;
+  border-left: 2px solid var(--border-strong);
+  border-radius: 0;
+  font-size: 11.8px; line-height: 1.6;
+  color: var(--text-muted);
+  padding: 4px 0 4px 14px;
+}
+body[data-scene="dark"] .saliency-panel > .caveat em { color: var(--text-secondary); }
+
+/* ---------------------------------------------------------------------------
+   SETUP -- preparation, on the same stage.
+   --------------------------------------------------------------------------- */
+body[data-scene="dark"] .panel {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+}
+body[data-scene="dark"] .panel-summary {
+  background: linear-gradient(180deg, var(--surface-raised), var(--surface));
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+body[data-scene="dark"] .preset-card.selected,
+body[data-scene="dark"] .mode-option.selected {
+  background: linear-gradient(180deg, var(--surface-active), var(--surface));
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow);
+}
+body[data-scene="dark"] .tabs { background: rgba(242, 239, 232, .05); }
+body[data-scene="dark"] .tab-btn.active { background: var(--surface-raised); }
+body[data-scene="dark"] .dropzone { background: rgba(242, 239, 232, .03); }
+body[data-scene="dark"] .preview-frame { background: #0e0f11; border-color: var(--border); }
+body[data-scene="dark"] input { background: rgba(242, 239, 232, .05); color: var(--text); }
+body[data-scene="dark"] .preview-spinner { background: rgba(14, 15, 17, .72); }
+
+/* ---------------------------------------------------------------------------
+   PROCESSING -- the stage is mostly empty on purpose while work is running.
+   --------------------------------------------------------------------------- */
+body[data-scene="dark"] .pipeline li {
+  background: var(--surface);
+  border-color: var(--border);
+}
+body[data-scene="dark"] .pipeline li[data-state="waiting"] { background: none; }
+body[data-scene="dark"] .pipeline li[data-state="processing"] {
+  background: linear-gradient(180deg, var(--surface-active), var(--surface));
+  border-color: var(--accent-line);
+  box-shadow: 0 0 0 1px var(--accent-line), var(--shadow);
+}
+body[data-scene="dark"] .pipeline.group-active li.grouped {
+  background: linear-gradient(180deg, var(--surface-active), var(--surface));
+  border-color: var(--accent-line);
+}
+body[data-scene="dark"] .interleaved-note { background: rgba(242, 239, 232, .04); }
+body[data-scene="dark"] .completion-banner {
+  background: var(--success-soft); border-color: var(--success-line);
+}
+body[data-scene="dark"] .cb-check { background: var(--success); color: #0b140f; }
+
+/* ---------------------------------------------------------------------------
+   Motion under a reduced-motion preference.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  body { transition: none !important; }
+  #viewResults.reveal .result-video,
+  #viewResults.reveal .decision-hero,
+  #viewResults.reveal .dh-peak,
+  #viewResults.reveal .headline .stat-row,
+  #viewResults.reveal .window-chart,
+  #viewResults.reveal .result-headline {
+    animation: none !important; opacity: 1 !important; transform: none !important;
+  }
+  body[data-scene="dark"] .wp-item:hover,
+  body[data-scene="dark"] .wp-item.selected { transform: none !important; }
+}
+
+
+/* ===========================================================================
+   THE ANALYSIS ENGINE
+   ===========================================================================
+
+   Eight rectangles in a grid described the stages but did not show the
+   system. This draws it: one input, feeding a bracketed block of four that
+   genuinely run together once per decoded frame, feeding three that genuinely
+   run after the frame loop.
+
+   Every line here is structure. The only thing that moves is a signal inside
+   the concurrent bracket, because that is the only place where something is
+   actually running -- animating the whole chain would draw a handoff this
+   pipeline does not have.
+   =========================================================================== */
+
+body[data-scene="dark"] .processing-wrap {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "legend" "pipe" "note" "elapsed" "honesty";
+  gap: 0;
+  max-width: 1000px; margin: 0 auto;
+}
+
+body[data-scene="dark"] .proc-legend { justify-content: center; margin-bottom: 34px; }
+
+body[data-scene="dark"] .pipeline {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-areas:
+    "input input input input"
+    "c1    c2    c3    c4"
+    "fus   fus   risk  expl";
+  gap: 0;
+  padding: 0 0 8px;
+}
+
+/* A stage is a node with its name under it. No card, no border, no fill. */
+body[data-scene="dark"] .pipeline li {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; padding: 26px 12px 22px;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0;
+  text-align: center;
+  overflow: visible;
+  transition: opacity var(--t-select) var(--ease);
+}
+body[data-scene="dark"] .pipeline .stage-name {
+  align-items: center; gap: 4px;
+  font-size: 13.5px; letter-spacing: -.008em;
+}
+body[data-scene="dark"] .pipeline .stage-detail { font-size: 11.4px; max-width: 22ch; }
+
+/* The node itself. */
+body[data-scene="dark"] .stage-mark {
+  width: 13px; height: 13px; margin: 0;
+  border-width: 1.5px;
+  border-color: var(--border-strong);
+  background: var(--bg);
+  box-shadow: 0 0 0 5px var(--bg);
+}
+body[data-scene="dark"] .pipeline li[data-state="processing"] .stage-mark {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 5px var(--bg), 0 0 0 9px var(--accent-soft);
+}
+body[data-scene="dark"] .pipeline li[data-state="complete"] .stage-mark::after {
+  left: 3.4px; top: 1px; width: 3.4px; height: 6.6px;
+}
+
+/* ---- the wiring ---------------------------------------------------------
+   Drawn with the same two pseudo-elements every row already has: a stub
+   above each node, and a bracket across the concurrent block. */
+
+/* Stub below the input, down to the bracket. */
+body[data-scene="dark"] .pipeline li[data-stage="video_input"] { position: relative; }
+body[data-scene="dark"] .pipeline li[data-stage="video_input"]::after {
+  content: ""; position: absolute; left: 50%; bottom: -1px;
+  width: 1px; height: 22px; margin-left: -.5px;
+  background: var(--border-strong);
+}
+
+/* Stub above each concurrent node. */
+body[data-scene="dark"] .pipeline li.grouped::before {
+  content: ""; position: absolute; left: 50%; top: 0;
+  width: 1px; height: 26px; margin-left: -.5px;
+  background: var(--border-strong);
+  transition: background var(--t-select) var(--ease);
+}
+body[data-scene="dark"] .pipeline.group-active li.grouped::before { background: var(--accent-line); }
+
+/* The bracket across the concurrent block.
+   Four equal cells with no gap, each carrying the same top border, draw one
+   continuous line without any element having to guess the row's width. */
+body[data-scene="dark"] .pipeline li.grouped {
+  border-top: 1px solid var(--border-strong) !important;
+  transition: border-color var(--t-select) var(--ease);
+}
+body[data-scene="dark"] .pipeline.group-active li.grouped {
+  border-top-color: var(--accent-line) !important;
+}
+
+/* The light scene draws a vertical scan bar on EVERY grouped row. On the
+   stage the bracket carries the signal instead, so those are switched off
+   first -- otherwise three orphaned bars float between the nodes. */
+body[data-scene="dark"] .pipeline li.grouped::after { content: none; }
+
+/* One signal for the block, never one per row. Anchored to the first cell
+   and exactly four cells wide, so it travels the bracket and nothing else. */
+body[data-scene="dark"] .pipeline.group-active li.grouped:nth-of-type(2)::after {
+  content: ""; position: absolute; top: -1px; left: 0;
+  width: 400%; height: 1px; pointer-events: none;
+  background: linear-gradient(90deg,
+    transparent 0%, var(--accent) 12%, transparent 26%, transparent 100%);
+  background-size: 260% 100%;
+  animation: groupScan 2.8s var(--ease-out) infinite;
+}
+@keyframes groupScan {
+  0%   { background-position: 130% 0; }
+  100% { background-position: -70% 0; }
+}
+
+/* A hairline under the whole block, so the three post-loop stages read as a
+   different phase rather than as three more of the same. */
+body[data-scene="dark"] .pipeline li[data-stage="evidence_fusion"],
+body[data-scene="dark"] .pipeline li[data-stage="risk_interpretation"],
+body[data-scene="dark"] .pipeline li[data-stage="explanation_ready"] {
+  border-top: 1px solid var(--border) !important;
+  padding-top: 30px;
+}
+
+body[data-scene="dark"] .interleaved-note {
+  background: none; border-left: 2px solid var(--accent-line);
+  border-radius: 0; margin: 26px auto 0; max-width: 72ch;
+  text-align: left; padding: 6px 0 6px 16px;
+}
+
+/* The elapsed time is the one live figure on this screen, so it is the one
+   figure that gets size. */
+body[data-scene="dark"] .processing-elapsed {
+  margin: 34px 0 0; text-align: center;
+  font-family: var(--mono); font-size: 30px; letter-spacing: -.02em;
+  color: var(--text);
+}
+body[data-scene="dark"] .processing-note {
+  margin: 10px auto 0; max-width: 62ch; text-align: center;
+}
+body[data-scene="dark"] .completion-banner { justify-content: center; margin-top: 26px; }
+
+@media (max-width: 900px) {
+  body[data-scene="dark"] .pipeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "input input" "c1 c2" "c3 c4" "fus risk" "expl expl";
+  }
+  body[data-scene="dark"] .pipeline li.grouped:nth-of-type(2)::after,
+  body[data-scene="dark"] .pipeline li.grouped:nth-of-type(3)::after,
+  body[data-scene="dark"] .pipeline li[data-stage="video_input"]::after { display: none; }
+  body[data-scene="dark"] .processing-elapsed { font-size: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-scene="dark"] .pipeline.group-active li.grouped:nth-of-type(2)::after {
+    animation: none !important; background: var(--accent-line) !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Results: keep the verdict and the evidence in one view.
+   --------------------------------------------------------------------------- */
+body[data-scene="dark"] .video-frame video { max-height: 56vh; }
+body[data-scene="dark"] .view-head h2 {
+  font-size: 19px; font-weight: 500; color: var(--text-secondary); letter-spacing: -.012em;
+}
+
+
+/* The forensic bench: on the stage the two panels stop being cards and
+   become regions of the room, separated by a rule. */
+body[data-scene="dark"] .explain-grid > .panel {
+  background: none; border: none; box-shadow: none;
+  padding: 0; border-radius: 0;
+}
+body[data-scene="dark"] .explain-grid > .panel + .panel {
+  border-top: 1px solid var(--border);
+  padding-top: 26px;
+}
+body[data-scene="dark"] .explain-grid .panel-title {
+  font-size: 11.5px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-muted);
+}
+
+/* A rail needs a rail's scrollbar, not the operating system's. */
+body[data-scene="dark"] .window-picker { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+body[data-scene="dark"] .window-picker::-webkit-scrollbar { height: 6px; }
+body[data-scene="dark"] .window-picker::-webkit-scrollbar-track { background: transparent; }
+body[data-scene="dark"] .window-picker::-webkit-scrollbar-thumb {
+  background: var(--border-strong); border-radius: 6px;
+}
+body[data-scene="dark"] .window-picker::-webkit-scrollbar-thumb:hover { background: var(--accent-line); }
+
+/* Method and limitations read as metadata under the evidence. */
+body[data-scene="dark"] .saliency-panel > .muted { max-width: 74ch; }

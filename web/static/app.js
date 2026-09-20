@@ -131,9 +131,30 @@ const els = {
 // ---------------------------------------------------------------------------
 const VIEW_ORDER = ["home", "setup", "processing", "results", "explain", "report"];
 
+// ---------------------------------------------------------------------------
+// Scenes.
+//
+// Home and Report are documents: ivory, editorial, the brand. Setup,
+// Processing, Results and Explain are the investigation, and they run on a
+// charcoal stage -- because the things that matter on those screens are
+// luminous objects (a surveillance frame, a probability curve, a saliency
+// map), and every one of them reads better against dark than against paper.
+//
+// The switch is a data attribute on <body>; the stylesheet redefines the
+// surface and text tokens beneath it, so every existing component follows
+// without being rewritten.
+// ---------------------------------------------------------------------------
+const DARK_SCENES = ["setup", "processing", "results", "explain"];
+
+function applyScene(name) {
+  const scene = DARK_SCENES.indexOf(name) !== -1 ? "dark" : "light";
+  if (document.body.dataset.scene !== scene) document.body.dataset.scene = scene;
+}
+
 function showView(name) {
   if (!VIEW_ORDER.includes(name)) return;
   state.view = name;
+  applyScene(name);
   document.querySelectorAll(".view").forEach(function (section) {
     section.classList.toggle("hidden", section.dataset.view !== name);
   });
@@ -155,6 +176,15 @@ function showView(name) {
   // After the active class is set, not before: the indicator is measured from
   // the active button, so moving it first would track the PREVIOUS step.
   moveStepperPill();
+
+  // The rail cannot scroll while it is display:none, so the selected window
+  // is brought into view when Explain actually becomes visible.
+  if (name === "explain") {
+    const chosen = document.querySelector("#explainWindowList .wp-item.selected");
+    if (chosen && chosen.scrollIntoView) {
+      chosen.scrollIntoView({ block: "nearest", inline: "center", behavior: "auto" });
+    }
+  }
   // Pause any playing video when leaving a view so audio never follows the
   // examiner around the application.
   document.querySelectorAll("video").forEach(function (v) {
@@ -788,6 +818,17 @@ async function runAnalyze() {
     unlockStep("results");
     unlockStep("explain");
     unlockStep("report");
+
+    // Marks the arrival of evidence so the results scene plays its entrance
+    // once per analysis, not on every later visit to the view. Deliberately
+    // after the unlocks: presentation must never sit between the success
+    // signal and the step it unlocks.
+    const resultsView = document.getElementById("viewResults");
+    if (resultsView) {
+      resultsView.classList.remove("reveal");
+      void resultsView.offsetWidth;
+      resultsView.classList.add("reveal");
+    }
     els.viewResultsBtn.classList.remove("hidden");
     els.processingSub.textContent = "Analysis complete. Evidence available for inspection.";
     const note = document.getElementById("interleavedNote");
@@ -1106,7 +1147,17 @@ function selectWindow(w) {
     row.classList.toggle("selected", Number(row.dataset.index) === w.window_index);
   });
   document.querySelectorAll("#explainWindowList .wp-item").forEach((item) => {
-    item.classList.toggle("selected", Number(item.dataset.index) === w.window_index);
+    const isSelected = Number(item.dataset.index) === w.window_index;
+    item.classList.toggle("selected", isSelected);
+    // On the stage the picker is a horizontal rail, so the chosen window can
+    // sit off-screen. Bring it back into view without moving the page.
+    if (isSelected && item.scrollIntoView) {
+      item.scrollIntoView({
+        block: "nearest",
+        inline: "center",
+        behavior: prefersReducedMotion() ? "auto" : "smooth",
+      });
+    }
   });
 }
 
