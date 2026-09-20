@@ -32,6 +32,8 @@
     </button>
 
     <nav class="stepper" id="stepper" aria-label="Analysis progress">
+      <!-- Positioned by JS from the active button's own box. -->
+      <span class="stepper-pill" id="stepperPill" aria-hidden="true"></span>
       <button class="step" data-goto="setup"      type="button" disabled><span>1</span>Setup</button>
       <button class="step" data-goto="processing" type="button" disabled><span>2</span>Processing</button>
       <button class="step" data-goto="results"    type="button" disabled><span>3</span>Results</button>
@@ -49,6 +51,18 @@
     <!-- ==================== PAGE 1 — HOME / OVERVIEW ==================== -->
     <section class="view" data-view="home" id="viewHome">
       <div class="hero">
+        <!-- Video, detection, temporal evidence, explanation: the shape of the
+             pipeline, drawn once and then still. Decorative only; every claim
+             it could be read as making is stated in words below. -->
+        <svg class="hero-motif" viewBox="0 0 560 340" fill="none" aria-hidden="true">
+          <path d="M20 250 C120 250 150 120 250 120 S400 60 540 60" pathLength="1"/>
+          <path d="M20 282 C140 282 170 196 300 196 S430 150 540 150" pathLength="1"/>
+          <path d="M20 314 C160 314 200 268 340 268 S470 236 540 236" pathLength="1"/>
+          <path d="M20 218 C100 218 130 40 260 40 S420 14 540 14" pathLength="1"/>
+          <circle cx="250" cy="120" r="3.2"/>
+          <circle cx="300" cy="196" r="3.2"/>
+          <circle cx="340" cy="268" r="3.2"/>
+        </svg>
         <p class="eyebrow">Explainable abnormal-event detection</p>
         <h1>Evidence you can inspect.</h1>
         <p class="hero-sub">

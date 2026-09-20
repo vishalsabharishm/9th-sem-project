@@ -19,74 +19,90 @@
    =========================================================================== */
 
 :root {
-  /* surfaces ------------------------------------------------------------ */
-  --bg:             #f6f5f2;
-  --bg-sunken:      #efede8;
-  --surface:        #ffffff;
-  --surface-hover:  #faf9f7;
-  --surface-inset:  #f4f2ee;
-  /* Level 2: content that is currently the subject. A tint, not a colour. */
-  --surface-active: #f1f6f4;
+  /* ----------------------------------------------------------- surfaces
+     Four levels. The page is a cool gray-blue so that white reads as
+     something placed ON it rather than as the page itself; that single
+     change is what stops a light interface looking like blank paper. */
+  --bg:             #f4f6f8;   /* 0 - page */
+  --bg-sunken:      #eaeef3;
+  --surface:        #ffffff;   /* 1 - content */
+  --surface-raised: #ffffff;   /* 2 - elevated, separated by shadow not border */
+  --surface-hover:  #f8fafc;
+  --surface-inset:  #f1f4f8;
+  --surface-active: #eef3ff;   /* 3 - the current subject */
 
-  /* text ---------------------------------------------------------------- */
-  --text:           #1d1d1f;
-  --text-secondary: #53535a;
-  --text-muted:     #85858c;
-  --text-faint:     #a3a3a9;
+  /* --------------------------------------------------------------- text */
+  --text:           #111827;   /* ink */
+  --text-secondary: #4b5563;
+  --text-muted:     #6b7280;
+  --text-faint:     #9aa3af;
 
-  /* lines --------------------------------------------------------------- */
-  --border:        rgba(22, 22, 26, .085);
-  --border-strong: rgba(22, 22, 26, .16);
+  /* -------------------------------------------------------------- lines */
+  --border:        rgba(17, 24, 39, .08);
+  --border-strong: rgba(17, 24, 39, .16);
 
-  /* accent: interaction, and only interaction -------------------------- */
-  --accent:       #2d7d6d;
-  --accent-hover: #24685a;
-  --accent-text:  #1f5b4f;
-  --accent-soft:  rgba(45, 125, 109, .085);
-  --accent-line:  rgba(45, 125, 109, .30);
+  /* ------------------------------------------------------------- accent
+     System blue carries interaction and nothing else: active navigation,
+     the primary action, and the analytical element you have selected. */
+  --accent:       #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-text:  #1d4ed8;
+  --accent-soft:  rgba(37, 99, 235, .075);
+  --accent-line:  rgba(37, 99, 235, .26);
 
-  /* semantic ------------------------------------------------------------ */
-  --danger:       #a8443a;   /* the temporal signal fired */
-  --danger-text:  #8d3830;
-  --danger-soft:  rgba(168, 68, 58, .075);
-  --danger-line:  rgba(168, 68, 58, .26);
+  /* Indigo is reserved for explainability -- the one place the interface
+     is reasoning about the model rather than reporting it. */
+  --indigo:       #5b5bd6;
+  --indigo-text:  #4338ca;
+  --indigo-soft:  rgba(91, 91, 214, .07);
+  --indigo-line:  rgba(91, 91, 214, .24);
 
-  --success:      #3d7a52;   /* it did not */
-  --success-text: #336646;
-  --success-soft: rgba(61, 122, 82, .085);
-  --success-line: rgba(61, 122, 82, .26);
+  /* ----------------------------------------------------------- semantic */
+  --danger:       #b84a3a;   /* the temporal signal fired */
+  --danger-text:  #9a3d30;
+  --danger-soft:  rgba(184, 74, 58, .07);
+  --danger-line:  rgba(184, 74, 58, .24);
 
-  --warning:      #97671c;   /* a known limitation, shown deliberately */
-  --warning-soft: rgba(151, 103, 28, .075);
-  --warning-line: rgba(151, 103, 28, .26);
+  --success:      #16805c;   /* it did not; and system readiness */
+  --success-text: #11674a;
+  --success-soft: rgba(22, 128, 92, .08);
+  --success-line: rgba(22, 128, 92, .24);
 
-  --info:         #4a5866;
+  --warning:      #b7791f;   /* a known limitation, shown deliberately */
+  --warning-soft: rgba(183, 121, 31, .08);
+  --warning-line: rgba(183, 121, 31, .26);
 
-  /* depth: small enough that you notice the layering, not the shadow ---- */
-  --shadow-xs: 0 1px 2px rgba(24, 24, 28, .05);
-  --shadow-sm: 0 1px 2px rgba(24, 24, 28, .05), 0 2px 6px rgba(24, 24, 28, .04);
-  --shadow:    0 1px 3px rgba(24, 24, 28, .06), 0 8px 20px rgba(24, 24, 28, .05);
-  --shadow-lg: 0 2px 6px rgba(24, 24, 28, .07), 0 18px 44px rgba(24, 24, 28, .09);
+  --info:         #64748b;
 
-  /* geometry ------------------------------------------------------------ */
+  /* -------------------------------------------------------------- depth
+     Cool-tinted and large-radius. A neutral black shadow on a cool page
+     reads as dirt; tinting it to the ink keeps it looking like light. */
+  --shadow-xs: 0 1px 2px rgba(17, 24, 39, .04);
+  --shadow-sm: 0 1px 2px rgba(17, 24, 39, .05), 0 2px 8px rgba(17, 24, 39, .04);
+  --shadow:    0 1px 3px rgba(17, 24, 39, .06), 0 10px 26px rgba(17, 24, 39, .06);
+  --shadow-lg: 0 2px 6px rgba(17, 24, 39, .07), 0 22px 52px rgba(17, 24, 39, .10);
+  --shadow-nav: 0 1px 0 rgba(17, 24, 39, .06), 0 6px 18px rgba(17, 24, 39, .05);
+
+  /* ----------------------------------------------------------- geometry */
   --r-sm: 8px;
   --r:    12px;
   --r-lg: 18px;
 
-  /* type ---------------------------------------------------------------- */
-  --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text",
-          "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* --------------------------------------------------------------- type */
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+          "Segoe UI Variable Text", "Segoe UI", Inter, system-ui, Roboto,
+          "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Menlo,
           Consolas, monospace;
 
-  /* motion -------------------------------------------------------------- */
+  /* ------------------------------------------------------------- motion */
   --ease:     cubic-bezier(.22, 1, .36, 1);
   --ease-out: cubic-bezier(.33, 1, .68, 1);
   --t-press:  .12s;
   --t-hover:  .18s;
   --t-select: .28s;
-  --t-panel:  .44s;
-  --t-view:   .40s;
+  --t-panel:  .46s;
+  --t-view:   .44s;
 }
 
 * { box-sizing: border-box; }
@@ -139,10 +155,20 @@ code {
   display: flex; align-items: center; justify-content: space-between;
   gap: 20px;
   padding: 0 26px; height: 58px;
-  background: rgba(246, 245, 242, .82);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid var(--border);
+  background: rgba(244, 246, 248, .72);
+  backdrop-filter: saturate(180%) blur(22px);
+  -webkit-backdrop-filter: saturate(180%) blur(22px);
+  border-bottom: 1px solid transparent;
+  transition: background var(--t-select) var(--ease),
+              border-color var(--t-select) var(--ease),
+              box-shadow var(--t-select) var(--ease);
+}
+/* Set by JS once the page has scrolled. At the top the bar is part of the
+   page; once content passes under it, it separates. */
+.topbar.scrolled {
+  background: rgba(244, 246, 248, .86);
+  border-bottom-color: var(--border);
+  box-shadow: var(--shadow-nav);
 }
 
 .brand {
@@ -204,7 +230,23 @@ code {
    stops standing out.
    =========================================================================== */
 
-.stepper { display: flex; align-items: center; gap: 1px; flex-wrap: wrap; }
+.stepper { position: relative; display: flex; align-items: center; gap: 1px; flex-wrap: wrap; }
+
+/* The moving indicator. Positioned by JS from the active button's own box, so
+   it tracks whatever the layout does at any width. */
+.stepper-pill {
+  position: absolute; top: 0; left: 0; height: 100%;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform var(--t-select) var(--ease),
+              width var(--t-select) var(--ease),
+              opacity var(--t-hover) var(--ease);
+  will-change: transform, width;
+}
+.stepper-pill.on { opacity: 1; }
 
 .step {
   display: inline-flex; align-items: center; gap: 7px;
@@ -232,13 +274,10 @@ code {
 .step.done { color: var(--text-secondary); }
 .step.done span { color: var(--success); }
 
-.step.active {
-  color: var(--text);
-  background: var(--surface);
-  border-color: var(--border);
-  box-shadow: var(--shadow-xs);
-}
+/* The pill draws the background now, so the button only carries its text. */
+.step.active { color: var(--text); background: transparent; }
 .step.active span { color: var(--accent); }
+.step, .step span { position: relative; z-index: 1; }
 .step:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ===========================================================================
@@ -285,9 +324,41 @@ code {
    =========================================================================== */
 
 .hero {
+  position: relative;
   max-width: 760px;
   padding: 44px 0 18px;
 }
+
+/* An analytical motif: video, detection, temporal evidence, explanation, as
+   four thin lines. It draws itself once and then holds still. Kept at very
+   low opacity on purpose -- it should stop registering the moment you are
+   not looking for it. */
+.hero-motif {
+  position: absolute; top: 0; right: -80px;
+  width: 560px; height: 340px;
+  pointer-events: none;
+  opacity: .085;
+  color: var(--accent);
+  z-index: 0;
+}
+.hero-motif path {
+  fill: none; stroke: currentColor; stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: motifDraw 2.2s var(--ease-out) both;
+}
+.hero-motif path:nth-child(2) { animation-delay: .18s; color: var(--indigo); }
+.hero-motif path:nth-child(3) { animation-delay: .36s; }
+.hero-motif path:nth-child(4) { animation-delay: .54s; color: var(--indigo); }
+.hero-motif circle {
+  fill: currentColor; opacity: 0;
+  animation: motifDot .5s var(--ease) both; animation-delay: 1.5s;
+}
+@keyframes motifDraw { to { stroke-dashoffset: 0; } }
+@keyframes motifDot  { to { opacity: .9; } }
+.hero > *:not(.hero-motif) { position: relative; z-index: 1; }
+
+@media (max-width: 1180px) { .hero-motif { display: none; } }
 .eyebrow {
   margin: 0 0 16px;
   font-size: 12.5px; font-weight: 500; letter-spacing: -.002em;
@@ -327,20 +398,21 @@ code {
 .flow {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
-  gap: 2px;
+  gap: 1px;
   border-radius: var(--r-lg);
   overflow: hidden;
   background: var(--border);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow);
 }
 .cap-card {
   position: relative;
   padding: 22px 26px 20px 20px;
   background: var(--surface);
-  transition: background var(--t-hover) var(--ease);
+  transition: background var(--t-hover) var(--ease),
+              transform var(--t-hover) var(--ease);
 }
-.cap-card:hover { background: var(--surface-hover); }
+.cap-card:hover { background: var(--surface-hover); transform: translateY(-2px); }
+.cap-card:hover .cap-icon { background: var(--accent); color: #fff; }
 /* A hairline that draws itself under the hovered step. Purely a reading aid:
    it says "this one", and it is the only motion on this page after load. */
 .cap-card::before {
@@ -356,6 +428,7 @@ code {
   border-radius: 9px;
   color: var(--accent);
   background: var(--accent-soft);
+  transition: background var(--t-hover) var(--ease), color var(--t-hover) var(--ease);
 }
 .cap-card h3 {
   margin: 0 0 6px;
@@ -392,6 +465,22 @@ code {
   padding: 24px 26px;
   box-shadow: var(--shadow-sm);
 }
+
+/* The results page is a workspace, not one large card. The sections live
+   directly on the page and are separated by rules and air, which is the
+   difference between "an application" and "a page of boxes". */
+.panel-results {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+}
+.panel-results > h3 {
+  margin-top: 44px; padding-top: 26px;
+  border-top: 1px solid var(--border);
+}
+.panel-results > h3:first-of-type { margin-top: 34px; }
 .panel + .panel { margin-top: 18px; }
 
 .panel-title {
@@ -489,15 +578,17 @@ code {
 .btn:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
 
 .btn-primary {
-  background: var(--accent);
+  background: linear-gradient(180deg, #3b82f6, var(--accent));
   border-color: transparent;
   color: #fff; font-weight: 550;
-  box-shadow: 0 1px 2px rgba(45, 125, 109, .3), var(--shadow-xs);
+  box-shadow: 0 1px 2px rgba(37, 99, 235, .34), 0 2px 8px rgba(37, 99, 235, .18);
 }
 .btn-primary:hover:not(:disabled) {
-  background: var(--accent-hover);
-  box-shadow: 0 2px 8px rgba(45, 125, 109, .26);
+  background: linear-gradient(180deg, var(--accent), var(--accent-hover));
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(37, 99, 235, .3), 0 8px 20px rgba(37, 99, 235, .24);
 }
+.btn-primary:active:not(:disabled) { transform: scale(.98); }
 .btn-primary:disabled { background: var(--accent); }
 
 .btn-ghost {
@@ -657,7 +748,7 @@ button { font-family: inherit; }
 .preset-card:hover { background: var(--surface-hover); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
 .preset-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .preset-card.selected {
-  border-color: var(--accent-line); background: var(--accent-soft);
+  border-color: var(--accent-line); background: var(--surface-active);
   box-shadow: var(--shadow-sm);
 }
 
@@ -971,14 +1062,21 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .mode-banner.live { color: var(--accent-text); border-color: var(--accent-line); }
 
 /* A premium media surface: rounded, quiet, one status indicator. */
+/* The video is the actual evidence, so it gets the most depth on the page. */
 .video-frame {
   position: relative;
   border-radius: var(--r-lg);
   overflow: hidden;
-  background: #16161a;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  background: #0f1116;
+  border: 1px solid rgba(17, 24, 39, .14);
+  box-shadow: var(--shadow-lg);
+  animation: evidenceIn .36s var(--ease) both;
 }
+@keyframes evidenceIn {
+  from { opacity: 0; transform: scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+.hud-state { animation: rise .4s var(--ease) both; animation-delay: .18s; }
 .video-frame video { display: block; width: 100%; max-height: 54vh; background: #16161a; }
 
 /* Top-RIGHT on purpose: run_demo burns its own HUD (windowed probability and
@@ -1066,9 +1164,17 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .dh-note { display: block; margin-top: 7px; font-size: 11.4px; line-height: 1.45; color: var(--text-faint); }
 
 /* Semantic, never decorative. */
-.decision-hero.is-alarm { background: var(--danger-soft); border-color: var(--danger-line); }
+/* Only the decision area carries the semantic colour, and only as a wash:
+   the finding is about the footage, not about the whole application. */
+.decision-hero.is-alarm {
+  background: linear-gradient(180deg, rgba(184, 74, 58, .09), rgba(184, 74, 58, .035));
+  border-color: var(--danger-line);
+}
 .decision-hero.is-alarm .dh-v { color: var(--danger-text); }
-.decision-hero.is-clear { background: var(--success-soft); border-color: var(--success-line); }
+.decision-hero.is-clear {
+  background: linear-gradient(180deg, rgba(22, 128, 92, .09), rgba(22, 128, 92, .03));
+  border-color: var(--success-line);
+}
 .decision-hero.is-clear .dh-v { color: var(--success-text); }
 
 .headline .stat-row { margin: 10px 0 0; }
@@ -1168,8 +1274,9 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   transition: background var(--t-hover) var(--ease), box-shadow var(--t-hover) var(--ease);
 }
 .window-table tbody tr:hover { background: var(--surface-hover); }
+/* Level 3: the row the rest of the page is currently about. */
 .window-table tbody tr.selected {
-  background: var(--accent-soft);
+  background: var(--surface-active);
   box-shadow: inset 2px 0 0 var(--accent);
 }
 .window-table tbody tr.selected td { color: var(--accent-text); }
@@ -1214,11 +1321,22 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .tl-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .tl-stop-a { stop-color: var(--accent); stop-opacity: .16; }
 .tl-stop-b { stop-color: var(--accent); stop-opacity: .01; }
-.tl-area { fill: url(#tlFill); }
-.tl-line { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
-.tl-threshold { stroke: var(--danger-line); stroke-width: 1; stroke-dasharray: 3 4; }
+.tl-area { fill: url(#tlFill); animation: fadeIn .5s var(--ease) both; animation-delay: .5s; }
+.tl-line {
+  fill: none; stroke: var(--accent); stroke-width: 1.7;
+  stroke-linejoin: round; stroke-linecap: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: tlDraw .72s var(--ease-out) both;
+}
+@keyframes tlDraw { to { stroke-dashoffset: 0; } }
+.tl-threshold {
+  stroke: var(--danger-line); stroke-width: 1; stroke-dasharray: 3 4;
+  animation: fadeIn .34s var(--ease) both; animation-delay: .62s;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .tl-thr-label {
+  animation: fadeIn .34s var(--ease) both; animation-delay: .66s;
   position: absolute; right: 0; transform: translateY(-50%);
   padding: 1px 7px; border-radius: 5px;
   background: var(--surface);
@@ -1236,11 +1354,14 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   transition: background var(--t-select) var(--ease);
 }
 .window-bar:hover { background: rgba(22, 22, 26, .035); }
-.window-bar.selected { background: var(--accent-soft); }
+.window-bar.selected {
+  background: linear-gradient(180deg, rgba(37, 99, 235, .10), rgba(37, 99, 235, .02));
+}
 .window-bar:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 /* One measured probability. */
 .tl-dot {
+  animation: fadeIn .3s var(--ease) both; animation-delay: .56s;
   position: absolute; left: 50%; width: 5px; height: 5px;
   margin-left: -2.5px; margin-bottom: -2.5px;
   border-radius: 50%;
@@ -1260,7 +1381,8 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 
 /* The window the frozen max rule actually used. */
 .tl-peak {
-  position: absolute; left: 50%; top: -8px; transform: translateX(-50%);
+  animation: rise .36s var(--ease) both; animation-delay: .74s;
+  position: absolute; top: -8px; transform: translateX(-50%);
   padding: 1px 6px; border-radius: 5px;
   background: var(--accent-soft); color: var(--accent-text);
   font-size: 8.6px; font-weight: 700; letter-spacing: .08em;
@@ -1273,7 +1395,20 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   margin-left: -.5px;
   background: linear-gradient(180deg, transparent, var(--danger-line) 22%, var(--danger-line));
   pointer-events: none;
+  animation: fadeIn .36s var(--ease) both; animation-delay: .82s;
 }
+
+/* A guide under the pointer, so the eye can drop straight from the point to
+   the axis. Appears only while a column is hovered or focused. */
+.tl-guide {
+  position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
+  margin-left: -.5px;
+  background: var(--border-strong);
+  opacity: 0; pointer-events: none;
+  transition: opacity var(--t-hover) var(--ease);
+}
+.window-bar:hover .tl-guide,
+.window-bar:focus-visible .tl-guide { opacity: 1; }
 
 .tl-axis {
   display: flex; justify-content: space-between; gap: 12px;
@@ -1323,14 +1458,19 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .ev-group.is-configured h4 { color: var(--warning); }
 
 .ev-row {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 6px 14px; flex-wrap: wrap;
   padding: 5px 0;
   font-size: 12.6px;
 }
-.ev-k { color: var(--text-muted); }
+.ev-k { color: var(--text-muted); min-width: 0; }
+/* Values like configured_interpretation are longer than a narrow column, so
+   they wrap onto their own line rather than widening the whole panel. */
 .ev-v {
   font-family: var(--mono); font-size: 11.8px; color: var(--text); text-align: right;
   font-weight: 500;
+  min-width: 0; max-width: 100%;
+  overflow-wrap: anywhere; word-break: break-word;
 }
 .ev-v.unavailable { color: var(--text-faint); font-style: italic; font-family: var(--sans); }
 
@@ -1420,24 +1560,26 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .wp-item:hover { background: var(--surface-hover); transform: translateX(2px); }
 .wp-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .wp-item.selected {
-  background: var(--surface-active);
-  border-color: transparent;
+  background: var(--indigo-soft);
+  border-color: var(--indigo-line);
   box-shadow: var(--shadow-xs);
   transform: none;
 }
+.wp-item.selected .wp-idx { color: var(--indigo-text); }
 /* The rail marks the subject of the panel to its right. */
 .wp-item.selected::before {
   content: ""; position: absolute; left: 0; top: 6px; bottom: 6px;
-  width: 2px; border-radius: 2px; background: var(--accent);
+  width: 2px; border-radius: 2px; background: var(--indigo);
 }
 .wp-idx {
   font-family: var(--mono); font-size: 11.6px; font-weight: 600; color: var(--text-secondary);
   white-space: nowrap;
 }
 .wp-idx em {
-  font-style: normal; font-size: 8.8px; font-weight: 700; letter-spacing: .07em;
-  text-transform: uppercase; color: var(--accent-text);
-  margin-left: 4px;
+  font-style: normal; font-size: 8.6px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--indigo-text);
+  background: var(--indigo-soft); padding: 1px 5px; border-radius: 4px;
+  margin-left: 5px;
 }
 .wp-frames { font-size: 12.2px; color: var(--text-muted); display: flex; flex-direction: column; }
 .wp-time { font-style: normal; font-family: var(--mono); font-size: 10.6px; color: var(--text-faint); }
@@ -1451,9 +1593,10 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px; flex-wrap: wrap;
   margin: 16px 0;
-  padding: 14px 16px;
+  padding: 16px 18px;
   border-radius: var(--r);
-  background: var(--surface-inset);
+  background: var(--indigo-soft);
+  border: 1px solid var(--indigo-line);
 }
 .selected-window { display: block; color: var(--text-muted); font-size: 13px; }
 .selected-window.is-chosen {
@@ -1464,8 +1607,8 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .sw-p { font-family: var(--mono); font-size: 12.6px; color: var(--text-secondary); }
 .sw-peak {
   font-size: 9.2px; font-weight: 700; letter-spacing: .07em;
-  padding: 2px 7px; border-radius: 5px;
-  background: var(--accent-soft); color: var(--accent-text);
+  padding: 2px 7px; border-radius: 999px;
+  background: var(--indigo); color: #fff;
 }
 
 .saliency-img {
@@ -1480,7 +1623,9 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   from { opacity: 0; transform: scale(.985); }
   to   { opacity: 1; transform: none; }
 }
-#saliencyResult .saliency-grid { animation: rise .42s var(--ease) both; animation-delay: .08s; }
+#saliencyResult .saliency-grid { animation: rise .42s var(--ease) both; animation-delay: .16s; }
+#saliencyResult { animation: fadeIn .28s var(--ease) both; }
+.saliency-panel .caveat { animation: rise .4s var(--ease) both; animation-delay: .3s; }
 .saliency-grid {
   display: grid; gap: 16px;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -1501,16 +1646,20 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
    A document, not a page of cards.
    =========================================================================== */
 
-.report-sheet { padding: 0; overflow: hidden; }
+.report-sheet {
+  padding: 0; overflow: hidden;
+  background: var(--surface-raised);
+  box-shadow: var(--shadow);
+}
 .report-sheet > *:not(.report-letterhead) { padding-left: 34px; padding-right: 34px; }
 .report-sheet > .report-actions { padding-bottom: 28px; }
 
 .report-letterhead {
   display: flex; align-items: center; justify-content: space-between;
   gap: 26px; flex-wrap: wrap;
-  padding: 26px 34px 24px;
+  padding: 30px 34px 26px;
   border-bottom: 1px solid var(--border);
-  background: var(--surface-inset);
+  background: linear-gradient(180deg, var(--surface-inset), var(--surface));
 }
 .rl-brand {
   display: inline-flex; align-items: center; gap: 8px;
@@ -1648,21 +1797,27 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 
 /* Applied by showView() to the section being revealed. The sections are
    reused rather than recreated, so the animation is restarted in JS. */
-.view-enter { animation: viewIn var(--t-view) var(--ease) both; }
-@keyframes viewIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: none; }
-}
+/* The view itself only fades; the parts inside it carry the movement, on a
+   single staggered beat so the page arrives as one thing rather than as a
+   dozen independent slides. */
+.view-enter { animation: viewFade var(--t-view) var(--ease) both; }
+@keyframes viewFade { from { opacity: 0; } to { opacity: 1; } }
 
-/* Panels arrive just behind their view. */
+.view-enter .view-head > div > h2 { animation: rise .42s var(--ease) both; }
+.view-enter .view-head > div > .muted { animation: rise .44s var(--ease) both; animation-delay: .05s; }
+.view-enter .view-actions { animation: rise .44s var(--ease) both; animation-delay: .05s; }
 .view-enter .panel,
 .view-enter .flow,
-.view-enter .window-chart {
+.view-enter .headline,
+.view-enter .window-chart,
+.view-enter .result-grid,
+.view-enter .spatial-panel {
   animation: rise var(--t-panel) var(--ease) both;
+  animation-delay: .09s;
 }
-.view-enter .panel:nth-of-type(1) { animation-delay: .05s; }
-.view-enter .panel:nth-of-type(2) { animation-delay: .11s; }
-.view-enter .panel:nth-of-type(3) { animation-delay: .17s; }
+.view-enter .panel:nth-of-type(2),
+.view-enter .disclose { animation-delay: .13s; }
+.view-enter .view-nav { animation: rise var(--t-panel) var(--ease) both; animation-delay: .17s; }
 
 /* The home page introduces itself once, in sequence. */
 .hero .eyebrow      { animation: rise .52s var(--ease) both; animation-delay: .10s; }
@@ -1692,7 +1847,13 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   #viewHome .section-head, #viewHome .flow, #viewHome .panel,
   .view-enter .panel, .view-enter .flow, .view-enter .window-chart,
   .decision-hero, .notice, .preset-note, .completion-banner, .saliency-img,
-  #saliencyResult .saliency-grid, .disclose > *:not(summary) {
+  #saliencyResult .saliency-grid, #saliencyResult, .disclose > *:not(summary),
+  .hero-motif path, .hero-motif circle, .tl-line, .tl-area, .tl-threshold,
+  .tl-thr-label, .tl-dot, .tl-peak, .tl-alarm, .video-frame, .hud-state,
+  .saliency-panel .caveat, .view-enter .view-head > div > h2,
+  .view-enter .view-head > div > .muted, .view-enter .view-actions,
+  .view-enter .headline, .view-enter .result-grid, .view-enter .spatial-panel,
+  .view-enter .view-nav, .view-enter .disclose {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
@@ -1701,6 +1862,11 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   .wp-item:hover, .tl-dot, .window-bar:hover .tl-dot,
   .window-bar.selected .tl-dot, .saliency-img { transform: none !important; }
   .cap-card::before { transition: none !important; }
+  .cap-card:hover, .btn-primary:hover:not(:disabled) { transform: none !important; }
+  .stepper-pill { transition: none !important; }
+  .tl-line { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
+  .hero-motif path { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
+  .hero-motif circle { opacity: .9 !important; }
   /* State still reads: the selected dot keeps its fill, it just does not grow. */
   .window-bar.selected .tl-dot { background: var(--accent) !important; }
   .pipeline li[data-state="processing"] .stage-mark::after { animation: none !important; opacity: 1 !important; }

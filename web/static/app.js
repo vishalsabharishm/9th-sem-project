@@ -137,9 +137,9 @@ function showView(name) {
   document.querySelectorAll(".view").forEach(function (section) {
     section.classList.toggle("hidden", section.dataset.view !== name);
   });
-  // A short fade-and-rise on the view being revealed. Restarted by hand
-  // because the element is reused rather than recreated, so the animation
-  // would otherwise only ever play once. Honoured by the global
+  // A short coordinated entrance on the view being revealed. Restarted by
+  // hand because the element is reused rather than recreated, so the
+  // animation would otherwise only ever play once. Honoured by the global
   // prefers-reduced-motion rule, which collapses its duration.
   const shown = document.querySelector('.view[data-view="' + name + '"]');
   if (shown) {
@@ -152,6 +152,9 @@ function showView(name) {
     btn.classList.toggle("active", target === name);
     btn.classList.toggle("done", state.reached.indexOf(target) !== -1 && target !== name);
   });
+  // After the active class is set, not before: the indicator is measured from
+  // the active button, so moving it first would track the PREVIOUS step.
+  moveStepperPill();
   // Pause any playing video when leaving a view so audio never follows the
   // examiner around the application.
   document.querySelectorAll("video").forEach(function (v) {
@@ -164,6 +167,38 @@ function showView(name) {
 function prefersReducedMotion() {
   return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
+
+// ---------------------------------------------------------------------------
+// Chrome details: one indicator that travels, and a bar that separates itself
+// from the page only once there is something behind it.
+// ---------------------------------------------------------------------------
+
+// Measured from the active button rather than hard-coded, so the indicator
+// tracks whatever the layout does at any width, including after a wrap.
+function moveStepperPill() {
+  const pill = document.getElementById("stepperPill");
+  if (!pill) return;
+  const active = document.querySelector("#stepper .step.active");
+  if (!active) {
+    pill.classList.remove("on");
+    return;
+  }
+  pill.style.width = `${active.offsetWidth}px`;
+  pill.style.transform =
+    `translate3d(${active.offsetLeft}px, ${active.offsetTop}px, 0)`;
+  pill.style.height = `${active.offsetHeight}px`;
+  pill.classList.add("on");
+}
+
+window.addEventListener("resize", moveStepperPill);
+
+(function watchScroll() {
+  const bar = document.querySelector(".topbar");
+  if (!bar) return;
+  const apply = () => bar.classList.toggle("scrolled", window.scrollY > 8);
+  window.addEventListener("scroll", apply, { passive: true });
+  apply();
+})();
 
 function unlockStep(name) {
   if (state.reached.indexOf(name) === -1) state.reached.push(name);
@@ -1148,7 +1183,7 @@ function renderWindowChart(windowScores, firedFrame) {
         '<stop offset="0%" class="tl-stop-a"/><stop offset="100%" class="tl-stop-b"/>' +
       "</linearGradient></defs>" +
       `<path class="tl-area" d="${area}" />` +
-      `<path class="tl-line" d="${line}" vector-effect="non-scaling-stroke" />` +
+      `<path class="tl-line" d="${line}" pathLength="1" vector-effect="non-scaling-stroke" />` +
       `<line class="tl-threshold" x1="0" x2="100" y1="${thresholdY}" y2="${thresholdY}" ` +
         'vector-effect="non-scaling-stroke" />' +
     "</svg>" +
@@ -1197,9 +1232,21 @@ function renderWindowChart(windowScores, firedFrame) {
       (fired ? " (first alarm falls in this window)" : "") +
       " - click to select for saliency");
     col.innerHTML =
+      '<span class="tl-guide" aria-hidden="true"></span>' +
       `<span class="tl-dot" style="bottom:${(w.fight_probability * BAR_SCALE * 100).toFixed(3)}%"></span>` +
-      (w.window_index === peak.window_index ? '<span class="tl-peak">PEAK</span>' : "") +
       (marksAlarm ? '<span class="tl-alarm" aria-hidden="true"></span>' : "");
+
+    // The PEAK label is wider than one column once there are many windows, so
+    // it is placed on the plot rather than inside the column it marks --
+    // otherwise it overflows that column and the layout audit rightly flags
+    // it. Clamped away from both edges so it stays inside the plot.
+    if (w.window_index === peak.window_index) {
+      const chip = document.createElement("span");
+      chip.className = "tl-peak";
+      chip.textContent = "PEAK";
+      chip.style.left = `${Math.min(Math.max(xOf(i), 7), 93)}%`;
+      plot.appendChild(chip);
+    }
 
     const showTip = () => {
       tip.innerHTML =
