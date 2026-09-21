@@ -2017,6 +2017,23 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   color: var(--text-secondary);
   white-space: pre-wrap; word-break: break-word;
 }
+/* The generated report carries its own heading hierarchy. Without this,
+   `.view .panel h3` captured the markdown's <h3> and rendered it at 17px/600
+   -- larger than its own level, and all but identical to the 17.4px <h2>
+   above it, so a subsection read as a section. h1 and h2 already descend
+   correctly and are left alone. */
+.view .panel .explanation h3,
+.view .panel .explanation h4,
+.view .panel .explanation h5,
+.view .panel .explanation h6 {
+  font-size: 1.2em; font-weight: 700; letter-spacing: normal;
+  margin: 1.1em 0 .45em;
+  color: var(--text);
+}
+.view .panel .explanation h4,
+.view .panel .explanation h5,
+.view .panel .explanation h6 { font-size: 1.05em; }
+
 .explanation::-webkit-scrollbar { width: 9px; }
 .explanation::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 9px; }
 

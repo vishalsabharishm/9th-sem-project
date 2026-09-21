@@ -414,7 +414,11 @@ function renderSummary() {
   }
 
   const rows = [
-    ["Mode", live ? "LIVE MODEL \u2014 actual video inference"
+    // With no video chosen, nothing is being inferred and Start Analysis is
+    // disabled, so the live row must not claim inference is happening. Once a
+    // video is selected the original wording is accurate again.
+    ["Mode", live ? (pick ? "LIVE MODEL \u2014 actual video inference"
+                          : "LIVE MODEL \u2014 awaiting video")
                   : "REPLAY \u2014 precomputed research evidence"],
     ["Video", pick ? pick.name : "Not selected"],
     ["Source", pick ? pick.label : "—"],
