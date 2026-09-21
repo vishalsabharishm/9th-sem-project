@@ -2921,34 +2921,51 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
    the width reading as a browser-default black rectangle. At 1920x1080 the
    clamp never engaged, so the defect only appeared at the demo resolution.
 
-   The frame now shrink-wraps the picture, so the element box always equals
-   the picture box and no bars are generated at any source aspect ratio. The
-   footage is never stretched and never cropped: whatever space the picture
-   does not need is simply the evidence material it already sits on, which is
-   also why the frame's own fill is removed rather than being a third shade
-   of dark stacked under the second. */
+   The picture now takes the surface's width and derives its height from its
+   own aspect ratio, so the element box always equals the picture box and no
+   bars are generated at any source aspect ratio. The footage is never
+   stretched and never cropped. An earlier version of this fix shrink-wrapped
+   the frame instead, which gave the same no-bars guarantee but made the
+   LAYOUT depend on the source clip's pixel width -- see the note on
+   .evidence below. The frame's own fill is removed rather than being a third
+   shade of dark stacked under the second. */
 .evidence .video-frame {
-  width: fit-content;
-  max-width: 100%;
+  width: 100%;
   margin-inline: auto;
   background: transparent;
 }
 .evidence .video-frame video {
-  width: auto;
+  display: block;
+  /* The picture takes the surface's width and derives its height from its
+     own aspect ratio. That is what keeps the element box exactly the shape
+     of the footage, so `contain` has nothing to letterbox -- the same
+     guarantee the shrink-wrap gave, without making the LAYOUT depend on the
+     source's pixel width. There is deliberately no max-height: with an
+     explicit width, a height clamp cannot re-derive the width for a replaced
+     element, so it would either distort the picture or reintroduce the bars
+     this rule exists to prevent. */
+  width: 100%;
   height: auto;
-  max-width: 100%;
-  /* A safety net for an unusually tall source, not the normal constraint.
-     At the surface's capped width the picture is always shorter than this,
-     so the height clamp never engages and never reintroduces bars. */
-  max-height: 72vh;
+  /* Explicitly clears the earlier 68vh and 60vh clamps. Removing the
+     declaration is not enough: those rules still match, and with an explicit
+     width a height clamp cannot re-derive the width, so the box stops being
+     the shape of the footage and `contain` starts painting bars again. */
+  max-height: none;
   background: transparent;
 }
 
 /* The surface is capped so the footage fills its width. That is what makes
    the picture and the timeline below it share edges: both are as wide as
    the surface's content box, so they read as one instrument rather than two
-   centred objects of different sizes. */
-.evidence { max-width: 1000px; margin-inline: auto; }
+   centred objects of different sizes.
+
+   `width: 100%` is load-bearing. .evidence is a grid item, and a grid item's
+   default `justify-self: stretch` is cancelled by `margin-inline: auto`, so
+   without an explicit width the surface became shrink-to-fit -- which made
+   its width depend on the SOURCE CLIP's pixel width rather than on the
+   layout. A 1280x720 clip filled the cap and hid it; a 320x240 clip
+   collapsed the whole charcoal surface to 405px. */
+.evidence { width: 100%; max-width: 1000px; margin-inline: auto; }
 /* The fallback replaces the picture, so it needs a readable measure of its
    own rather than shrink-wrapping to its longest line. */
 .evidence .video-frame .video-fallback { max-width: 52ch; }
