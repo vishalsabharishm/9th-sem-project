@@ -544,16 +544,16 @@ code {
   padding: 0;
   border-radius: 0;
 }
-/* Section headings become the dividers. A small teal marker replaces the
-   card each of these sections used to sit in. */
+/* Section headings become the dividers: a rule, a mono clause number and the
+   heading, in place of the card each of these sections used to sit in. */
 .panel-results { counter-reset: clause; }
-.panel-results > h3 {
+.view .panel.panel-results > h3 {
   counter-increment: clause;
   position: relative;
   display: flex; align-items: baseline; gap: var(--s-3);
   margin-top: 52px; padding-top: 30px;
   border-top: 1px solid var(--border);
-  font-size: var(--fs-head); font-weight: var(--w-display);
+  font-size: var(--fs-head); font-weight: var(--w-label);
   letter-spacing: var(--tr-snug);
 }
 /* Each section of the evidence reads as a numbered clause, in the same mono
@@ -602,6 +602,17 @@ code {
 .view .panel h3.panel-title { margin-top: 0; }
 
 .hint  { color: var(--text-muted); font-size: 13px; margin: 0 0 14px; line-height: 1.55; }
+/* Inline emphasis.
+   ---------------------------------------------------------------------
+   One weight, stated once. Without this rule <strong> fell back to the
+   UA default `bolder`, which resolves to 700 against 400 body text --
+   so emphasis rendered at 700 in the few places no component rule
+   matched, and at 600 everywhere a component rule did. Both faces exist
+   in this stack, so the same word changed weight between screens.
+   The component rules below already say 600; this makes it the default
+   rather than a coincidence. */
+strong, b { font-weight: var(--w-label); }
+
 .muted {
   color: var(--text-muted); font-size: var(--fs-small);
   margin: 0 0 14px; line-height: var(--lh-body);
@@ -671,7 +682,7 @@ code {
 .btn-primary {
   background: linear-gradient(180deg, #43908b, var(--accent));
   border-color: transparent;
-  color: #fff; font-weight: 550;
+  color: #fff; font-weight: var(--w-label);
   box-shadow: 0 1px 2px rgba(54, 124, 120, .30), 0 2px 8px rgba(54, 124, 120, .16);
 }
 .btn-primary:hover:not(:disabled) {
@@ -1367,7 +1378,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   color: var(--text);
 }
 .dh-pk { margin-top: 4px; }
-.dh-note { display: block; margin-top: 7px; font-size: 11.4px; line-height: 1.45; color: var(--text-faint); }
+.dh-note { display: block; margin-top: 7px; font-size: var(--fs-label); line-height: 1.45; color: var(--text-faint); }
 
 /* Semantic, never decorative. */
 /* Only the decision area carries the semantic colour, and only as a wash:
@@ -1402,7 +1413,8 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 }
 .stat-k {
   display: block;
-  font-size: 10.8px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+  font-size: var(--fs-label); font-weight: var(--w-label);
+  letter-spacing: .06em; text-transform: uppercase;
   color: var(--text-muted);
 }
 .stat-v {
@@ -1411,7 +1423,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   letter-spacing: var(--tr-snug); color: var(--text);
 }
 .stat-v.is-alarm { color: var(--danger-text); }
-.stat-note { display: block; margin-top: 3px; font-size: 10.8px; line-height: 1.45; color: var(--text-faint); }
+.stat-note { display: block; margin-top: 3px; font-size: var(--fs-label); line-height: 1.45; color: var(--text-faint); }
 
 /* Risk: configured, and labelled as such, every time. */
 /* Risk must not compete with the decision: an open block with a rule, not a
@@ -1425,7 +1437,8 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 }
 .risk-card.is-high { border-left-color: var(--danger-line); background: none; }
 .risk-label {
-  font-size: 10.8px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  font-size: var(--fs-label); font-weight: var(--w-label);
+  letter-spacing: .06em; text-transform: uppercase;
   color: var(--text-muted);
 }
 
