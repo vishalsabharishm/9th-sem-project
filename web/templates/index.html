@@ -53,15 +53,7 @@
         <!-- Video, detection, temporal evidence, explanation: the shape of the
              pipeline, drawn once and then still. Decorative only; every claim
              it could be read as making is stated in words below. -->
-        <svg class="hero-motif" viewBox="0 0 560 340" fill="none" aria-hidden="true">
-          <path d="M20 250 C120 250 150 120 250 120 S400 60 540 60" pathLength="1"/>
-          <path d="M20 282 C140 282 170 196 300 196 S430 150 540 150" pathLength="1"/>
-          <path d="M20 314 C160 314 200 268 340 268 S470 236 540 236" pathLength="1"/>
-          <path d="M20 218 C100 218 130 40 260 40 S420 14 540 14" pathLength="1"/>
-          <circle cx="250" cy="120" r="3.2"/>
-          <circle cx="300" cy="196" r="3.2"/>
-          <circle cx="340" cy="268" r="3.2"/>
-        </svg>
+      <div class="home-top">
       <div class="hero">
         <p class="eyebrow">Explainable abnormal-event detection</p>
         <h1>Evidence you can inspect.</h1>
@@ -86,6 +78,17 @@
           <span class="sep" aria-hidden="true">&middot;</span>
           <span>Nothing is uploaded anywhere</span>
         </p>
+      </div>
+
+      <!-- Readiness belongs with the proposition: the first question about a
+           local analysis tool is whether it can actually run here. It used to
+           sit in a card at the bottom of the page, repeating the top bar. -->
+      <aside class="panel panel-preflight" aria-labelledby="preflightHeading">
+        <h3 id="preflightHeading" class="panel-title compact">System readiness</h3>
+        <div id="preflightDetail" class="preflight-detail">
+          <div class="skeleton-row"></div>
+        </div>
+      </aside>
       </div>
 
       <h2 class="section-head">How Sentinel Vision works</h2>
@@ -153,19 +156,13 @@
         </article>
       </div>
 
-      <h2 class="section-head">System readiness</h2>
-      <div class="panel panel-preflight" aria-labelledby="preflightHeading">
-        <h3 id="preflightHeading" class="panel-title compact">Preflight</h3>
-        <div id="preflightDetail" class="preflight-detail">
-          <div class="skeleton-row"></div>
-        </div>
-      </div>
     </section>
 
     <!-- ==================== PAGE 2 — ANALYSIS SETUP ==================== -->
     <section class="view hidden" data-view="setup" id="viewSetup">
       <div class="view-head">
         <div>
+          <p class="view-eyebrow"><span>01</span>PREPARE</p>
           <h2>Analysis setup</h2>
           <p class="muted">Choose how the analysis runs and which video it runs on.</p>
         </div>
@@ -311,6 +308,7 @@
     <section class="view hidden" data-view="processing" id="viewProcessing">
       <div class="view-head">
         <div>
+          <p class="view-eyebrow"><span>02</span>ANALYSE</p>
           <h2>Running analysis</h2>
           <p class="muted" id="processingSub">
             Processing locally on CPU. This is not real time.
@@ -389,6 +387,7 @@
     <section class="view hidden" data-view="results" id="viewResults">
       <div class="view-head">
         <div>
+          <p class="view-eyebrow"><span>03</span>EVIDENCE</p>
           <h2>Analysis result</h2>
           <p class="muted" id="resultsSub"></p>
         </div>
@@ -540,6 +539,7 @@
     <section class="view hidden" data-view="explain" id="viewExplain">
       <div class="view-head">
         <div>
+          <p class="view-eyebrow"><span>04</span>INSPECT</p>
           <h2>Explainability</h2>
           <p class="muted">Gradient-based temporal saliency for one completed window.</p>
         </div>
@@ -591,6 +591,7 @@
     <section class="view hidden" data-view="report" id="viewReport">
       <div class="view-head">
         <div>
+          <p class="view-eyebrow"><span>05</span>RECORD</p>
           <h2>Incident report</h2>
           <p class="muted">
             Built from this run's artifacts. Nothing is recomputed &mdash; the
@@ -621,7 +622,7 @@
         <div id="reportStatus" class="status" role="status" aria-live="polite"></div>
       </section>
 
-      <section class="panel">
+      <section class="panel report-appendix">
         <h3 class="panel-title compact">Explanation report</h3>
         <div id="explanation" class="explanation"></div>
         <div class="artifact-links" id="artifactLinks"></div>

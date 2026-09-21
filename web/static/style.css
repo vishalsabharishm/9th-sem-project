@@ -122,6 +122,33 @@
   --t-select: .30s;
   --t-panel:  .46s;
   --t-view:   .48s;
+
+  /* ---------------------------------------------------------- type scale
+     Nine steps, three weights. Before this, the interface used 47 sizes and
+     a single weight (600) for everything from the 64px verdict to a 10.4px
+     label, so nothing had a voice of its own -- only a size. */
+  --w-display: 700;   /* the verdict, the page, the document           */
+  --w-label:   600;   /* names of things: eyebrows, keys, stat labels  */
+  --w-body:    400;   /* prose                                         */
+
+  --fs-verdict: 64px;
+  --fs-hero:    46px;
+  --fs-title:   34px;
+  --fs-head:    22px;
+  --fs-lead:    17px;
+  --fs-body:    14px;
+  --fs-small:   13px;
+  --fs-fine:    12px;
+  --fs-label:   11px;
+
+  /* Tracking tightens as type grows; only labels open up. */
+  --tr-tight:  -.038em;
+  --tr-snug:   -.026em;
+  --tr-label:   .12em;
+
+  --lh-display: 1.02;
+  --lh-title:   1.14;
+  --lh-body:    1.62;
 }
 
 * { box-sizing: border-box; }
@@ -132,8 +159,9 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--sans);
-  font-size: 14.5px;
-  line-height: 1.6;
+  font-size: var(--fs-body);
+  font-weight: var(--w-body);
+  line-height: var(--lh-body);
   letter-spacing: -.005em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -319,7 +347,8 @@ code {
 }
 .view-head h2 {
   margin: 0 0 4px;
-  font-size: 26px; font-weight: 600; letter-spacing: -.024em; line-height: 1.2;
+  font-size: var(--fs-title); font-weight: var(--w-display);
+  letter-spacing: var(--tr-snug); line-height: var(--lh-title);
 }
 .view-head .muted { margin: 0; }
 .view-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -329,10 +358,33 @@ code {
   border-top: 1px solid var(--border);
 }
 
+/* ---------------------------------------------------------------------------
+   The page header.
+
+   A numbered kicker in the mono face, then the title at display weight. The
+   kicker names what you DO here -- prepare, analyse, evidence, inspect,
+   record -- so it adds orientation rather than repeating the stepper label
+   sitting directly above it. It is the one device repeated on every view, and
+   it is most of what makes six screens read as one product.
+   --------------------------------------------------------------------------- */
+.view-eyebrow {
+  display: flex; align-items: center; gap: var(--s-2);
+  margin: 0 0 var(--s-2);
+  font-family: var(--mono);
+  font-size: var(--fs-label); font-weight: var(--w-label);
+  letter-spacing: var(--tr-label); text-transform: uppercase;
+  color: var(--text-faint);
+}
+.view-eyebrow span { color: var(--accent-text); }
+.view-eyebrow::after {
+  content: ""; flex: 0 0 auto; width: 26px; height: 1px;
+  background: var(--border-strong);
+}
+
 .section-head {
   margin: 46px 0 16px;
-  font-size: 19px; font-weight: 600; letter-spacing: -.018em;
-  color: var(--text);
+  font-size: var(--fs-head); font-weight: var(--w-label);
+  letter-spacing: var(--tr-snug); color: var(--text);
 }
 
 /* ===========================================================================
@@ -348,56 +400,26 @@ code {
   padding: 44px 0 18px;
 }
 
-/* An analytical motif: video, detection, temporal evidence, explanation, as
-   four thin lines. It draws itself once and then holds still. Kept at very
-   low opacity on purpose -- it should stop registering the moment you are
-   not looking for it. */
-/* Anchored to the view, not the hero: the free space it wants to occupy is
-   beside the hero, and bleeding past the hero's own box made that box
-   overflow its content. */
 #viewHome { position: relative; }
-.hero-motif {
-  position: absolute; top: 34px; right: 0;
-  width: 560px; height: 340px;
-  pointer-events: none;
-  opacity: .13;
-  color: var(--accent);
-  z-index: 0;
-}
-.hero-motif path {
-  fill: none; stroke: currentColor; stroke-width: 1.1;
-  stroke-linecap: round;
-  stroke-dasharray: 1; stroke-dashoffset: 1;
-  animation: motifDraw 2.2s var(--ease-out) both;
-}
-.hero-motif path:nth-child(2) { animation-delay: .18s; color: var(--accent); }
-.hero-motif path:nth-child(3) { animation-delay: .36s; }
-.hero-motif path:nth-child(4) { animation-delay: .54s; color: var(--accent); }
-.hero-motif circle {
-  fill: currentColor; opacity: 0;
-  animation: motifDot .5s var(--ease) both; animation-delay: 1.5s;
-}
-@keyframes motifDraw { to { stroke-dashoffset: 0; } }
-@keyframes motifDot  { to { opacity: .9; } }
-#viewHome .hero { position: relative; z-index: 1; }
-
-@media (max-width: 1180px) { .hero-motif { display: none; } }
+/* The same kicker the five inner views use, so the product introduces itself
+   in the voice it goes on to speak in. It was a filled teal pill, which was
+   the only component on any screen shaped like that. */
 .eyebrow {
-  margin: 0 0 16px;
-  font-size: 12.5px; font-weight: 500; letter-spacing: -.002em;
+  margin: 0 0 var(--s-3);
+  display: inline-flex; align-items: center; gap: var(--s-2);
+  font-family: var(--mono);
+  font-size: var(--fs-label); font-weight: var(--w-label);
+  letter-spacing: var(--tr-label); text-transform: uppercase;
   color: var(--accent-text);
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 4px 12px 4px 10px;
-  border-radius: 999px;
-  background: var(--accent-soft);
 }
-.eyebrow::before {
-  content: ""; width: 5px; height: 5px; border-radius: 50%;
-  background: var(--accent); flex: none;
+.eyebrow::after {
+  content: ""; width: 26px; height: 1px; flex: none;
+  background: var(--accent-line);
 }
 .hero h1 {
   margin: 0 0 18px;
-  font-size: 46px; line-height: 1.08; font-weight: 600; letter-spacing: -.035em;
+  font-size: var(--fs-hero); line-height: var(--lh-title);
+  font-weight: var(--w-display); letter-spacing: var(--tr-tight);
   color: var(--text);
   max-width: 15ch;
 }
@@ -524,15 +546,27 @@ code {
 }
 /* Section headings become the dividers. A small teal marker replaces the
    card each of these sections used to sit in. */
+.panel-results { counter-reset: clause; }
 .panel-results > h3 {
+  counter-increment: clause;
   position: relative;
+  display: flex; align-items: baseline; gap: var(--s-3);
   margin-top: 52px; padding-top: 30px;
   border-top: 1px solid var(--border);
+  font-size: var(--fs-head); font-weight: var(--w-display);
+  letter-spacing: var(--tr-snug);
 }
+/* Each section of the evidence reads as a numbered clause, in the same mono
+   voice as the page kicker above it. One device, used twice, is what makes
+   the long page feel written rather than assembled. */
 .panel-results > h3::before {
-  content: ""; position: absolute; left: 0; top: -1px;
-  width: 34px; height: 2px; border-radius: 2px;
-  background: var(--accent);
+  content: counter(clause, decimal-leading-zero);
+  position: static;
+  width: auto; height: auto; border-radius: 0; background: none;
+  font-family: var(--mono);
+  font-size: var(--fs-label); font-weight: var(--w-label);
+  letter-spacing: var(--tr-label);
+  color: var(--accent-text);
 }
 .panel-results > h3:first-of-type { margin-top: 38px; }
 .panel + .panel { margin-top: 18px; }
@@ -540,18 +574,18 @@ code {
 .panel-title {
   display: flex; align-items: center; gap: 10px;
   margin: 0 0 18px;
-  font-size: 15px; font-weight: 600; letter-spacing: -.014em;
+  font-size: var(--fs-lead); font-weight: var(--w-label);
+  letter-spacing: var(--tr-snug);
   color: var(--text);
 }
 .panel-title.compact { margin-bottom: 12px; font-size: 14px; }
 
 .step-num {
-  display: grid; place-items: center;
-  width: 21px; height: 21px; flex: none;
-  border-radius: 6px;
-  background: var(--surface-inset);
-  color: var(--text-muted);
-  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  font-family: var(--mono);
+  font-size: var(--fs-label); font-weight: var(--w-label);
+  letter-spacing: var(--tr-label);
+  color: var(--accent-text);
+  background: none; border: none; padding: 0;
 }
 
 .view .panel h3, .view > h3 {
@@ -568,7 +602,10 @@ code {
 .view .panel h3.panel-title { margin-top: 0; }
 
 .hint  { color: var(--text-muted); font-size: 13px; margin: 0 0 14px; line-height: 1.55; }
-.muted { color: var(--text-muted); font-size: 13.5px; margin: 0 0 14px; line-height: 1.6; }
+.muted {
+  color: var(--text-muted); font-size: var(--fs-small);
+  margin: 0 0 14px; line-height: var(--lh-body);
+}
 .muted strong, .hint strong { color: var(--text-secondary); font-weight: 600; }
 
 /* A caveat is a quiet aside, never an alarm. */
@@ -832,7 +869,7 @@ button { font-family: inherit; }
   font-family: var(--mono); font-size: 10.8px; color: var(--text-faint);
   word-break: break-all;
 }
-.pc-truth { display: inline; font-size: 12px; color: var(--text-muted); }
+.pc-truth { display: inline; font-size: var(--fs-fine); color: var(--text-muted); }
 /* meta and ground truth share one line, so a card is three lines not five */
 .pc-blurb + .pc-meta { display: inline-block; margin-top: 8px; }
 .pc-truth strong { color: var(--text-secondary); font-weight: 600; }
@@ -875,7 +912,7 @@ button { font-family: inherit; }
 }
 .dropzone:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .dz-primary { font-size: 13.8px; font-weight: 600; color: var(--text); }
-.dz-secondary { font-size: 12px; color: var(--text-muted); }
+.dz-secondary { font-size: var(--fs-fine); color: var(--text-muted); }
 
 .upload-meta {
   display: flex; align-items: baseline; gap: 10px;
@@ -1370,7 +1407,8 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 }
 .stat-v {
   display: block; margin-top: 4px;
-  font-size: 17.5px; font-weight: 600; letter-spacing: -.018em; color: var(--text);
+  font-size: var(--fs-head); font-weight: var(--w-display);
+  letter-spacing: var(--tr-snug); color: var(--text);
 }
 .stat-v.is-alarm { color: var(--danger-text); }
 .stat-note { display: block; margin-top: 3px; font-size: 10.8px; line-height: 1.45; color: var(--text-faint); }
@@ -1403,12 +1441,12 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .badge.risk-Low    { color: var(--success-text); background: var(--success-soft); border-color: var(--success-line); }
 .badge.risk-None   { color: var(--text-muted); }
 
-.risk-status { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.risk-status { font-size: var(--fs-fine); color: var(--text-muted); line-height: 1.5; }
 
 .badge-row { margin-top: 12px; }
 .badge.ground-truth {
   display: inline-block;
-  font-size: 12px; font-weight: 500; padding: 6px 12px;
+  font-size: var(--fs-fine); font-weight: 500; padding: 6px 12px;
   color: var(--text-secondary); background: var(--surface-inset);
   border-color: var(--border); line-height: 1.5;
 }
@@ -1702,7 +1740,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .disclose > *:not(summary) { padding: 14px 16px; animation: rise var(--t-select) var(--ease) both; }
 
 .disclose.compact { margin: 8px 0 0; border: none; background: none; }
-.disclose.compact > summary { padding: 4px 0; font-size: 12px; color: var(--text-faint); }
+.disclose.compact > summary { padding: 4px 0; font-size: var(--fs-fine); color: var(--text-faint); }
 .disclose.compact > summary:hover { background: none; color: var(--text-secondary); }
 .disclose.compact[open] > summary { border-bottom: none; }
 .disclose.compact > *:not(summary) { padding: 8px 0 0; }
@@ -1903,7 +1941,8 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 }
 .rl-title {
   display: block; margin-top: 14px;
-  font-size: 36px; font-weight: 600; letter-spacing: -.034em; line-height: 1.08;
+  font-size: var(--fs-title); font-weight: var(--w-display);
+  letter-spacing: var(--tr-snug); line-height: var(--lh-title);
   color: var(--text);
 }
 @media (max-width: 700px) { .rl-title { font-size: 27px; } }
@@ -1993,7 +2032,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .pf-row.ok  .pf-icon { background: var(--success-soft); color: var(--success); }
 .pf-row.bad .pf-icon { background: var(--warning-soft); color: var(--warning); }
 .pf-name { font-weight: 600; color: var(--text); }
-.pf-why { display: block; margin-top: 3px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.pf-why { display: block; margin-top: 3px; font-size: var(--fs-fine); color: var(--text-muted); line-height: 1.5; }
 
 .toast {
   position: fixed; left: 50%; bottom: 30px; z-index: 60;
@@ -2013,7 +2052,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   flex-wrap: wrap;
   padding: 24px 26px 30px;
   border-top: 1px solid var(--border);
-  color: var(--text-faint); font-size: 12px; text-align: center;
+  color: var(--text-faint); font-size: var(--fs-fine); text-align: center;
 }
 .foot-sep { color: var(--border-strong); }
 
@@ -2082,7 +2121,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   .view-enter .panel, .view-enter .flow, .view-enter .window-chart,
   .decision-hero, .notice, .preset-note, .completion-banner, .saliency-img,
   #saliencyResult .saliency-grid, #saliencyResult, .disclose > *:not(summary),
-  .hero-motif path, .hero-motif circle, .tl-line, .tl-area, .tl-threshold,
+  .tl-line, .tl-area, .tl-threshold,
   .tl-thr-label, .tl-dot, .tl-peak, .tl-alarm, .video-frame, .hud-state,
   .saliency-panel .caveat, .view-enter .view-head > div > h2,
   .view-enter .view-head > div > .muted, .view-enter .view-actions,
@@ -2101,8 +2140,6 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   .mode-option.selected, .wp-item:hover { transform: none !important; }
   .stepper-pill { transition: none !important; }
   .tl-line { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
-  .hero-motif path { stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
-  .hero-motif circle { opacity: .9 !important; }
   /* State still reads: the selected dot keeps its fill, it just does not grow. */
   .window-bar.selected .tl-dot { background: var(--accent) !important; }
   .pipeline li[data-state="processing"] .stage-mark::after { animation: none !important; opacity: 1 !important; }
@@ -2171,7 +2208,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   .explanation { max-height: none; overflow: visible; background: #fff; }
   .table-scroll, .window-picker { max-height: none; overflow: visible; }
   .disclose > *:not(summary) { display: block !important; animation: none !important; }
-  .decision-hero { background: #fff; border: 1px solid #ccc; }
+  .headline { border-bottom: 1px solid #ccc; }
   * { animation: none !important; transition: none !important; }
 }
 
@@ -2268,8 +2305,15 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   align-items: baseline;
 }
 .decision-hero .dh-note { border-top: none; padding-top: var(--s-1); }
-.dh-v { font-size: 64px; line-height: .96; letter-spacing: -.045em; margin-top: var(--s-2); }
-.dh-pv { font-size: 34px; letter-spacing: -.03em; }
+.dh-v {
+  font-size: var(--fs-verdict); font-weight: var(--w-display);
+  line-height: var(--lh-display); letter-spacing: var(--tr-tight);
+  margin-top: var(--s-2);
+}
+.dh-pv {
+  font-size: var(--fs-title); font-weight: var(--w-display);
+  letter-spacing: var(--tr-snug);
+}
 .decision-hero.is-alarm .dh-v { color: var(--danger-text); }
 .decision-hero.is-clear .dh-v { color: var(--success-text); }
 @media (max-width: 1080px) { .dh-v { font-size: 50px; } .dh-pv { font-size: 27px; } }
@@ -2282,9 +2326,12 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .result-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); margin-top: 0; }
 .result-headline {
   display: grid;
-  grid-template-columns: minmax(200px, .85fr) minmax(200px, 1fr) minmax(220px, 1.1fr);
-  gap: var(--s-4) var(--s-5);
-  align-items: start;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  gap: var(--s-4) var(--s-6);
+  align-items: center;
+  margin-top: var(--s-4);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--border);
 }
 .result-headline .badge-row { margin-top: 0; }
 .result-headline #fpNotice,
@@ -2301,8 +2348,9 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 /* --- the reveal ------------------------------------------------------
    Evidence arrives in the order an investigator reads it. Once per
    analysis, not on every visit to the view. */
-#viewResults.reveal .decision-hero { animation: rise .5s var(--ease) both; }
-#viewResults.reveal .headline .stat-row { animation: rise .5s var(--ease) both; animation-delay: .1s; }
+#viewResults.reveal .dh-main { animation: rise .5s var(--ease) both; }
+#viewResults.reveal .dh-peak,
+#viewResults.reveal .headline .stat { animation: rise .5s var(--ease) both; animation-delay: .1s; }
 #viewResults.reveal .result-grid { animation: evidenceRise .6s var(--ease) both; animation-delay: .18s; }
 #viewResults.reveal .window-chart { animation: rise .55s var(--ease) both; animation-delay: .34s; }
 #viewResults.reveal .result-headline { animation: rise .55s var(--ease) both; animation-delay: .44s; }
@@ -2403,7 +2451,7 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   border-left: 2px solid var(--border-strong);
   border-radius: 0;
   padding: 2px 0 2px var(--s-3);
-  font-size: 12px; color: var(--text-muted);
+  font-size: var(--fs-fine); color: var(--text-muted);
   margin-top: var(--s-4);
 }
 .saliency-panel > .caveat em { color: var(--text-secondary); }
@@ -2518,8 +2566,9 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
    Reduced motion
    ====================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  #viewResults.reveal .decision-hero,
-  #viewResults.reveal .headline .stat-row,
+  #viewResults.reveal .dh-main,
+  #viewResults.reveal .dh-peak,
+  #viewResults.reveal .headline .stat,
   #viewResults.reveal .result-grid,
   #viewResults.reveal .window-chart,
   #viewResults.reveal .result-headline,
@@ -2540,13 +2589,17 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
   grid-template-columns: minmax(0, 1fr) !important;
   gap: var(--s-3) !important;
 }
+/* All three supporting figures share one structure: name above, value
+   below, provenance under it. The verdict already carries the emphasis, so
+   these only have to be comparable with each other. */
 .dh-peak {
-  display: flex; align-items: baseline; flex-wrap: wrap;
-  gap: var(--s-1) var(--s-3);
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 2px;
   text-align: left;
 }
-.dh-pk { margin-top: 0; }
-.dh-peak .dh-note { width: 100%; margin-top: 0; }
+.dh-pk { order: 1; margin-top: 0; }
+.dh-pv { order: 2; }
+.dh-peak .dh-note { order: 3; width: 100%; margin-top: var(--s-1); }
 
 /* One surface, not a dark frame inside a dark surface. */
 .evidence .video-frame {
@@ -2563,12 +2616,22 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
    The rule belongs to the band, not to the verdict alone. */
 .headline {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(300px, .95fr);
-  gap: var(--s-4) var(--s-7);
-  align-items: end;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--s-6);
+  row-gap: var(--s-5);
+  align-items: start;
   padding-bottom: var(--s-4);
   border-bottom: 1px solid var(--border);
   margin-bottom: var(--s-5);
+}
+/* The two wrappers exist to group values for the renderer, not to position
+   them: dissolving them lets the verdict and all three figures share the
+   band's own columns. */
+.decision-hero, .headline .stat-row { display: contents; }
+.dh-main { grid-column: 1 / -1; }
+.headline .stat {
+  border-left: 1px solid var(--border);
+  padding-left: var(--s-4);
 }
 .decision-hero { border-bottom: none !important; padding-bottom: 0 !important; }
 .headline .stat-row { margin-top: 0; }
@@ -2801,8 +2864,8 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .report-sheet .panel-title { margin-top: var(--s-5); }
 .report-preview { margin-bottom: var(--s-5); }
 .rp-item { padding: var(--s-3) 0; font-size: 13.2px; }
-.rp-k { font-size: 10.6px; letter-spacing: .12em; }
-.rp-v { font-size: 14px; font-weight: 600; letter-spacing: -.01em; }
+.rp-k { font-size: var(--fs-label); letter-spacing: var(--tr-label); }
+.rp-v { font-size: var(--fs-body); font-weight: var(--w-label); letter-spacing: var(--tr-snug); }
 
 /* The verdict row carries the weight the rest of the document does not. */
 .rp-item:nth-child(6) .rp-v { color: var(--danger-text); }
@@ -2880,3 +2943,102 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 /* The badge now anchors to the picture's real corner rather than to a
    corner that used to sit inside a bar. */
 .evidence .video-hud { top: 10px; right: 10px; }
+
+/* ---------------------------------------------------------------------------
+   Surface hierarchy.
+
+   Three levels, used deliberately: the ivory shell, the charcoal evidence
+   surface, and -- only for things you can actually pick up -- a raised
+   control. Setup previously nested three cards inside three cards, which
+   flattened all three levels into one. The wrappers become open sections with
+   a rule; the options inside them stay cards, because they are objects you
+   choose between.
+   --------------------------------------------------------------------------- */
+.setup-grid > .panel,
+.home-top > .panel-preflight {
+  background: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+}
+.setup-grid > .panel + .panel { margin-top: 0; }
+.setup-grid > .panel > .panel-title {
+  padding-bottom: var(--s-3);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--s-4);
+}
+
+/* Home: the proposition and the readiness of the machine, side by side. */
+.home-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+  gap: var(--s-7);
+  align-items: start;
+}
+.home-top .hero { max-width: none; padding-top: var(--s-6); }
+.home-top > .panel-preflight {
+  margin-top: var(--s-6);
+  padding: var(--s-3) 0 0;
+  border-top: 2px solid var(--text);
+}
+.home-top .panel-preflight .panel-title {
+  margin-bottom: var(--s-3);
+  font-family: var(--mono);
+  font-size: var(--fs-label); font-weight: var(--w-label);
+  letter-spacing: var(--tr-label); text-transform: uppercase;
+  color: var(--text-secondary);
+}
+@media (max-width: 1080px) {
+  .home-top { grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+}
+
+/* The report is a document, so it is printed on a sheet rather than parked
+   in a rounded card with a shadow under it. */
+.report-sheet {
+  border-radius: var(--r-sm);
+  box-shadow: var(--shadow-xs);
+  border-top: 3px solid var(--text);
+}
+
+/* The window strip is scrolled, not truncated: snapping makes it come to
+   rest on a card edge instead of slicing one down the middle, and the edges
+   fade so the strip reads as continuing rather than as cut off. */
+.window-picker {
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--s-2);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 46px,
+                      #000 calc(100% - 46px), transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 46px,
+                      #000 calc(100% - 46px), transparent 100%);
+}
+.window-picker .wp-item { scroll-snap-align: start; }
+
+/* The stages after the frame loop sit under the block they follow, on the
+   same columns. Previously the second row was centred independently, so
+   "Evidence fusion" landed between two columns of the row above it. */
+.pipeline {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.pipeline li[data-stage="video_input"] { grid-column: 1 / -1; }
+.pipeline li[data-stage="evidence_fusion"]     { grid-column: 1 / 2; }
+.pipeline li[data-stage="risk_interpretation"] { grid-column: 2 / 3; }
+.pipeline li[data-stage="explanation_ready"]   { grid-column: 3 / 4; }
+
+/* The appendix belongs to the same document as the sheet above it, so it is
+   set on the same paper rather than in a second card with its own shadow. */
+.report-appendix {
+  background: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: var(--s-5) 0 0;
+  margin-top: var(--s-5);
+  border-top: 1px solid var(--border);
+}
+.report-appendix > .panel-title {
+  font-family: var(--mono);
+  font-size: var(--fs-label); font-weight: var(--w-label);
+  letter-spacing: var(--tr-label); text-transform: uppercase;
+  color: var(--text-secondary);
+}
